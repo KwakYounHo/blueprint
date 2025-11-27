@@ -2,8 +2,8 @@
 type: schema
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [schema, aspect, front-matter]
 dependencies: [front-matters/base.schema.md, front-matters/gate.schema.md]
 ---
@@ -80,8 +80,8 @@ All fields from `base.schema.md`:
 type: aspect
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [aspect, specification, completeness]
 dependencies: [../gate.md]
 
@@ -98,8 +98,8 @@ description: "Validates that all functional and non-functional requirements are 
 type: aspect
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [aspect, implementation, code-style]
 dependencies: [../gate.md]
 
@@ -116,8 +116,8 @@ description: "Validates code style compliance with project standards"
 type: aspect
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [aspect, documentation, schema-validation]
 dependencies: [../gate.md]
 

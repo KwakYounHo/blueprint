@@ -42,8 +42,9 @@
 
 ## Development Status
 - **Current Phase**: Schema definition in progress
-- **Completed**: base.schema.md, constitution.schema.md, gate.schema.md, aspect.schema.md
-- **In Progress**: phase.schema.md, stage.schema.md, task.schema.md, progress.schema.md
+- **Completed**: base.schema.md, constitution.schema.md, gate.schema.md, aspect.schema.md, phase.schema.md
+- **In Progress**: stage.schema.md, task.schema.md, progress.schema.md
+- **Pending**: base.schema.md type enum update (add `task`, `progress`, remove `feature`, `artifact`)
 - Reference `docs/adr/001-schema-first-development.md` for implementation order.
 
 ### Schema Creation Guide (for next session)

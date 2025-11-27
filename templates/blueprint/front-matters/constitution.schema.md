@@ -2,8 +2,8 @@
 type: schema
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [schema, constitution, front-matter]
 dependencies: [front-matters/base.schema.md]
 ---
@@ -86,8 +86,8 @@ All fields from `base.schema.md`:
 type: constitution
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [principles, global, constitution]
 dependencies: []
 
@@ -103,8 +103,8 @@ target-workers: ["all"]
 type: constitution
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [worker, specifier, constitution]
 dependencies: ["../base.md"]
 

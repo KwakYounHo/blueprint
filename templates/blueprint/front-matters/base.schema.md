@@ -2,8 +2,8 @@
 type: schema
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [schema, common, front-matter]
 dependencies: []
 ---
@@ -73,7 +73,7 @@ dependencies: []
 - **Type**: date
 - **Required**: Yes
 - **Format**: `YYYY-MM-DD`
-- **Example**: `2024-11-27`
+- **Example**: `2025-11-28`
 - **Description**: Date when the document was first created.
 
 ### updated
@@ -81,7 +81,7 @@ dependencies: []
 - **Type**: date
 - **Required**: Yes
 - **Format**: `YYYY-MM-DD`
-- **Example**: `2024-11-27`
+- **Example**: `2025-11-28`
 - **Description**: Date when the document was last modified.
 
 ### tags

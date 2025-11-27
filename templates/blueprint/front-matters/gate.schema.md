@@ -2,8 +2,8 @@
 type: schema
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [schema, gate, front-matter]
 dependencies: [front-matters/base.schema.md]
 ---
@@ -84,8 +84,8 @@ All fields from `base.schema.md`:
 type: gate
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [gate, specification]
 dependencies: []
 
@@ -102,8 +102,8 @@ description: "Validates specification completeness and feasibility before implem
 type: gate
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [gate, implementation]
 dependencies: []
 
@@ -120,8 +120,8 @@ description: "Validates code quality, architecture, and component design"
 type: gate
 status: active
 version: 1.0.0
-created: 2024-11-27
-updated: 2024-11-27
+created: 2025-11-28
+updated: 2025-11-28
 tags: [gate, documentation]
 dependencies: []
 
