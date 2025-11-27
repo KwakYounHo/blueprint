@@ -1,12 +1,12 @@
-# Schemas
+# FrontMatters
 
-> Document format definitions for validation. Used by Documentation Gate.
+> FrontMatter definitions for validation. Used by Documentation Gate.
 
 ---
 
 ## Purpose
 
-Schemas define **valid front matter structure** for each document type:
+This directory defines **valid FrontMatter structure** for each document type:
 
 1. **Validation**: Documentation Gate uses schemas to validate documents
 2. **Reference**: Authors can consult schemas when writing documents
@@ -35,14 +35,14 @@ From our token efficiency research:
 ## Directory Structure
 
 ```
-schemas/
+front-matters/
 ├── README.md                    # This file
 ├── common.schema.md             # Shared fields across all types
-├── constitution.schema.md       # Constitution document schema
-├── gate.schema.md               # Gate document schema
-├── aspect.schema.md             # Aspect document schema
-├── feature.schema.md            # Feature document schema
-└── artifact.schema.md           # Artifact schema (spec, plan, task, review)
+├── constitution.schema.md       # Constitution FrontMatter schema
+├── gate.schema.md               # Gate FrontMatter schema
+├── aspect.schema.md             # Aspect FrontMatter schema
+├── feature.schema.md            # Feature FrontMatter schema
+└── artifact.schema.md           # Artifact FrontMatter schema (spec, plan, task, review)
 ```
 
 ---
@@ -123,8 +123,8 @@ Documentation Gate Triggered
         ▼
 Schema Validation Reviewer
         │
-        ├── Load: schemas/common.schema.md
-        ├── Load: schemas/{type}.schema.md
+        ├── Load: front-matters/common.schema.md
+        ├── Load: front-matters/{type}.schema.md
         │
         ▼
 Validate Front Matter

@@ -62,7 +62,7 @@ status: active
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [gate, documentation]
-related: [../../schemas/]
+related: [../../front-matters/]
 
 gate-type: document
 trigger: document-change
@@ -168,6 +168,6 @@ violations:
 
 ## Related
 
-- `../../schemas/` for schema definitions
+- `../../front-matters/` for FrontMatter definitions
 - `../` (gates/README.md) for Gate classification
 - `../../constitutions/workers/reviewer.md` for Reviewer principles

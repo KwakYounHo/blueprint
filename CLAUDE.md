@@ -54,7 +54,7 @@ agent-docs/
 ├── templates/
 │   ├── claude-agents/       # Worker definitions for .claude/agents/
 │   └── blueprint/           # Framework core templates
-│       ├── schemas/         # Document format definitions
+│       ├── front-matters/   # FrontMatter definitions
 │       ├── constitutions/   # Principles
 │       ├── gates/           # Validation checkpoints (incl. documentation/)
 │       ├── workflows/       # Phase/Stage definitions

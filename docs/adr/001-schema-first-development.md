@@ -89,6 +89,6 @@ Phase 5: Tooling
 
 ## Related
 
-- `templates/blueprint/schemas/README.md` - Schema directory documentation
+- `templates/blueprint/front-matters/README.md` - FrontMatter definitions documentation
 - `templates/blueprint/gates/documentation/README.md` - Documentation Gate that uses schemas
 - `README.md` - Global Rules section defines base schema fields

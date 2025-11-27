@@ -58,7 +58,7 @@ Main initialization script that:
    ```
    .claude/agents/
    blueprint/
-   ├── schemas/
+   ├── front-matters/
    ├── constitutions/
    │   └── workers/
    ├── gates/
@@ -128,7 +128,7 @@ WORKERS_ONLY=false
 # Create directory structure
 create_structure() {
     mkdir -p "$TARGET_DIR/.claude/agents"
-    mkdir -p "$TARGET_DIR/blueprint/schemas"
+    mkdir -p "$TARGET_DIR/blueprint/front-matters"
     mkdir -p "$TARGET_DIR/blueprint/constitutions/workers"
     mkdir -p "$TARGET_DIR/blueprint/gates/specification/aspects"
     mkdir -p "$TARGET_DIR/blueprint/gates/implementation/aspects"

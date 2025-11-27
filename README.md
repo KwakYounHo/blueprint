@@ -74,7 +74,7 @@ agent-docs/
 ├── templates/
 │   ├── claude-agents/                   # → .claude/agents/ (Claude Code integration)
 │   └── blueprint/                       # → blueprint/ (Framework core)
-│       ├── schemas/                     # Document format definitions
+│       ├── front-matters/               # FrontMatter definitions
 │       ├── constitutions/
 │       ├── gates/
 │       ├── workflows/
@@ -94,7 +94,7 @@ target-project/
 │       ├── implementer.md
 │       └── reviewer.md
 └── blueprint/                           # Framework core
-    ├── schemas/                         # Document format definitions
+    ├── front-matters/                   # FrontMatter definitions
     ├── constitutions/
     ├── gates/
     │   ├── specification/

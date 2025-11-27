@@ -109,7 +109,7 @@ pass-threshold: 100  # If percentage
 |-------|------------|---------------|
 | `gate-type` | `phase` | `document` |
 | `trigger` | `phase-boundary` | `document-change` |
-| `related` | workflows/phases.md | `../schemas/` |
+| `related` | workflows/phases.md | `../front-matters/` |
 
 ### Content Structure
 
@@ -385,6 +385,6 @@ Good: "No circular dependencies between modules"
 
 - `./documentation/` for Documentation Gate (parallel validation)
 - `../workflows/` for Phase definitions
-- `../schemas/` for schema definitions (Documentation Gate)
+- `../front-matters/` for FrontMatter definitions (Documentation Gate)
 - `../constitutions/workers/reviewer.md` for Reviewer principles
 - `../../claude-agents/` for Reviewer behavior definition

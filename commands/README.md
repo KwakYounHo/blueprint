@@ -168,7 +168,7 @@ Set up the framework directory structure and optionally copy templates.
    - If yes, ask for confirmation before proceeding
 2. Create directory structure:
    - .claude/agents/
-   - blueprint/schemas/
+   - blueprint/front-matters/
    - blueprint/constitutions/workers/
    - blueprint/gates/specification/aspects/
    - blueprint/gates/implementation/aspects/
@@ -178,7 +178,7 @@ Set up the framework directory structure and optionally copy templates.
 3. If --with-templates flag:
    - Copy Worker templates to .claude/agents/
    - Copy Constitution templates to blueprint/constitutions/
-   - Copy Schema templates to blueprint/schemas/
+   - Copy FrontMatter definitions to blueprint/front-matters/
 4. Report created directories and files
 
 ## Output
