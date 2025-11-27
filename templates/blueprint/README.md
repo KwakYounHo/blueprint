@@ -31,8 +31,8 @@ The name reflects its role:
 blueprint/
 ├── README.md                    # This file
 │
-├── _schemas/                    # Document format definitions
-│   ├── _common.schema.md        # Shared fields across all types
+├── schemas/                     # Document format definitions
+│   ├── common.schema.md         # Shared fields across all types
 │   ├── constitution.schema.md
 │   ├── gate.schema.md
 │   ├── aspect.schema.md
@@ -49,13 +49,13 @@ blueprint/
 │
 ├── gates/                       # Validation checkpoints
 │   ├── specification/           # Specification Phase gate
-│   │   ├── _gate.md
+│   │   ├── gate.md
 │   │   └── aspects/
 │   ├── implementation/          # Implementation Phase gate
-│   │   ├── _gate.md
+│   │   ├── gate.md
 │   │   └── aspects/
 │   └── documentation/           # Documentation gate (parallel)
-│       ├── _gate.md
+│       ├── gate.md
 │       └── aspects/
 │
 ├── workflows/                   # Phase and Stage definitions
@@ -64,7 +64,7 @@ blueprint/
 │
 └── features/                    # Feature containers
     └── {feature-id}/            # One directory per Feature
-        ├── _feature.md
+        ├── feature.md
         ├── spec.md
         ├── plan.md
         ├── tasks/
@@ -104,7 +104,7 @@ blueprint/
 │            (1:N)      (1:N)                                 │
 │                                                             │
 │ Document Gates (parallel):                                  │
-│   Documentation Gate ──► Schema Validation ──► _schemas/    │
+│   Documentation Gate ──► Schema Validation ──► schemas/     │
 │                                                             │
 │ Each Aspect = One Reviewer Worker                           │
 └─────────────────────────────────────────────────────────────┘
@@ -124,7 +124,7 @@ blueprint/
 │ Schemas                      │                              │
 │ "What format to follow"      ▼                              │
 │                                                             │
-│ _schemas/ ──► Defines valid front matter for each type      │
+│ schemas/ ──► Defines valid front matter for each type       │
 │               Used by Documentation Gate for validation     │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -146,7 +146,7 @@ When initializing a project:
 
 | Directory | Purpose | See |
 |-----------|---------|-----|
-| `_schemas/` | Document format definitions | `_schemas/README.md` |
+| `schemas/` | Document format definitions | `schemas/README.md` |
 | `constitutions/` | Principle definitions | `constitutions/README.md` |
 | `gates/` | Validation checkpoints | `gates/README.md` |
 | `workflows/` | Phase/Stage definitions | `workflows/README.md` |

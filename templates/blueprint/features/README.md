@@ -63,7 +63,7 @@ features/
 ├── README.md                    # This file
 │
 └── {feature-id}/                # One directory per Feature
-    ├── _feature.md              # Feature metadata
+    ├── feature.md               # Feature metadata
     ├── spec.md                  # Specification (Artifact)
     ├── plan.md                  # Implementation plan (Artifact)
     ├── tasks/                   # Task documents
@@ -119,7 +119,7 @@ git merge feature/001-user-auth
 
 ---
 
-## Feature Metadata (`_feature.md`)
+## Feature Metadata (`feature.md`)
 
 ### Front Matter
 
@@ -174,7 +174,7 @@ phase: specification | implementation
 
 | Artifact | File | Created By | When |
 |----------|------|------------|------|
-| **Feature Metadata** | `_feature.md` | Orchestrator | Feature start |
+| **Feature Metadata** | `feature.md` | Orchestrator | Feature start |
 | **Specification** | `spec.md` | Specifier | Specification Phase |
 | **Plan** | `plan.md` | Specifier | Specification Phase |
 | **Task** | `tasks/task-*.md` | Specifier | Specification Phase |
@@ -197,7 +197,7 @@ phase: specification | implementation
 
 ```
 1. Feature Created
-   └── _feature.md created
+   └── feature.md created
    └── Branch created: feature/{id}
 
 2. Specification Phase
@@ -236,7 +236,7 @@ Each Feature should have:
 ```
 Good:
 features/001-user-auth/
-├── _feature.md
+├── feature.md
 ├── spec.md
 ├── plan.md
 ├── tasks/
@@ -244,7 +244,7 @@ features/001-user-auth/
 
 Bad:
 features/001-user-auth/
-├── _feature.md
+├── feature.md
 ├── spec.md
 ├── spec-v2.md          # Don't version in filename
 ├── old-plan.md         # Don't keep old versions
@@ -255,7 +255,7 @@ features/001-user-auth/
 ### Use Tags for Cross-Feature Queries
 
 ```yaml
-# In _feature.md
+# In feature.md
 tags: [authentication, security, user-management]
 ```
 

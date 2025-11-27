@@ -54,7 +54,7 @@ templates/blueprint/         ──copy──►  blueprint/
 |---------|---------|
 | `*.template.md` | Template file (schema + placeholder content) |
 | `README.md` | Directory documentation (not copied to project) |
-| `_*.md` | Metadata file (e.g., `_feature.md`, `_gate.md`) |
+| `feature.md`, `gate.md` | Metadata files in their respective directories |
 
 ---
 

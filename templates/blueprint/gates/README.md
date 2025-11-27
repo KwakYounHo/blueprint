@@ -62,27 +62,27 @@ gates/
 ├── README.md                    # This file
 │
 ├── specification/               # Specification Phase Gate
-│   ├── _gate.md                 # Gate metadata
+│   ├── gate.md                  # Gate metadata
 │   └── aspects/
 │       ├── completeness.md      # Aspect: Requirements completeness
 │       └── feasibility.md       # Aspect: Technical feasibility
 │
 ├── implementation/              # Implementation Phase Gate
-│   ├── _gate.md                 # Gate metadata
+│   ├── gate.md                  # Gate metadata
 │   └── aspects/
 │       ├── code-style.md        # Aspect: Code style compliance
 │       ├── architecture.md      # Aspect: Architecture principles
 │       └── component.md         # Aspect: Component design
 │
 └── documentation/               # Documentation Gate (parallel)
-    ├── _gate.md                 # Gate metadata
+    ├── gate.md                  # Gate metadata
     └── aspects/
         └── schema-validation.md # Aspect: Front matter schema compliance
 ```
 
 ---
 
-## Gate Definition (`_gate.md`)
+## Gate Definition (`gate.md`)
 
 ### Front Matter
 
@@ -109,7 +109,7 @@ pass-threshold: 100  # If percentage
 |-------|------------|---------------|
 | `gate-type` | `phase` | `document` |
 | `trigger` | `phase-boundary` | `document-change` |
-| `related` | workflows/phases.md | `../_schemas/` |
+| `related` | workflows/phases.md | `../schemas/` |
 
 ### Content Structure
 
@@ -151,7 +151,7 @@ status: active
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [aspect, {gate-name}, {aspect-name}]
-related: [../_gate.md]
+related: [../gate.md]
 
 # Aspect-specific
 gate: specification | implementation | documentation
@@ -385,6 +385,6 @@ Good: "No circular dependencies between modules"
 
 - `./documentation/` for Documentation Gate (parallel validation)
 - `../workflows/` for Phase definitions
-- `../_schemas/` for schema definitions (Documentation Gate)
+- `../schemas/` for schema definitions (Documentation Gate)
 - `../constitutions/workers/reviewer.md` for Reviewer principles
 - `../../claude-agents/` for Reviewer behavior definition

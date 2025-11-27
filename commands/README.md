@@ -168,7 +168,7 @@ Set up the framework directory structure and optionally copy templates.
    - If yes, ask for confirmation before proceeding
 2. Create directory structure:
    - .claude/agents/
-   - blueprint/_schemas/
+   - blueprint/schemas/
    - blueprint/constitutions/workers/
    - blueprint/gates/specification/aspects/
    - blueprint/gates/implementation/aspects/
@@ -178,7 +178,7 @@ Set up the framework directory structure and optionally copy templates.
 3. If --with-templates flag:
    - Copy Worker templates to .claude/agents/
    - Copy Constitution templates to blueprint/constitutions/
-   - Copy Schema templates to blueprint/_schemas/
+   - Copy Schema templates to blueprint/schemas/
 4. Report created directories and files
 
 ## Output
@@ -205,7 +205,7 @@ Feature description (provided after command or prompted)
 ## Steps
 1. Generate feature ID: {next-number}-{slugified-description}
 2. Create feature directory: blueprint/features/{feature-id}/
-3. Create _feature.md with metadata
+3. Create feature.md with metadata
 4. Invoke Specifier Worker:
    - Load: blueprint/constitutions/base.md
    - Load: blueprint/constitutions/workers/specifier.md

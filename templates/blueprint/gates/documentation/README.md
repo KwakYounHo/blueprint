@@ -46,14 +46,14 @@ required-gates:
 ```
 documentation/
 ├── README.md                    # This file
-├── _gate.md                     # Gate metadata
+├── gate.md                      # Gate metadata
 └── aspects/
     └── schema-validation.md     # Schema Validation Aspect
 ```
 
 ---
 
-## Gate Definition (`_gate.md`)
+## Gate Definition (`gate.md`)
 
 ```yaml
 ---
@@ -62,7 +62,7 @@ status: active
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [gate, documentation]
-related: [../../_schemas/]
+related: [../../schemas/]
 
 gate-type: document
 trigger: document-change
@@ -109,7 +109,7 @@ Orchestrator sends Handoff:
 │             │                   ┌───────┴───────┐           │
 │             │                   ▼               │           │
 │             │           Load Schema             │           │
-│             │           ├── _common.schema      │           │
+│             │           ├── common.schema       │           │
 │             │           └── {type}.schema       │           │
 │             │                   │               │           │
 │             │                   ▼               │           │
@@ -168,6 +168,6 @@ violations:
 
 ## Related
 
-- `../../_schemas/` for schema definitions
+- `../../schemas/` for schema definitions
 - `../` (gates/README.md) for Gate classification
 - `../../constitutions/workers/reviewer.md` for Reviewer principles

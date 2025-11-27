@@ -1,6 +1,34 @@
 ## **CRITICAL RULES**
 - When you're uncertain or unable to make an independent judgment, ask the user.
 
+## **Project Identity (MUST READ)**
+
+### What This Project Is
+- This is a **framework template repository**, NOT a working framework instance.
+- We are **creating** a framework, NOT **using** one.
+- The goal: Provide minimal constraints and guidelines for target projects to customize.
+
+### What Gets Copied vs What Stays
+| Item | Copied to Target? | Purpose |
+|------|-------------------|---------|
+| `templates/blueprint/*` | ✅ Yes → `blueprint/` | Framework core (schemas, constitutions, gates) |
+| `templates/claude-agents/*` | ✅ Yes → `.claude/agents/` | Worker definitions |
+| `commands/*` | ✅ Yes → `.claude/commands/` | Slash commands |
+| `README.md` files (all) | ❌ No | Developer documentation only |
+| `initializers/*` | ❌ No | Used to copy templates |
+| `docs/adr/*` | ❌ No | Framework design decisions |
+
+### README.md Files
+- All README.md files are **for framework developers**, not end users.
+- They explain the structure and design decisions.
+- They are NOT copied to target projects.
+- Template files' `related` field should only reference files that will be copied together.
+
+### Template Files
+- Use **placeholders** (e.g., `{{project-name}}`, `{{date}}`) for values that vary per project.
+- Provide **minimal required structure** - let project maintainers customize.
+- Include **guidelines as comments** within templates when needed.
+
 ## Context Window Management Strategy
 - Actively leverage Subagents when summarization or deep analysis is needed.
 - Treat the Main Session's context window as a precious resource.
@@ -26,7 +54,7 @@ agent-docs/
 ├── templates/
 │   ├── claude-agents/       # Worker definitions for .claude/agents/
 │   └── blueprint/           # Framework core templates
-│       ├── _schemas/        # Document format definitions
+│       ├── schemas/         # Document format definitions
 │       ├── constitutions/   # Principles
 │       ├── gates/           # Validation checkpoints (incl. documentation/)
 │       ├── workflows/       # Phase/Stage definitions

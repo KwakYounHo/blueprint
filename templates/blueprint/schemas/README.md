@@ -35,9 +35,9 @@ From our token efficiency research:
 ## Directory Structure
 
 ```
-_schemas/
+schemas/
 ├── README.md                    # This file
-├── _common.schema.md            # Shared fields across all types
+├── common.schema.md             # Shared fields across all types
 ├── constitution.schema.md       # Constitution document schema
 ├── gate.schema.md               # Gate document schema
 ├── aspect.schema.md             # Aspect document schema
@@ -79,7 +79,7 @@ Each schema file defines:
 
 ## Planned Schemas
 
-### _common.schema.md
+### common.schema.md
 
 Fields shared by **all document types**:
 
@@ -123,8 +123,8 @@ Documentation Gate Triggered
         ▼
 Schema Validation Reviewer
         │
-        ├── Load: _schemas/_common.schema.md
-        ├── Load: _schemas/{type}.schema.md
+        ├── Load: schemas/common.schema.md
+        ├── Load: schemas/{type}.schema.md
         │
         ▼
 Validate Front Matter
@@ -148,7 +148,7 @@ Authors can consult schemas when uncertain about:
 
 Only include fields that need validation. Don't over-specify.
 
-### Use _common.schema.md
+### Use common.schema.md
 
 Extract shared fields to avoid duplication across schemas.
 

@@ -32,7 +32,7 @@ We will use **Schema-First Contract-Based Development**.
 
 ```
 Phase 1: Schema Definition (Contracts)
-├── _common.schema.md
+├── common.schema.md
 ├── constitution.schema.md
 ├── gate.schema.md
 ├── aspect.schema.md
@@ -89,6 +89,6 @@ Phase 5: Tooling
 
 ## Related
 
-- `templates/blueprint/_schemas/README.md` - Schema directory documentation
+- `templates/blueprint/schemas/README.md` - Schema directory documentation
 - `templates/blueprint/gates/documentation/README.md` - Documentation Gate that uses schemas
 - `README.md` - Global Rules section defines base schema fields

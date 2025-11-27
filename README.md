@@ -74,7 +74,7 @@ agent-docs/
 ├── templates/
 │   ├── claude-agents/                   # → .claude/agents/ (Claude Code integration)
 │   └── blueprint/                       # → blueprint/ (Framework core)
-│       ├── _schemas/                    # Document format definitions
+│       ├── schemas/                     # Document format definitions
 │       ├── constitutions/
 │       ├── gates/
 │       ├── workflows/
@@ -94,7 +94,7 @@ target-project/
 │       ├── implementer.md
 │       └── reviewer.md
 └── blueprint/                           # Framework core
-    ├── _schemas/                        # Document format definitions
+    ├── schemas/                         # Document format definitions
     ├── constitutions/
     ├── gates/
     │   ├── specification/
@@ -203,7 +203,7 @@ All Artifacts are grouped by Feature:
 ```
 blueprint/features/
 └── 001-feature-name/              # Feature directory = Branch name
-    ├── _feature.md                # Feature metadata
+    ├── feature.md                 # Feature metadata
     ├── spec.md                    # Specification
     ├── plan.md                    # Implementation plan
     ├── tasks/                     # Task documents
