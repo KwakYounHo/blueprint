@@ -35,7 +35,7 @@ dependencies: []
 
 - **Type**: enum
 - **Required**: Yes
-- **Values**: `schema` | `constitution` | `worker` | `gate` | `aspect` | `phase` | `stage` | `feature` | `artifact`
+- **Values**: `schema` | `constitution` | `worker` | `gate` | `aspect` | `phase` | `stage` | `task` | `progress`
 - **Description**: Identifies the document category for routing and validation.
 
 ### status
@@ -44,7 +44,7 @@ dependencies: []
 - **Required**: Yes
 - **Description**: Current state of the document. Valid values depend on document category.
 
-**Definition Documents** (`schema`, `constitution`, `worker`, `gate`, `aspect`, `phase`, `stage`):
+**Definition Documents** (`schema`, `constitution`, `worker`, `gate`, `aspect`, `phase`, `stage`, `task`):
 | Value | Description |
 |-------|-------------|
 | `draft` | Work in progress, not ready for use |
@@ -52,7 +52,7 @@ dependencies: []
 | `deprecated` | Superseded, avoid using |
 | `archived` | No longer relevant, kept for history |
 
-**Task Documents** (`feature`, `artifact`):
+**Task Documents** (`progress`):
 | Value | Description |
 |-------|-------------|
 | `pending` | Not yet started |
@@ -141,5 +141,5 @@ base.schema.md modified
 | `aspect` | Definition | `draft`, `active`, `deprecated`, `archived` |
 | `phase` | Definition | `draft`, `active`, `deprecated`, `archived` |
 | `stage` | Definition | `draft`, `active`, `deprecated`, `archived` |
-| `feature` | Task | `pending`, `in-progress`, `completed`, `failed` |
-| `artifact` | Task | `pending`, `in-progress`, `completed`, `failed` |
+| `task` | Definition | `draft`, `active`, `deprecated`, `archived` |
+| `progress` | Task | `pending`, `in-progress`, `completed`, `failed` |

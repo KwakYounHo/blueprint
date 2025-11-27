@@ -41,95 +41,104 @@
 - When translating Korean to English, express it naturally as a native speaker would, rather than translating literally.
 
 ## Development Status
-- **Current Phase**: Schema definition in progress
-- **Completed**: base.schema.md, constitution.schema.md, gate.schema.md, aspect.schema.md, phase.schema.md
-- **In Progress**: stage.schema.md, task.schema.md, progress.schema.md
-- **Pending**: base.schema.md type enum update (add `task`, `progress`, remove `feature`, `artifact`)
+- **Current Phase**: Template creation (Phase 2 of ADR-001)
+- **Completed Schemas**: base, constitution, gate, aspect, phase, stage, task, progress
+- **In Progress**: Constitution templates (base.md, workers/*.md)
 - Reference `docs/adr/001-schema-first-development.md` for implementation order.
 
-### Schema Creation Guide (for next session)
+### Template Creation Guide (for next session)
 
-#### 1. Existing Schema Pattern Reference
-Read these files to understand the established schema structure:
-- `templates/blueprint/front-matters/base.schema.md` - Common fields all schemas inherit
-- `templates/blueprint/front-matters/aspect.schema.md` - Best example of extension pattern (includes parent reference via `gate` field)
+#### 1. ADR-001 Implementation Phases
 
-**Schema file structure**:
-```markdown
-1. FrontMatter (type: schema, dependencies: [base.schema.md])
-2. # Schema: {Type} FrontMatter
-3. ## Inherits (list base.schema.md fields)
-4. ## Additional Required Fields (table)
-5. ## Field Definitions (detailed per field)
-6. ## Constraints (validation rules table)
-7. ## Field Guidelines (tags, dependencies recommendations)
-8. ## Usage Examples (YAML examples)
-9. ## Context (relationship diagram - optional)
+| Phase | Status | Content |
+|-------|--------|---------|
+| Phase 1: Schema Definition | ✅ Complete | `front-matters/*.schema.md` |
+| Phase 2: Constitution | 🔄 In Progress | `constitutions/base.md`, `constitutions/workers/*.md` |
+| Phase 3: Workers | ⏳ Pending | `templates/claude-agents/*.md` → `.claude/agents/` |
+| Phase 4: Gates | ⏳ Pending | `gates/**/gate.md`, `gates/**/aspects/*.md` |
+| Phase 5: Tooling | ⏳ Pending | `initializers/`, `commands/` |
+
+#### 2. Phase 2: Constitution Templates
+
+**Reference Files**:
+- Schema: `templates/blueprint/front-matters/constitution.schema.md`
+- Blueprint: `templates/blueprint/constitutions/README.md`
+- Worker Blueprint: `templates/blueprint/constitutions/workers/README.md`
+
+**Files to Create**:
+```
+constitutions/
+├── base.md                    # scope: global, target-workers: ["all"]
+└── workers/
+    ├── orchestrator.md        # scope: worker-specific, target-workers: ["orchestrator"]
+    ├── specifier.md           # scope: worker-specific, target-workers: ["specifier"]
+    ├── implementer.md         # scope: worker-specific, target-workers: ["implementer"]
+    └── reviewer.md            # scope: worker-specific, target-workers: ["reviewer"]
 ```
 
-#### 2. Workflow Structure Design Decisions
-Reference: `templates/blueprint/workflows/README.md`
-
-| Concept | Question | File | Count | Type |
-|---------|----------|------|-------|------|
-| **Phase** | "Why" - Background/purpose | `spec.md` | 1 per workflow | Definition |
-| **Stage** | "What" - Requirements | `stage-*.md` | N per workflow | Definition |
-| **Task** | "How" - Methods | `task-*.md` | N per Stage | Definition |
-| **Progress** | "How much" - Tracking | `progress.md` | 1 per workflow | Task |
-
-#### 3. Dependency Flow
-```
-Phase (spec.md)           → dependencies: []
-       ↓
-Stage (stage-*.md)        → dependencies: [spec.md]
-       ↓
-Task (task-*.md)          → dependencies: [stage-XX-*.md]
-       ↓
-Progress (progress.md)    → dependencies: [task-*.md, ...]
-```
-
-#### 4. WBS-Style Naming Convention
-Reference: `templates/blueprint/workflows/README.md` (## Naming Conventions)
-
-| Type | Pattern | Example |
-|------|---------|---------|
-| Workflow ID | `{NNN}-{short-description}` | `001-initialize-documents` |
-| Stage | `stage-{SS}-{name}.md` | `stage-01-requirement-analysis.md` |
-| Task | `task-{SS}-{TT}-{name}.md` | `task-01-02-validate-scope.md` |
-
-- `SS`: Stage number (01-99)
-- `TT`: Task number within Stage (01-99)
-
-#### 5. Status Values by Document Category
-Reference: `templates/blueprint/front-matters/README.md` (## Status Values by Document Type)
-
-| Category | Types | Valid Status Values |
-|----------|-------|---------------------|
-| Definition | `phase`, `stage`, `task` | `draft`, `active`, `deprecated`, `archived` |
-| Task | `progress` | `pending`, `in-progress`, `completed`, `failed` |
-
-#### 6. Required Fields per Schema
-
-| Schema | Additional Required Fields |
-|--------|---------------------------|
-| `phase.schema.md` | `workflow-id` (string) |
-| `stage.schema.md` | `name` (string), `order` (number) |
-| `task.schema.md` | `name` (string), `stage` (string - parent ref), `order` (number) |
-| `progress.schema.md` | None (inherits base only) |
-
-#### 7. Stage-Task Relationship (Parent Reference Pattern)
-Reference: `templates/blueprint/front-matters/aspect.schema.md` (uses `gate` field for parent reference)
-
-Task references its parent Stage via the `stage` field:
+**Constitution FrontMatter** (from constitution.schema.md):
 ```yaml
-# In task-01-02-validate-scope.md
-stage: "requirement-analysis"  # matches Stage's `name` field
+---
+type: constitution
+status: active
+version: 1.0.0
+created: {{date}}
+updated: {{date}}
+tags: [principles, ...]
+dependencies: []  # or ["../base.md"] for worker-specific
+
+scope: global | worker-specific
+target-workers: ["all"] | ["specifier", ...]
+---
 ```
 
-#### 8. After Schema Creation
-Update `templates/blueprint/front-matters/base.schema.md`:
-- Add new types to the `type` enum: `phase`, `stage`, `task`, `progress`
-- Update status categories in Field Definitions section
+**Body Structure** (from README):
+```markdown
+# Constitution: {Name}
+
+## Core Principles
+## Quality Standards
+## Boundaries
+## Patterns
+## Exceptions
+```
+
+**Token Budget**: ~500-800 tokens per file (from research on context efficiency)
+
+#### 3. Template Rules (IMPORTANT)
+
+| Rule | Description |
+|------|-------------|
+| Placeholders | Use `{{project-name}}`, `{{date}}` for variable values |
+| Minimal Structure | Provide only required structure, let projects customize |
+| Body in README | Body structure is defined in README, not schema |
+| Token Efficiency | Keep Constitution files short (~500-800 tokens) |
+| Status | Templates should be `status: active` (ready to use after copy) |
+
+#### 4. Worker-Constitution-Gate Relationship
+
+```
+.claude/agents/specifier.md          (HOW - behavior/system prompt)
+        │
+        └──► blueprint/constitutions/
+             ├── base.md              (WHAT - global principles)
+             └── workers/specifier.md (WHAT - specific principles)
+
+Reviewer Worker
+        │
+        └──► blueprint/gates/
+             └── specification/
+                 ├── gate.md
+                 └── aspects/completeness.md (Criteria to check)
+```
+
+#### 5. Recommended Creation Order
+
+1. **Constitution base.md** - Global principles (foundation for all)
+2. **Constitution workers/*.md** - Worker-specific principles
+3. **Worker definitions** - Reference constitutions
+4. **Gate definitions** - Define validation checkpoints
+5. **Aspect definitions** - Define specific criteria
 
 ## Blueprint-First Principle
 

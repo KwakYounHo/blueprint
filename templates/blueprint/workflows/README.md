@@ -228,6 +228,7 @@ dependencies: [stage-{SS}-{stage-name}.md]
 name: "{task-identifier}"
 stage: "{stage-name}"
 order: 1
+parallel-group: null  # or "group-name" for parallel execution
 ---
 ```
 

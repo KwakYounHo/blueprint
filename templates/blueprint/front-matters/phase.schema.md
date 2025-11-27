@@ -129,31 +129,6 @@ Workflow Directory (workflows/{workflow-id}/)
             └── Progress (progress.schema.md) ← progress.md - depends on tasks
 ```
 
-## Phase Document Content Structure
-
-The Phase document (`spec.md`) body should include:
-
-```markdown
-# Phase: {Workflow Name}
-
-## Background
-[Why this workflow is needed - problem statement]
-
-## Purpose
-[What this workflow aims to achieve - goals]
-
-## Scope
-
-### In Scope
-- [What is included]
-
-### Out of Scope
-- [What is explicitly excluded]
-
-## Success Criteria
-- [Measurable outcomes that define completion]
-```
-
 ## Lifecycle
 
 ```

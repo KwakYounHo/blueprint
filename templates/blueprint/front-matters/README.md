@@ -136,11 +136,12 @@ Defines Stage documents (`stage-*.md`) - "What" requirements to fulfill.
 
 Defines Task documents (`task-*.md`) - "How" to achieve requirements.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | string | Task identifier |
-| `stage` | string | Parent stage name |
-| `order` | number | Execution order within stage |
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Task identifier |
+| `stage` | string | Yes | Parent stage name |
+| `order` | number | Yes | Execution order within stage |
+| `parallel-group` | string \| null | Yes | Parallel execution group (null = sequential)
 
 ### progress.schema.md
 
