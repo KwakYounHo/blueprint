@@ -24,10 +24,10 @@ templates/
 │   └── (Worker definition templates)
 │
 └── blueprint/                   # → Copied to blueprint/
+    ├── front-matters/           # FrontMatter Schema definitions
     ├── constitutions/           # Principle definitions
     ├── gates/                   # Gate and Aspect definitions
-    ├── workflows/               # Phase and Stage definitions
-    └── features/                # Feature and Artifact templates
+    └── workflows/               # Work containers (Phase, Stage, Task, Progress)
 ```
 
 ---
@@ -54,7 +54,7 @@ templates/blueprint/         ──copy──►  blueprint/
 |---------|---------|
 | `*.template.md` | Template file (schema + placeholder content) |
 | `README.md` | Directory documentation (not copied to project) |
-| `feature.md`, `gate.md` | Metadata files in their respective directories |
+| `gate.md`, `spec.md` | Metadata files in their respective directories |
 
 ---
 

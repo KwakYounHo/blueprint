@@ -139,7 +139,7 @@ handoff:
     - specification         # Code Gate (validates: code)
     - documentation         # Document Gate (validates: document)
   context:
-    feature-id: "001-feature"
+    workflow-id: "001-workflow"
     phase: specification
 ```
 

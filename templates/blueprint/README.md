@@ -1,6 +1,6 @@
 # Blueprint
 
-> Core framework structure containing Constitutions, Gates, Workflows, and Features.
+> Core framework structure containing Constitutions, Gates, Workflows, and Schemas.
 
 ---
 
@@ -10,9 +10,8 @@ This directory is the **heart of the framework**. It contains:
 
 1. **Constitutions**: Principles that Workers must follow
 2. **Gates**: Validation checkpoints with Criteria
-3. **Workflows**: Phase and Stage definitions
-4. **Features**: Containers for Artifacts (spec, plan, tasks, reviews)
-5. **Schemas**: Document format definitions for validation
+3. **Workflows**: Work containers (Phase, Stage, Task, Progress)
+4. **Schemas**: Document format definitions for validation
 
 ---
 
@@ -31,13 +30,15 @@ The name reflects its role:
 blueprint/
 ├── README.md                    # This file
 │
-├── front-matters/               # FrontMatter definitions
-│   ├── common.schema.md         # Shared fields across all types
+├── front-matters/               # FrontMatter Schema definitions
+│   ├── base.schema.md           # Shared fields across all types
 │   ├── constitution.schema.md
 │   ├── gate.schema.md
 │   ├── aspect.schema.md
-│   ├── feature.schema.md
-│   └── artifact.schema.md       # spec, plan, task, review
+│   ├── phase.schema.md          # Workflow: Phase (spec.md)
+│   ├── stage.schema.md          # Workflow: Stage
+│   ├── task.schema.md           # Workflow: Task
+│   └── progress.schema.md       # Workflow: Progress tracking
 │
 ├── constitutions/               # Principles
 │   ├── base.md                  # Global principles (all Workers)
@@ -48,27 +49,22 @@ blueprint/
 │       └── reviewer.md
 │
 ├── gates/                       # Validation checkpoints
-│   ├── specification/           # Specification Phase gate
+│   ├── specification/           # Specification Gate
 │   │   ├── gate.md
 │   │   └── aspects/
-│   ├── implementation/          # Implementation Phase gate
+│   ├── implementation/          # Implementation Gate
 │   │   ├── gate.md
 │   │   └── aspects/
-│   └── documentation/           # Documentation gate (parallel)
+│   └── documentation/           # Documentation Gate (parallel)
 │       ├── gate.md
 │       └── aspects/
 │
-├── workflows/                   # Phase and Stage definitions
-│   ├── phases.md                # Phase order and transitions
-│   └── stages/                  # Stage definitions per Phase
-│
-└── features/                    # Feature containers
-    └── {feature-id}/            # One directory per Feature
-        ├── feature.md
-        ├── spec.md
-        ├── plan.md
-        ├── tasks/
-        └── reviews/
+└── workflows/                   # Work containers
+    └── {workflow-id}/           # e.g., 001-initialize-documents
+        ├── spec.md              # Phase: Background and purpose
+        ├── stage-*.md           # Stage: Requirements
+        ├── task-*.md            # Task: Methods
+        └── progress.md          # Progress: Tracking
 ```
 
 ---
@@ -89,10 +85,14 @@ blueprint/
                                │
 ┌──────────────────────────────┼──────────────────────────────┐
 │ Workflows                    │                              │
-│ "When things happen"         │                              │
-│                              ▼                              │
-│ Phase: Specification ──► Gate: Specification                │
-│ Phase: Implementation ──► Gate: Implementation              │
+│ "What work to do"            ▼                              │
+│                                                             │
+│ Workflow ──► Phase (spec.md)     "Why"                      │
+│          ├── Stage (stage-*.md)  "What"                     │
+│          ├── Task (task-*.md)    "How"                      │
+│          └── Progress (progress.md) "How much"              │
+│                                                             │
+│ Dependency: Phase → Stage → Task → Progress                 │
 └─────────────────────────────────────────────────────────────┘
                                │
 ┌──────────────────────────────┼──────────────────────────────┐
@@ -100,6 +100,9 @@ blueprint/
 │ "What to validate"           ▼                              │
 │                                                             │
 │ Code Gates (validates: code):                               │
+│   Specification Gate ──► After Phase/Stage/Task defined     │
+│   Implementation Gate ──► After Tasks executed              │
+│                                                             │
 │   Gate ──► Aspect ──► Criteria                              │
 │            (1:N)      (1:N)                                 │
 │                                                             │
@@ -110,23 +113,42 @@ blueprint/
 └─────────────────────────────────────────────────────────────┘
                                │
 ┌──────────────────────────────┼──────────────────────────────┐
-│ Features                     │                              │
-│ "What is produced"           ▼                              │
-│                                                             │
-│ Feature ──► Artifacts                                       │
-│             ├── spec.md                                     │
-│             ├── plan.md                                     │
-│             ├── tasks/                                      │
-│             └── reviews/                                    │
-└─────────────────────────────────────────────────────────────┘
-                               │
-┌──────────────────────────────┼──────────────────────────────┐
 │ Schemas                      │                              │
 │ "What format to follow"      ▼                              │
 │                                                             │
-│ front-matters/ ──► Defines valid front matter for each type │
-│               Used by Documentation Gate for validation     │
+│ front-matters/ ──► Defines valid FrontMatter for each type  │
+│   ├── phase.schema.md                                       │
+│   ├── stage.schema.md                                       │
+│   ├── task.schema.md                                        │
+│   └── progress.schema.md                                    │
+│                                                             │
+│ Used by Documentation Gate for validation                   │
 └─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Workflow Structure
+
+A Workflow answers four key questions:
+
+| Concept | Question | File | Type |
+|---------|----------|------|------|
+| **Phase** | "Why" - Background and purpose | `spec.md` | Definition |
+| **Stage** | "What" - Requirements to fulfill | `stage-*.md` | Definition |
+| **Task** | "How" - Methods to achieve | `task-*.md` | Definition |
+| **Progress** | "How much" - Completion tracking | `progress.md` | Task |
+
+### Dependency Flow
+
+```
+Phase (spec.md)           dependencies: []
+       ↓
+Stage (stage-*.md)        dependencies: [spec.md]
+       ↓
+Task (task-*.md)          dependencies: [stage-XX-*.md]
+       ↓
+Progress (progress.md)    dependencies: [task-*.md, ...]
 ```
 
 ---
@@ -138,7 +160,7 @@ When initializing a project:
 1. Copy `templates/blueprint/` to `target-project/blueprint/`
 2. Customize Constitutions for project-specific principles
 3. Define Gates and Criteria for project-specific quality standards
-4. Features are created dynamically as work progresses
+4. Workflows are created dynamically as work progresses
 
 ---
 
@@ -146,11 +168,10 @@ When initializing a project:
 
 | Directory | Purpose | See |
 |-----------|---------|-----|
-| `front-matters/` | FrontMatter definitions | `front-matters/README.md` |
+| `front-matters/` | FrontMatter Schema definitions | `front-matters/README.md` |
 | `constitutions/` | Principle definitions | `constitutions/README.md` |
 | `gates/` | Validation checkpoints | `gates/README.md` |
-| `workflows/` | Phase/Stage definitions | `workflows/README.md` |
-| `features/` | Artifact containers | `features/README.md` |
+| `workflows/` | Work containers | `workflows/README.md` |
 
 ---
 

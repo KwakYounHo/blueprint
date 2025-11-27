@@ -37,11 +37,16 @@ This framework provides a **structure** and **schema** for managing LLM-based ag
 
 ### Workflow Structure
 
-| Term | Definition |
-|------|------------|
-| **Phase** | Major stage in workflow lifecycle (e.g., Specification, Implementation) |
-| **Stage** | Logical grouping within a Phase (e.g., Package Initialize, Configuration) |
-| **Task** | Concrete unit of work, dynamically created during execution |
+A **Workflow** is the container for a complete unit of work, answering four key questions:
+
+| Concept | Question | File | Type |
+|---------|----------|------|------|
+| **Phase** | "Why" - Background and purpose | `spec.md` | Definition |
+| **Stage** | "What" - Requirements to fulfill | `stage-*.md` | Definition |
+| **Task** | "How" - Methods to achieve | `task-*.md` | Definition |
+| **Progress** | "How much" - Completion tracking | `progress.md` | Task |
+
+**Dependency Flow**: Phase → Stage → Task → Progress
 
 ### Validation Structure
 
@@ -58,8 +63,7 @@ This framework provides a **structure** and **schema** for managing LLM-based ag
 | Term | Definition |
 |------|------------|
 | **Constitution** | Principles that must be followed (global + per-Worker) |
-| **Feature** | Container for related Artifacts; maps to a git branch |
-| **Artifact** | Output produced by Workers (spec.md, task.md, review.md, code, etc.) |
+| **Workflow** | Container for Phase, Stage, Task, and Progress; maps to a git branch |
 | **Handoff** | Structured format for inter-agent communication (Worker↔Orchestrator↔Reviewer) |
 
 ---
@@ -74,11 +78,10 @@ agent-docs/
 ├── templates/
 │   ├── claude-agents/                   # → .claude/agents/ (Claude Code integration)
 │   └── blueprint/                       # → blueprint/ (Framework core)
-│       ├── front-matters/               # FrontMatter definitions
+│       ├── front-matters/               # FrontMatter Schema definitions
 │       ├── constitutions/
 │       ├── gates/
-│       ├── workflows/
-│       └── features/
+│       └── workflows/
 ├── initializers/                        # Initialization scripts
 └── commands/                            # Claude Code slash commands
 ```
@@ -94,14 +97,18 @@ target-project/
 │       ├── implementer.md
 │       └── reviewer.md
 └── blueprint/                           # Framework core
-    ├── front-matters/                   # FrontMatter definitions
+    ├── front-matters/                   # FrontMatter Schema definitions
     ├── constitutions/
     ├── gates/
     │   ├── specification/
     │   ├── implementation/
     │   └── documentation/               # Parallel validation
-    ├── workflows/
-    └── features/
+    └── workflows/
+        └── {workflow-id}/               # e.g., 001-initialize-documents
+            ├── spec.md                  # Phase
+            ├── stage-*.md               # Stages
+            ├── task-*.md                # Tasks
+            └── progress.md              # Progress
 ```
 
 ---
@@ -116,6 +123,7 @@ All documents MUST include YAML front matter:
 ---
 type: ""          # Document type (see below)
 status: ""        # Document status (see below)
+version: ""       # Semantic version (MAJOR.MINOR.PATCH)
 created: ""       # YYYY-MM-DD
 updated: ""       # YYYY-MM-DD
 tags: []          # Search tags
@@ -127,18 +135,19 @@ dependencies: []  # Documents this depends on (upstream)
 
 | Value | Description |
 |-------|-------------|
+| `schema` | FrontMatter schema definition |
 | `constitution` | Principle definition |
 | `worker` | Worker behavior definition |
 | `gate` | Gate definition |
 | `aspect` | Aspect with Criteria |
-| `phase` | Phase definition |
-| `stage` | Stage definition |
-| `feature` | Feature metadata |
-| `artifact` | Generated output (spec, plan, task, review) |
+| `phase` | Workflow: Phase (spec.md) |
+| `stage` | Workflow: Stage |
+| `task` | Workflow: Task |
+| `progress` | Workflow: Progress tracking |
 
 ### Status Values
 
-**For definition documents** (Constitution, Gate, Worker, etc.):
+**For Definition documents** (schema, constitution, gate, aspect, worker, phase, stage, task):
 
 | Value | Meaning |
 |-------|---------|
@@ -147,7 +156,7 @@ dependencies: []  # Documents this depends on (upstream)
 | `deprecated` | No longer recommended, replacement exists |
 | `archived` | Preserved for reference, not in effect |
 
-**For task documents** (Task, Feature):
+**For Task documents** (progress):
 
 | Value | Meaning |
 |-------|---------|
@@ -173,7 +182,7 @@ User Request
 └─────────────────────────────────────────────────────────────┘
     │
     ├──► Specification Phase
-    │    ├── Specifier Worker → spec.md, plan.md
+    │    ├── Specifier Worker → spec.md, stage-*.md, task-*.md
     │    └── Review (required-gates: [specification, documentation])
     │        ├── Specification Gate ──┬── (parallel) ──┬── All must pass
     │        └── Documentation Gate ──┘                │
@@ -182,6 +191,7 @@ User Request
     │
     ├──► Implementation Phase
     │    ├── Implementer Worker (per Task) → code
+    │    ├── Progress tracking (progress.md updated)
     │    └── Review (required-gates: [implementation, documentation])
     │        ├── Implementation Gate ──┬── (parallel) ──┬── All must pass
     │        └── Documentation Gate ───┘                │
@@ -196,36 +206,43 @@ User Request
 
 ---
 
-## Feature-Based Artifact Management
+## Workflow-Based Management
 
-All Artifacts are grouped by Feature:
+All work is organized by Workflow:
 
 ```
-blueprint/features/
-└── 001-feature-name/              # Feature directory = Branch name
-    ├── feature.md                 # Feature metadata
-    ├── spec.md                    # Specification
-    ├── plan.md                    # Implementation plan
-    ├── tasks/                     # Task documents
-    │   ├── task-001.md
-    │   └── task-002.md
-    └── reviews/                   # Review results
-        ├── spec-gate-review.md
-        └── impl-gate-review.md
+blueprint/workflows/
+└── 001-workflow-name/                   # Workflow directory = Branch name
+    ├── spec.md                          # Phase: Background and purpose
+    ├── stage-01-requirement-analysis.md # Stage 1
+    ├── stage-02-core-implementation.md  # Stage 2
+    ├── task-01-01-gather-requirements.md    # Stage 1, Task 1
+    ├── task-01-02-validate-scope.md         # Stage 1, Task 2
+    ├── task-02-01-define-interfaces.md      # Stage 2, Task 1
+    └── progress.md                      # Progress tracking
 ```
 
-### Feature ID Format
+### Workflow ID Format
 
 ```
 {number}-{short-description}
-Example: 001-statement-split-merge
+Example: 001-initialize-documents
 ```
+
+### File Naming (WBS Style)
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Phase | `spec.md` | `spec.md` |
+| Stage | `stage-{SS}-{name}.md` | `stage-01-requirement-analysis.md` |
+| Task | `task-{SS}-{TT}-{name}.md` | `task-01-02-validate-scope.md` |
+| Progress | `progress.md` | `progress.md` |
 
 ### Branch Synchronization
 
 ```
-Feature Directory: blueprint/features/001-statement-split-merge/
-Branch Name:       feature/001-statement-split-merge
+Workflow Directory: blueprint/workflows/001-initialize-documents/
+Branch Name:        001-initialize-documents
 ```
 
 ---
@@ -251,6 +268,6 @@ Branch Name:       feature/001-statement-split-merge
 1. Run initializer to set up project structure
 2. Configure Constitutions for your project
 3. Define Gates and Criteria
-4. Start with `/specify` command to create your first Feature
+4. Start with `/specify` command to create your first Workflow
 
 See `initializers/README.md` for detailed setup instructions.

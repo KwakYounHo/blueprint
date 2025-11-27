@@ -42,9 +42,93 @@
 
 ## Development Status
 - **Current Phase**: Schema definition in progress
-- **Completed**: base.schema.md, constitution.schema.md
-- **In Progress**: gate.schema.md
+- **Completed**: base.schema.md, constitution.schema.md, gate.schema.md, aspect.schema.md
+- **In Progress**: phase.schema.md, stage.schema.md, task.schema.md, progress.schema.md
 - Reference `docs/adr/001-schema-first-development.md` for implementation order.
+
+### Schema Creation Guide (for next session)
+
+#### 1. Existing Schema Pattern Reference
+Read these files to understand the established schema structure:
+- `templates/blueprint/front-matters/base.schema.md` - Common fields all schemas inherit
+- `templates/blueprint/front-matters/aspect.schema.md` - Best example of extension pattern (includes parent reference via `gate` field)
+
+**Schema file structure**:
+```markdown
+1. FrontMatter (type: schema, dependencies: [base.schema.md])
+2. # Schema: {Type} FrontMatter
+3. ## Inherits (list base.schema.md fields)
+4. ## Additional Required Fields (table)
+5. ## Field Definitions (detailed per field)
+6. ## Constraints (validation rules table)
+7. ## Field Guidelines (tags, dependencies recommendations)
+8. ## Usage Examples (YAML examples)
+9. ## Context (relationship diagram - optional)
+```
+
+#### 2. Workflow Structure Design Decisions
+Reference: `templates/blueprint/workflows/README.md`
+
+| Concept | Question | File | Count | Type |
+|---------|----------|------|-------|------|
+| **Phase** | "Why" - Background/purpose | `spec.md` | 1 per workflow | Definition |
+| **Stage** | "What" - Requirements | `stage-*.md` | N per workflow | Definition |
+| **Task** | "How" - Methods | `task-*.md` | N per Stage | Definition |
+| **Progress** | "How much" - Tracking | `progress.md` | 1 per workflow | Task |
+
+#### 3. Dependency Flow
+```
+Phase (spec.md)           → dependencies: []
+       ↓
+Stage (stage-*.md)        → dependencies: [spec.md]
+       ↓
+Task (task-*.md)          → dependencies: [stage-XX-*.md]
+       ↓
+Progress (progress.md)    → dependencies: [task-*.md, ...]
+```
+
+#### 4. WBS-Style Naming Convention
+Reference: `templates/blueprint/workflows/README.md` (## Naming Conventions)
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Workflow ID | `{NNN}-{short-description}` | `001-initialize-documents` |
+| Stage | `stage-{SS}-{name}.md` | `stage-01-requirement-analysis.md` |
+| Task | `task-{SS}-{TT}-{name}.md` | `task-01-02-validate-scope.md` |
+
+- `SS`: Stage number (01-99)
+- `TT`: Task number within Stage (01-99)
+
+#### 5. Status Values by Document Category
+Reference: `templates/blueprint/front-matters/README.md` (## Status Values by Document Type)
+
+| Category | Types | Valid Status Values |
+|----------|-------|---------------------|
+| Definition | `phase`, `stage`, `task` | `draft`, `active`, `deprecated`, `archived` |
+| Task | `progress` | `pending`, `in-progress`, `completed`, `failed` |
+
+#### 6. Required Fields per Schema
+
+| Schema | Additional Required Fields |
+|--------|---------------------------|
+| `phase.schema.md` | `workflow-id` (string) |
+| `stage.schema.md` | `name` (string), `order` (number) |
+| `task.schema.md` | `name` (string), `stage` (string - parent ref), `order` (number) |
+| `progress.schema.md` | None (inherits base only) |
+
+#### 7. Stage-Task Relationship (Parent Reference Pattern)
+Reference: `templates/blueprint/front-matters/aspect.schema.md` (uses `gate` field for parent reference)
+
+Task references its parent Stage via the `stage` field:
+```yaml
+# In task-01-02-validate-scope.md
+stage: "requirement-analysis"  # matches Stage's `name` field
+```
+
+#### 8. After Schema Creation
+Update `templates/blueprint/front-matters/base.schema.md`:
+- Add new types to the `type` enum: `phase`, `stage`, `task`, `progress`
+- Update status categories in Field Definitions section
 
 ## Blueprint-First Principle
 
@@ -75,11 +159,10 @@ agent-docs/
 ├── templates/
 │   ├── claude-agents/       # Worker definitions for .claude/agents/
 │   └── blueprint/           # Framework core templates
-│       ├── front-matters/   # FrontMatter definitions
+│       ├── front-matters/   # FrontMatter Schema definitions
 │       ├── constitutions/   # Principles
 │       ├── gates/           # Validation checkpoints (incl. documentation/)
-│       ├── workflows/       # Phase/Stage definitions
-│       └── features/        # Feature/Artifact templates
+│       └── workflows/       # Work containers (Phase, Stage, Task, Progress)
 ├── initializers/            # Setup scripts
 ├── commands/                # Slash commands
 └── .conversation/           # Session summaries
@@ -95,9 +178,13 @@ agent-docs/
 | Gate | Validation checkpoint between Phases |
 | Aspect | Expertise area within Gate (1:1 with Reviewer) |
 | Criteria | Minimum requirements to pass |
-| Feature | Container for Artifacts, synced with Branch |
+| Workflow | Container for Phase, Stage, Task, Progress; synced with Branch |
+| Phase | "Why" - Background and purpose (spec.md) |
+| Stage | "What" - Requirements to fulfill (stage-*.md) |
+| Task | "How" - Methods to achieve (task-*.md) |
+| Progress | "How much" - Completion tracking (progress.md) |
 
 ## Commands
-- `/specify` - Start specification for a new feature
+- `/specify` - Start specification for a new workflow
 - `/implement` - Begin implementation phase
 - `/review` - Run gate validation

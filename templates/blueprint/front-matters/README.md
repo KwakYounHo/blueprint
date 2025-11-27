@@ -1,6 +1,6 @@
 # FrontMatters
 
-> FrontMatter definitions for validation. Used by Documentation Gate.
+> FrontMatter Schema definitions for validation. Used by Documentation Gate.
 
 ---
 
@@ -41,8 +41,10 @@ front-matters/
 ├── constitution.schema.md       # Constitution FrontMatter schema
 ├── gate.schema.md               # Gate FrontMatter schema
 ├── aspect.schema.md             # Aspect FrontMatter schema
-├── feature.schema.md            # Feature FrontMatter schema
-└── artifact.schema.md           # Artifact FrontMatter schema (spec, plan, task, review)
+├── phase.schema.md              # Workflow: Phase (spec.md)
+├── stage.schema.md              # Workflow: Stage
+├── task.schema.md               # Workflow: Task
+└── progress.schema.md           # Workflow: Progress tracking
 ```
 
 ---
@@ -54,17 +56,14 @@ Each schema file defines:
 ```markdown
 # Schema: {Document Type}
 
-## Required Fields
+## Inherits
+All fields from `base.schema.md`
+
+## Additional Required Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
 | ... | ... | ... |
-
-## Optional Fields
-
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| ... | ... | ... | ... |
 
 ## Field Definitions
 
@@ -73,11 +72,22 @@ Each schema file defines:
 - **Required**: Yes/No
 - **Values**: (for enum types)
 - **Description**: ...
+
+## Constraints
+| Rule | Description |
+|------|-------------|
+
+## Usage Examples
+```yaml
+---
+...
+---
+```
 ```
 
 ---
 
-## Planned Schemas
+## Schema Overview
 
 ### base.schema.md
 
@@ -95,19 +105,50 @@ Fields shared by **all document types**:
 
 ### Status Values by Document Type
 
-| Document Types | Valid Status Values |
-|----------------|---------------------|
-| constitution, gate, aspect, phase, stage, worker | `draft`, `active`, `deprecated`, `archived` |
-| feature, artifact (spec, plan, task, review) | `pending`, `in-progress`, `completed`, `failed` |
+| Document Types | Category | Valid Status Values |
+|----------------|----------|---------------------|
+| `schema`, `constitution`, `gate`, `aspect`, `worker` | Definition | `draft`, `active`, `deprecated`, `archived` |
+| `phase`, `stage`, `task` | Definition | `draft`, `active`, `deprecated`, `archived` |
+| `progress` | Task | `pending`, `in-progress`, `completed`, `failed` |
 
-### artifact.schema.md
+---
 
-Contains sections for each artifact type:
+## Workflow Schemas
 
-- **Specification (spec.md)**: feature-id, requirements, scope
-- **Plan (plan.md)**: feature-id, stages, task-list
-- **Task (task-*.md)**: task-id, dependencies, acceptance-criteria
-- **Review (*-review.md)**: gate, aspect, pass/fail, findings
+### phase.schema.md
+
+Defines the Phase document (`spec.md`) - "Why" the workflow exists.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `workflow-id` | string | Unique workflow identifier (e.g., `001-initialize-documents`) |
+
+### stage.schema.md
+
+Defines Stage documents (`stage-*.md`) - "What" requirements to fulfill.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Stage identifier |
+| `order` | number | Execution order within workflow |
+
+### task.schema.md
+
+Defines Task documents (`task-*.md`) - "How" to achieve requirements.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Task identifier |
+| `stage` | string | Parent stage name |
+| `order` | number | Execution order within stage |
+
+### progress.schema.md
+
+Defines the Progress document (`progress.md`) - "How much" completed.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| (inherits base) | | No additional required fields |
 
 ---
 
@@ -162,5 +203,5 @@ Schemas are part of the framework, not project-specific customization.
 ## Related
 
 - `../gates/documentation/` for Documentation Gate definition
+- `../workflows/` for documents that follow these schemas
 - `../constitutions/` for documents that follow these schemas
-- `../../../README.md` for Global Rules section

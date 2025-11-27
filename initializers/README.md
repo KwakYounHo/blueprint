@@ -68,9 +68,7 @@ Main initialization script that:
    │   │   └── aspects/
    │   └── documentation/
    │       └── aspects/
-   ├── workflows/
-   │   └── stages/
-   └── features/
+   └── workflows/
    ```
 
 2. **Copies templates** (optional, with flag):
@@ -133,8 +131,7 @@ create_structure() {
     mkdir -p "$TARGET_DIR/blueprint/gates/specification/aspects"
     mkdir -p "$TARGET_DIR/blueprint/gates/implementation/aspects"
     mkdir -p "$TARGET_DIR/blueprint/gates/documentation/aspects"
-    mkdir -p "$TARGET_DIR/blueprint/workflows/stages"
-    mkdir -p "$TARGET_DIR/blueprint/features"
+    mkdir -p "$TARGET_DIR/blueprint/workflows"
 }
 
 # Copy templates
@@ -176,7 +173,7 @@ After running initializer:
 After initialization, use slash commands:
 
 ```
-/specify - Start specifying a new feature
+/specify - Start specifying a new workflow
 /implement - Begin implementation
 /review - Run gate validation
 ```

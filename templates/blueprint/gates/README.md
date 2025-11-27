@@ -286,12 +286,12 @@ Worker (Specifier/Implementer)
 ```yaml
 handoff:
   action: review
-  document: blueprint/features/001-auth/spec.md
+  document: blueprint/workflows/001-auth/spec.md
   required-gates:
     - specification
     - documentation
   context:
-    feature-id: "001-auth"
+    workflow-id: "001-auth"
     phase: specification
 ```
 
@@ -307,7 +307,7 @@ handoff:
 ```yaml
 handoff:
   status: fail
-  document: blueprint/features/001-auth/spec.md
+  document: blueprint/workflows/001-auth/spec.md
   gates:
     specification:
       status: pass
@@ -327,7 +327,7 @@ handoff:
             - field: status
               expected: "pending | in-progress | completed | failed"
               actual: "active"
-              suggestion: "Use 'in-progress' for artifact documents"
+              suggestion: "Use 'in-progress' for progress documents"
   summary: "Documentation Gate failed: invalid status value for artifact"
   needs-fix: true
 ```

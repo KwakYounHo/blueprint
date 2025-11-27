@@ -1,40 +1,43 @@
 # Workflows
 
-> Phase and Stage definitions. The temporal structure of work.
+> The organizational unit for all work. One Workflow = One Branch = One Directory.
 
 ---
 
 ## Purpose
 
-Workflows define **when things happen** in the development process:
+A **Workflow** is the container for a complete unit of work, answering four key questions:
 
-1. **Phases**: Major stages in the workflow lifecycle
-2. **Stages**: Logical groupings within a Phase
-3. **Transitions**: How to move between Phases (via Gates)
+| Concept | Question | File | Count |
+|---------|----------|------|-------|
+| **Phase** | "Why" - Background and purpose | `spec.md` | 1 |
+| **Stage** | "What" - Requirements to fulfill | `stage-*.md` | N |
+| **Task** | "How" - Methods to achieve | `task-*.md` | N per Stage |
+| **Progress** | "How much" - Tracking completion | `progress.md` | 1 |
 
 ---
 
 ## Background
 
-### Hierarchy: Phase → Stage → Task
-
-From project management best practices (WBS):
-
-| Level | Name | Description |
-|-------|------|-------------|
-| 1 | **Phase** | Major lifecycle stage (Specification, Implementation) |
-| 2 | **Stage** | Logical grouping within Phase (Package Init, Configuration) |
-| 3 | **Task** | Concrete work unit (dynamically created) |
-
 ### Why This Structure?
 
-- **Phase**: Defines "what kind of work"
-- **Stage**: Organizes "related work"
-- **Task**: Specifies "actual work to do"
+From Work Breakdown Structure (WBS) best practices:
 
-Phases are **static** (predefined).
-Stages are **semi-static** (predefined but extensible).
-Tasks are **dynamic** (created during Specification).
+| Level | Concept | Role | Type |
+|-------|---------|------|------|
+| 1 | **Phase** | Defines purpose and scope | Definition |
+| 2 | **Stage** | Organizes requirements | Definition |
+| 3 | **Task** | Specifies concrete actions | Definition |
+| 4 | **Progress** | Tracks completion status | Task |
+
+### The 100% Rule
+
+From WBS methodology:
+> "The sum of the work at the child level must equal 100% of the work represented by the parent"
+
+- All Stages must cover 100% of Phase requirements
+- All Tasks must cover 100% of their Stage requirements
+- Progress tracks completion against this total
 
 ---
 
@@ -42,235 +45,367 @@ Tasks are **dynamic** (created during Specification).
 
 ```
 workflows/
-├── README.md                # This file
-├── phases.md                # Phase definitions and order
-└── stages/                  # Stage definitions per Phase
-    ├── specification.md     # Stages in Specification Phase
-    └── implementation.md    # Stages in Implementation Phase
+├── README.md                              # This file (not copied to projects)
+└── {workflow-id}/                         # e.g., 001-initialize-documents
+    ├── spec.md                            # Phase: Background and purpose
+    ├── stage-01-requirement-analysis.md   # Stage 1
+    ├── stage-02-core-implementation.md    # Stage 2
+    ├── task-01-01-gather-requirements.md  # Stage 1, Task 1
+    ├── task-01-02-validate-scope.md       # Stage 1, Task 2
+    ├── task-02-01-define-interfaces.md    # Stage 2, Task 1
+    ├── task-02-02-implement-logic.md      # Stage 2, Task 2
+    └── progress.md                        # Progress tracking
 ```
 
 ---
 
-## Phase Definition (`phases.md`)
+## Naming Conventions
 
-### Front Matter
+### Workflow ID
+
+```
+{number}-{short-description}
+```
+
+| Component | Format | Example |
+|-----------|--------|---------|
+| `number` | 3-digit, zero-padded | `001`, `042`, `123` |
+| `short-description` | lowercase, hyphen-separated | `initialize-documents` |
+
+**Examples**: `001-initialize-documents`, `002-user-authentication`, `003-api-rate-limiting`
+
+### File Naming (WBS Style)
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Phase | `spec.md` | `spec.md` |
+| Stage | `stage-{SS}-{name}.md` | `stage-01-requirement-analysis.md` |
+| Task | `task-{SS}-{TT}-{name}.md` | `task-01-02-validate-scope.md` |
+| Progress | `progress.md` | `progress.md` |
+
+- `SS`: Stage number (01-99)
+- `TT`: Task number within Stage (01-99)
+
+### Branch Naming
+
+Workflow directory name equals Git branch name:
+
+| Workflow Directory | Git Branch |
+|--------------------|------------|
+| `workflow/001-user-auth/` | `001-user-auth` |
+| `workflow/002-payment/` | `002-payment` |
+
+---
+
+## Dependency Flow
+
+```
+Phase (spec.md)
+  dependencies: []
+       │
+       ▼
+Stage (stage-*.md)
+  dependencies: [spec.md]
+       │
+       ▼
+Task (task-*.md)
+  dependencies: [stage-XX-*.md]
+       │
+       ▼
+Progress (progress.md)
+  dependencies: [task-*.md, ...]
+```
+
+Each level depends on its immediate parent, creating a clear chain of accountability.
+
+---
+
+## Document Definitions
+
+### Phase (`spec.md`)
+
+The **single source of truth** for why this workflow exists.
+
+#### Front Matter
 
 ```yaml
 ---
 type: phase
 status: active
+version: 1.0.0
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-tags: [workflow, phases]
+tags: [workflow-tag-1, workflow-tag-2]
 dependencies: []
+
+workflow-id: "{workflow-id}"
 ---
 ```
 
-### Content Structure
+#### Content Structure
 
 ```markdown
-# Workflow Phases
+# Phase: {Workflow Name}
 
-## Phase Order
-1. Specification Phase
-2. Implementation Phase
+## Background
+[Why this workflow is needed - problem statement]
 
-## Phase Definitions
+## Purpose
+[What this workflow aims to achieve - goals]
 
-### Specification Phase
-- **Purpose**: Analyze requirements, create specifications
-- **Entry**: User request received
-- **Exit**: Specification Gate passed
-- **Artifacts**: spec.md, plan.md
+## Scope
+### In Scope
+- [What is included]
 
-### Implementation Phase
-- **Purpose**: Implement code based on plan
-- **Entry**: Specification Gate passed
-- **Exit**: Implementation Gate passed
-- **Artifacts**: code files, task completions
+### Out of Scope
+- [What is explicitly excluded]
 
-## Phase Transitions
-
-| From | To | Condition |
-|------|-----|-----------|
-| (start) | Specification | User request |
-| Specification | Implementation | Specification Gate Pass |
-| Implementation | (complete) | Implementation Gate Pass + User Confirm |
+## Success Criteria
+- [Measurable outcomes that define completion]
 ```
 
 ---
 
-## Stage Definition (`stages/*.md`)
+### Stage (`stage-{SS}-{name}.md`)
 
-### Front Matter
+Defines **requirements to fulfill** within the Phase.
+
+#### Front Matter
 
 ```yaml
 ---
 type: stage
 status: active
+version: 1.0.0
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-tags: [workflow, stage, {phase-name}]
-dependencies: [../phases.md]
+tags: [stage, {stage-name}]
+dependencies: [spec.md]
 
-# Stage-specific
-phase: specification | implementation
-order: sequential | parallel
+name: "{stage-identifier}"
+order: 1
 ---
 ```
 
-### Content Structure
+#### Content Structure
 
 ```markdown
-# Stages: {Phase} Phase
+# Stage: {Stage Name}
 
-## Stage List
+## Description
+[What this stage covers]
 
-### Stage: {Name}
-- **Description**: [What this stage covers]
-- **Typical Tasks**: [Examples of tasks in this stage]
-- **Dependencies**: [What must be done before]
+## Requirements
+- [Requirement 1]
+- [Requirement 2]
 
-## Stage Order
+## Acceptance Criteria
+- [ ] Criterion 1
+- [ ] Criterion 2
 
-| Order | Stage | Parallel? |
-|-------|-------|-----------|
-| 1 | Stage A | No |
-| 2 | Stage B, Stage C | Yes (parallel) |
-| 3 | Stage D | No |
+## Dependencies
+[What must be completed before this stage]
 ```
 
 ---
 
-## Planned Phases
+### Task (`task-{SS}-{TT}-{name}.md`)
 
-### Specification Phase
+Defines **how to achieve** Stage requirements.
 
-| Aspect | Description |
-|--------|-------------|
-| **Purpose** | Analyze requirements, plan implementation |
-| **Worker** | Specifier |
-| **Gate** | Specification Gate |
-| **Artifacts** | spec.md, plan.md |
+#### Front Matter
 
-**Stages**:
-- Requirement Analysis
-- Feasibility Check
-- Stage/Task Breakdown
-
-### Implementation Phase
-
-| Aspect | Description |
-|--------|-------------|
-| **Purpose** | Implement code based on Tasks |
-| **Worker** | Implementer (per Task) |
-| **Gate** | Implementation Gate |
-| **Artifacts** | Code files |
-
-**Stages** (example for MCP project):
-- Package Initialize
-- Configuration
-- Core Implementation
-- Integration
-
+```yaml
 ---
+type: task
+status: active
+version: 1.0.0
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+tags: [task, {stage-name}]
+dependencies: [stage-{SS}-{stage-name}.md]
 
-## Phase-Gate Relationship
-
+name: "{task-identifier}"
+stage: "{stage-name}"
+order: 1
+---
 ```
-┌─────────────────────┐
-│ Specification Phase │
-│                     │
-│ Specifier Worker    │
-│ → spec.md           │
-│ → plan.md           │
-└─────────────────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ Specification Gate  │
-│ • Completeness      │
-│ • Feasibility       │
-└─────────────────────┘
-          │
-          ▼ (Pass)
-┌─────────────────────┐
-│ Implementation Phase│
-│                     │
-│ Implementer Workers │
-│ (per Task)          │
-│ → code files        │
-└─────────────────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ Implementation Gate │
-│ • Code-Style        │
-│ • Architecture      │
-│ • Component         │
-└─────────────────────┘
-          │
-          ▼ (Pass)
-    User Confirmation
+
+#### Content Structure
+
+```markdown
+# Task: {Task Name}
+
+## Objective
+[What this task accomplishes]
+
+## Approach
+[How to complete this task]
+
+## Steps
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+
+## Acceptance Criteria
+- [ ] Criterion 1
+- [ ] Criterion 2
+
+## Deliverables
+- [Expected outputs]
 ```
 
 ---
 
-## Task Creation
+### Progress (`progress.md`)
 
-Tasks are **not predefined** in workflows. They are:
+Tracks **completion status** across all Tasks.
 
-1. **Created by Specifier** during Specification Phase
-2. **Stored in** `features/{feature-id}/tasks/`
-3. **Executed by Implementer** during Implementation Phase
+#### Front Matter
 
+```yaml
+---
+type: progress
+status: in-progress
+version: 1.0.0
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+tags: [progress, tracking]
+dependencies: [task-01-01-*.md, task-01-02-*.md, ...]
+---
 ```
-Specifier creates plan.md
-    │
-    └── Defines Tasks:
-        ├── task-001: Define interfaces
-        ├── task-002: Implement core logic
-        └── task-003: Add tests
-    │
-    └── Creates task files in features/{id}/tasks/
+
+#### Content Structure
+
+```markdown
+# Progress: {Workflow Name}
+
+## Overview
+| Stage | Tasks | Completed | Status |
+|-------|-------|-----------|--------|
+| Stage 1 | 3 | 2 | 67% |
+| Stage 2 | 2 | 0 | 0% |
+| **Total** | **5** | **2** | **40%** |
+
+## Stage 1: {Stage Name}
+- [x] task-01-01: {Task Name} - Completed YYYY-MM-DD
+- [x] task-01-02: {Task Name} - Completed YYYY-MM-DD
+- [ ] task-01-03: {Task Name} - In Progress
+
+## Stage 2: {Stage Name}
+- [ ] task-02-01: {Task Name} - Pending
+- [ ] task-02-02: {Task Name} - Pending
+
+## Notes
+[Any blockers, decisions, or observations]
 ```
 
 ---
 
 ## Status Values
 
+### Definition Documents (Phase, Stage, Task)
+
 | Status | Meaning |
 |--------|---------|
-| `draft` | Phase/Stage being defined |
-| `active` | Currently in effect |
+| `draft` | Being defined, not ready for use |
+| `active` | Current and in use |
 | `deprecated` | Being phased out |
 | `archived` | Historical reference |
+
+### Task Documents (Progress)
+
+| Status | Meaning |
+|--------|---------|
+| `pending` | Not yet started |
+| `in-progress` | Currently being worked on |
+| `completed` | Successfully finished |
+| `failed` | Did not complete successfully |
+
+---
+
+## Workflow Lifecycle
+
+```
+1. Workflow Created
+   └── spec.md created (Phase)
+   └── Branch created: {workflow-id}
+
+2. Planning
+   └── Stages defined (stage-*.md)
+   └── Tasks created (task-*.md)
+   └── progress.md initialized
+
+3. Execution
+   └── Tasks executed in order
+   └── progress.md updated continuously
+
+4. Gate Validation
+   └── Specification Gate (after planning)
+   └── Implementation Gate (after execution)
+
+5. Completion
+   └── progress.md status: completed
+   └── Branch merged to main
+```
+
+---
+
+## Stage-Task Relationship
+
+Each Stage can have multiple Tasks (1:N relationship):
+
+```
+stage-01-requirement-analysis.md
+├── task-01-01-gather-requirements.md
+├── task-01-02-validate-scope.md
+└── task-01-03-document-constraints.md
+
+stage-02-core-implementation.md
+├── task-02-01-define-interfaces.md
+└── task-02-02-implement-logic.md
+```
+
+Tasks reference their parent Stage via the `stage` field:
+
+```yaml
+# In task-01-02-validate-scope.md
+stage: "requirement-analysis"
+```
 
 ---
 
 ## Best Practices
 
-### Keep Phases Minimal
+### Keep Phase Focused
 
-- 2-3 Phases is usually enough
-- More Phases = More Gates = More overhead
+- One clear purpose per Workflow
+- Defined scope boundaries
+- Measurable success criteria
 
-### Stages Are Flexible
+### Stages Should Be Independent
 
-- Stages can vary by project/feature
-- Don't over-specify Stages in the framework
-- Let Specifier define appropriate Stages per Feature
+- Each Stage represents a logical grouping
+- Minimize cross-Stage dependencies
+- Clear acceptance criteria per Stage
 
-### Tasks Are Dynamic
+### Tasks Should Be Atomic
 
-- Never predefine Task lists
-- Tasks emerge from Specification
-- Task granularity depends on feature complexity
+- Single responsibility per Task
+- Estimable effort
+- Clear deliverables
+
+### Update Progress Continuously
+
+- Mark Tasks complete as you go
+- Note blockers immediately
+- Keep percentage tracking current
 
 ---
 
 ## Related
 
-- `../gates/` for Gate definitions
-- `../features/` for where Tasks are stored
+- `../front-matters/` for Schema definitions (phase, stage, task, progress)
+- `../gates/` for Gate validation criteria
+- `../constitutions/` for Worker principles
 - `../../claude-agents/` for Worker behavior definitions

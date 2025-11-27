@@ -9,7 +9,7 @@
 Commands are **slash commands** that trigger workflow operations:
 
 1. `/init` - Initialize framework in current project
-2. `/specify` - Start specification for a new feature
+2. `/specify` - Start specification for a new workflow
 3. `/implement` - Begin implementation phase
 4. `/review` - Run gate validation
 
@@ -71,30 +71,30 @@ commands/
 
 ### /specify
 
-**Purpose**: Start specification phase for a new feature.
+**Purpose**: Start specification phase for a new workflow.
 
 **Behavior**:
-1. Prompt for feature description
-2. Create feature directory with ID
+1. Prompt for workflow description
+2. Create workflow directory with ID
 3. Invoke Specifier Worker
-4. Generate spec.md and plan.md
+4. Generate spec.md, stage-*.md, task-*.md
 5. Trigger Specification Gate
 
 **Usage**:
 ```
 /specify
-/specify Add user authentication with OAuth
+/specify 001-user-authentication
 ```
 
 ### /implement
 
-**Purpose**: Begin implementation of specified feature.
+**Purpose**: Begin implementation of specified workflow.
 
 **Behavior**:
 1. Check Specification Gate status
-2. Load plan.md and tasks
+2. Load task-*.md files
 3. Invoke Implementer Workers per task
-4. Track task completion
+4. Update progress.md
 5. Trigger Implementation Gate when done
 
 **Usage**:
@@ -173,8 +173,7 @@ Set up the framework directory structure and optionally copy templates.
    - blueprint/gates/specification/aspects/
    - blueprint/gates/implementation/aspects/
    - blueprint/gates/documentation/aspects/
-   - blueprint/workflows/stages/
-   - blueprint/features/
+   - blueprint/workflows/
 3. If --with-templates flag:
    - Copy Worker templates to .claude/agents/
    - Copy Constitution templates to blueprint/constitutions/
@@ -192,32 +191,33 @@ List of created directories and next steps.
 ```markdown
 # /specify
 
-Start the Specification Phase for a new feature.
+Start the Specification Phase for a new workflow.
 
 ---
 
 ## Task
-Create specification documents for a new feature.
+Create specification documents for a new workflow.
 
 ## Input
-Feature description (provided after command or prompted)
+Workflow description (provided after command or prompted)
 
 ## Steps
-1. Generate feature ID: {next-number}-{slugified-description}
-2. Create feature directory: blueprint/features/{feature-id}/
-3. Create feature.md with metadata
+1. Generate workflow ID: {next-number}-{slugified-description}
+2. Create workflow directory: blueprint/workflows/{workflow-id}/
+3. Create spec.md with Phase metadata
 4. Invoke Specifier Worker:
    - Load: blueprint/constitutions/base.md
    - Load: blueprint/constitutions/workers/specifier.md
-   - Task: Analyze requirements, create spec.md and plan.md
-5. Create task files based on plan
+   - Task: Analyze requirements, create stage-*.md and task-*.md
+5. Create progress.md for tracking
 6. Trigger Specification Gate review
 
 ## Output
-- Feature directory created
-- spec.md with requirements
-- plan.md with implementation strategy
-- task-*.md files
+- Workflow directory created
+- spec.md with background and purpose
+- stage-*.md with requirements
+- task-*.md with methods
+- progress.md initialized
 - Gate review results
 ```
 
@@ -228,31 +228,31 @@ Feature description (provided after command or prompted)
 ```markdown
 # /implement
 
-Begin the Implementation Phase for a specified feature.
+Begin the Implementation Phase for a specified workflow.
 
 ---
 
 ## Task
-Implement code based on the feature's plan and tasks.
+Implement code based on the workflow's tasks.
 
 ## Prerequisites
 - Specification Gate must be passed
-- plan.md must exist
+- task-*.md files must exist
 
 ## Steps
-1. Load feature's plan.md
-2. Check task dependencies
+1. Load workflow's task-*.md files
+2. Check task dependencies (via stage field)
 3. For each task (respecting dependencies):
    - Invoke Implementer Worker
    - Load: blueprint/constitutions/base.md
    - Load: blueprint/constitutions/workers/implementer.md
    - Load: task-*.md
-4. Update task status as completed
+4. Update progress.md as tasks complete
 5. When all tasks done, trigger Implementation Gate
 
 ## Output
 - Implemented code files
-- Updated task statuses
+- Updated progress.md
 - Gate review results
 ```
 
