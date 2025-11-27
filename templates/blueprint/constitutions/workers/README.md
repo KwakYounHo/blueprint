@@ -192,5 +192,5 @@ When updating base.md, review Worker constitutions for:
 ## Related
 
 - `../base.md` for global principles
-- `.claude/agents/` for Worker behavior definitions
+- `../../../claude-agents/` for Worker behavior definitions
 - `../../gates/` for validation criteria that Reviewers check

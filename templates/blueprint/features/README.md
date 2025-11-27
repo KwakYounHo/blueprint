@@ -268,4 +268,4 @@ Query: "Find all features related to security"
 
 - `../workflows/` for Phase/Stage definitions
 - `../gates/` for validation criteria
-- `.claude/agents/specifier.md` for spec/plan creation
+- `../../claude-agents/` for Worker behavior definitions

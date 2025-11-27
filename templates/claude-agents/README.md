@@ -168,6 +168,6 @@ Claude automatically selects based on `description`:
 
 ## Related
 
-- `blueprint/constitutions/workers/` for Worker-specific principles
-- `blueprint/constitutions/base.md` for common principles
-- Root `README.md` for Worker type definitions
+- `../blueprint/constitutions/workers/` for Worker-specific principles
+- `../blueprint/constitutions/base.md` for common principles
+- `../../README.md` for Worker type definitions

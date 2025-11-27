@@ -211,6 +211,6 @@ When updating templates:
 
 ## Related
 
-- `templates/` for what gets copied
-- `commands/` for post-initialization usage
-- Root `README.md` for overall documentation
+- `../templates/` for what gets copied
+- `../commands/` for post-initialization usage
+- `../README.md` for overall documentation

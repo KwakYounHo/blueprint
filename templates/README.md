@@ -99,6 +99,6 @@ Content placeholder...
 
 ## Related
 
-- Root `README.md` for overall framework documentation
-- `initializers/` for scripts that copy these templates
-- `commands/` for slash commands that use these templates
+- `../README.md` for overall framework documentation
+- `../initializers/` for scripts that copy these templates
+- `../commands/` for slash commands that use these templates

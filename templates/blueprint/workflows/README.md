@@ -273,4 +273,4 @@ Specifier creates plan.md
 
 - `../gates/` for Gate definitions
 - `../features/` for where Tasks are stored
-- `.claude/agents/specifier.md` for Task creation behavior
+- `../../claude-agents/` for Worker behavior definitions

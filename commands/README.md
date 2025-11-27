@@ -333,5 +333,5 @@ Commands should report:
 ## Related
 
 - `.claude/commands/` in target project
-- `initializers/` for setup scripts
-- `templates/claude-agents/` for Worker definitions
+- `../initializers/` for setup scripts
+- `../templates/claude-agents/` for Worker definitions

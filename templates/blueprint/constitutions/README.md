@@ -182,6 +182,6 @@ If a Constitution is `archived`, Reviewer should:
 
 ## Related
 
-- `workers/README.md` for Worker-specific Constitution details
-- `.claude/agents/` for Worker behavior definitions
-- `gates/` for validation criteria
+- `./workers/` for Worker-specific Constitution details
+- `../../claude-agents/` for Worker behavior definitions
+- `../gates/` for validation criteria

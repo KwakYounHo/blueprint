@@ -18,9 +18,6 @@
 - **Approach**: Create schemas first as contracts, then create documents that conform to them
 - Reference `docs/adr/001-schema-first-development.md` for implementation order.
 
-### Known Issues
-- Some README.md Related sections have missing cross-references (to be fixed in next session)
-
 ## Project Structure
 ```
 agent-docs/

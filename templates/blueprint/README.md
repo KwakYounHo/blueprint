@@ -156,6 +156,6 @@ When initializing a project:
 
 ## Related
 
-- `.claude/agents/` for Worker behavior definitions
-- `initializers/` for setup scripts
-- `commands/` for slash commands
+- `../claude-agents/` for Worker behavior definitions
+- `../../initializers/` for setup scripts
+- `../../commands/` for slash commands

@@ -162,4 +162,4 @@ Schemas are part of the framework, not project-specific customization.
 
 - `../gates/documentation/` for Documentation Gate definition
 - `../constitutions/` for documents that follow these schemas
-- Root `README.md` for Global Rules section
+- `../../../README.md` for Global Rules section

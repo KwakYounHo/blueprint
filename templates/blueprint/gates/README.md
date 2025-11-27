@@ -383,7 +383,8 @@ Good: "No circular dependencies between modules"
 
 ## Related
 
+- `./documentation/` for Documentation Gate (parallel validation)
 - `../workflows/` for Phase definitions
 - `../_schemas/` for schema definitions (Documentation Gate)
 - `../constitutions/workers/reviewer.md` for Reviewer principles
-- `.claude/agents/reviewer.md` for Reviewer behavior
+- `../../claude-agents/` for Reviewer behavior definition
