@@ -130,7 +130,7 @@ status: in-progress
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [feature-tag-1, feature-tag-2]
-related: []
+dependencies: []
 
 # Feature-specific
 feature-id: "001-feature-name"

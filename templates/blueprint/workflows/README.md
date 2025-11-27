@@ -62,7 +62,7 @@ status: active
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [workflow, phases]
-related: []
+dependencies: []
 ---
 ```
 
@@ -111,7 +111,7 @@ status: active
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [workflow, stage, {phase-name}]
-related: [../phases.md]
+dependencies: [../phases.md]
 
 # Stage-specific
 phase: specification | implementation

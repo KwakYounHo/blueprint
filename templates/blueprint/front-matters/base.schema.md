@@ -5,7 +5,7 @@ version: 1.0.0
 created: 2024-11-27
 updated: 2024-11-27
 tags: [schema, common, front-matter]
-related: []
+dependencies: []
 ---
 
 # Schema: Common FrontMatter
@@ -27,7 +27,7 @@ related: []
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `tags` | string[] | `[]` | Searchable keywords |
-| `related` | string[] | `[]` | Related document paths (only files copied together) |
+| `dependencies` | string[] | `[]` | Documents this document depends on (upstream) |
 
 ## Field Definitions
 
@@ -92,27 +92,43 @@ related: []
 - **Example**: `[schema, common, front-matter]`
 - **Description**: Keywords for search and categorization.
 
-### related
+### dependencies
 
 - **Type**: string[]
 - **Required**: No
 - **Default**: `[]`
-- **Example**: `[./aspects/completeness.md, ./aspects/feasibility.md]`
-- **Description**: Documents that need review when this document is modified.
+- **Example**: `[base.schema.md]` (for a schema that extends base)
+- **Description**: Documents that this document depends on (upstream dependencies).
 
 **Rules**:
 | Rule | Description |
 |------|-------------|
-| Purpose | List documents affected when this document changes |
+| Purpose | List documents this document depends on |
 | Scope | Direct dependencies only (1-degree relationship) |
-| Direction | Unidirectional (this document → affected documents) |
-| Propagation | Transitive dependencies discovered through chaining |
+| Direction | Unidirectional (this document → its dependencies) |
+| Propagation | When a dependency is modified, scan for documents that depend on it |
 | Constraint | Only reference files copied together to target projects |
 
+**Examples**:
+| Relationship | Document | dependencies | Meaning |
+|--------------|----------|--------------|---------|
+| Inheritance | `constitution.schema.md` | `[base.schema.md]` | Extends base schema |
+| Composition | `completeness.md` (aspect) | `[../gate.md]` | Belongs to gate |
+| Hierarchy | `stage.md` | `[../phase.md]` | Part of phase |
+
+**Change Propagation**:
+```
+base.schema.md modified
+  → Scan all documents for dependencies: [base.schema.md]
+  → Found: constitution.schema.md, gate.schema.md
+  → These documents need review
+```
+
 **Anti-patterns**:
-- Listing transitive dependencies (e.g., Phase listing Task directly)
-- Circular references (A → B → A)
-- Referencing files not copied to target project
+- ❌ Listing downstream (documents affected by this)
+- ❌ Listing transitive dependencies (e.g., Stage listing Task)
+- ❌ Circular references (A → B → A)
+- ❌ Referencing files not copied to target project
 
 ## Type-Status Mapping
 

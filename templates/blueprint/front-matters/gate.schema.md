@@ -5,7 +5,7 @@ version: 1.0.0
 created: 2024-11-27
 updated: 2024-11-27
 tags: [schema, gate, front-matter]
-related: [front-matters/base.schema.md, front-matters/aspect.schema.md]
+dependencies: [front-matters/base.schema.md]
 ---
 
 # Schema: Gate FrontMatter
@@ -16,7 +16,7 @@ related: [front-matters/base.schema.md, front-matters/aspect.schema.md]
 
 All fields from `base.schema.md`:
 
-- `type`, `status`, `version`, `created`, `updated`, `tags`, `related`
+- `type`, `status`, `version`, `created`, `updated`, `tags`, `dependencies`
 
 ## Additional Required Fields
 
@@ -70,10 +70,10 @@ All fields from `base.schema.md`:
 - Include: `[gate, {gate-name}]`
 - Example: `[gate, specification]`, `[gate, documentation]`
 
-### related (recommended)
+### dependencies (recommended)
 
-- Should reference Aspect files that belong to this gate
-- Example: `[./aspects/completeness.md, ./aspects/feasibility.md]`
+- Gates typically have no upstream dependencies
+- Example: `[]`
 
 ## Usage Examples
 
@@ -87,7 +87,7 @@ version: 1.0.0
 created: 2024-11-27
 updated: 2024-11-27
 tags: [gate, specification]
-related: [./aspects/completeness.md, ./aspects/feasibility.md]
+dependencies: []
 
 name: specification
 validates: code
@@ -105,7 +105,7 @@ version: 1.0.0
 created: 2024-11-27
 updated: 2024-11-27
 tags: [gate, implementation]
-related: [./aspects/code-style.md, ./aspects/architecture.md, ./aspects/component.md]
+dependencies: []
 
 name: implementation
 validates: code
@@ -123,7 +123,7 @@ version: 1.0.0
 created: 2024-11-27
 updated: 2024-11-27
 tags: [gate, documentation]
-related: [./aspects/schema-validation.md]
+dependencies: []
 
 name: documentation
 validates: document

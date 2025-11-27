@@ -70,7 +70,7 @@ Templates include schema as YAML front matter comments:
 # created: YYYY-MM-DD (required)
 # updated: YYYY-MM-DD (required)
 # tags: string[] (optional)
-# related: string[] (optional)
+# dependencies: string[] (optional)
 # === END SCHEMA ===
 
 type: artifact
@@ -78,7 +78,7 @@ status: draft
 created: {{DATE}}
 updated: {{DATE}}
 tags: []
-related: []
+dependencies: []
 ---
 
 # Title

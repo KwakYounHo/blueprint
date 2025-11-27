@@ -94,7 +94,7 @@ version: 1.0.0
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [gate, {gate-name}]
-related: [./aspects/]
+dependencies: []
 
 # Gate-specific
 name: {gate-identifier}
@@ -109,7 +109,6 @@ description: "{What this gate validates}"
 |-------|-----------|---------------|
 | `validates` | `code` | `document` |
 | `description` | Artifact/code quality focus | Format compliance focus |
-| `related` | `[./aspects/]` | `[./aspects/]` |
 
 ### Content Structure
 
@@ -143,12 +142,11 @@ version: 1.0.0
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [aspect, {gate-name}, {aspect-name}]
-related: []
+dependencies: [../gate.md]
 
 # Aspect-specific
 name: {aspect-identifier}
 gate: {parent-gate-name}
-reviewer: {reviewer-type}
 description: "{What this aspect validates}"
 ---
 ```

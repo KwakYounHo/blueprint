@@ -91,7 +91,7 @@ Fields shared by **all document types**:
 | `created` | date | Yes | Creation date (YYYY-MM-DD) |
 | `updated` | date | Yes | Last update date (YYYY-MM-DD) |
 | `tags` | string[] | No | Searchable keywords |
-| `related` | string[] | No | Documents affected when this document is modified (1-degree only) |
+| `dependencies` | string[] | No | Documents this document depends on (upstream) |
 
 ### Status Values by Document Type
 

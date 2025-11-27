@@ -63,7 +63,7 @@ version: 1.0.0
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [gate, documentation]
-related: [./aspects/]
+dependencies: []
 
 name: documentation
 validates: document

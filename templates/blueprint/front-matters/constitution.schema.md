@@ -5,7 +5,7 @@ version: 1.0.0
 created: 2024-11-27
 updated: 2024-11-27
 tags: [schema, constitution, front-matter]
-related: [front-matters/base.schema.md]
+dependencies: [front-matters/base.schema.md]
 ---
 
 # Schema: Constitution FrontMatter
@@ -16,7 +16,7 @@ related: [front-matters/base.schema.md]
 
 All fields from `base.schema.md`:
 
-- `type`, `status`, `version`, `created`, `updated`, `tags`, `related`
+- `type`, `status`, `version`, `created`, `updated`, `tags`, `dependencies`
 
 ## Additional Required Fields
 
@@ -72,7 +72,7 @@ All fields from `base.schema.md`:
 - Global constitution: `[principles, global, constitution]`
 - Worker-specific: `[worker, {worker-name}, constitution]`
 
-### related (recommended)
+### dependencies (recommended)
 
 - Worker-specific constitutions SHOULD include path to base.md
 - Example: `["../base.md"]`
@@ -89,7 +89,7 @@ version: 1.0.0
 created: 2024-11-27
 updated: 2024-11-27
 tags: [principles, global, constitution]
-related: []
+dependencies: []
 
 scope: global
 target-workers: ["all"]
@@ -106,7 +106,7 @@ version: 1.0.0
 created: 2024-11-27
 updated: 2024-11-27
 tags: [worker, specifier, constitution]
-related: ["../base.md"]
+dependencies: ["../base.md"]
 
 scope: worker-specific
 target-workers: ["specifier"]

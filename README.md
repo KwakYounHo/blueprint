@@ -119,7 +119,7 @@ status: ""        # Document status (see below)
 created: ""       # YYYY-MM-DD
 updated: ""       # YYYY-MM-DD
 tags: []          # Search tags
-related: []       # Related document paths
+dependencies: []  # Documents this depends on (upstream)
 ---
 ```
 

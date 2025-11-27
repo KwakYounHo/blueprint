@@ -81,7 +81,7 @@ status: active
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [principles, ...]
-related: []
+dependencies: []
 
 # Constitution-specific
 scope: global | worker-specific

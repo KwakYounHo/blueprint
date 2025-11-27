@@ -64,7 +64,7 @@ status: active
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [worker, {worker-name}]
-related: [../base.md]
+dependencies: [../base.md]
 
 scope: worker-specific
 target-workers: [{worker-name}]
