@@ -138,20 +138,27 @@ Applies to **all Workers**. Contains:
 
 ---
 
-## Relationship with Workers
+## Relationship with Instructions
+
+Constitution and Instruction are clearly separated concepts (see [ADR-002](../../../docs/adr/002-constitution-instruction-separation.md)):
+
+| | Constitution | Instruction |
+|---|-------------|-------------|
+| **Essence** | Law to obey | Responsibility to fulfill |
+| **Nature** | Declarative (what should be) | Imperative (what to do, how) |
+| **Content** | Principles, boundaries, quality standards | Role, workflow, output format |
+| **Location** | `blueprint/constitutions/` | `.claude/agents/` |
 
 ```
-.claude/agents/specifier.md          (HOW to behave - system prompt)
-        │
-        │ references
-        ▼
-blueprint/constitutions/base.md      (WHAT principles - global)
-        +
-blueprint/constitutions/workers/specifier.md  (WHAT principles - specific)
+Worker Runtime
+├── Constitution (laws to obey)
+│   └── blueprint/constitutions/base.md + workers/*.md
+│
+└── Instruction (responsibilities to fulfill)
+    └── .claude/agents/*.md
 ```
 
-**Worker file** = Behavior definition (system prompt)
-**Constitution file** = Principles to follow (rules)
+**Worker** obeys Constitution while fulfilling Instruction.
 
 ---
 
@@ -180,8 +187,16 @@ If a Constitution is `archived`, Reviewer should:
 
 ---
 
+## Template Annotations
+
+Constitution templates use a three-level annotation system for LLM-guided initialization. See [ADR-003](../../../docs/adr/003-template-annotation-system.md) for details.
+
+---
+
 ## Related
 
 - `./workers/` for Worker-specific Constitution details
-- `../../claude-agents/` for Worker behavior definitions
+- `../../claude-agents/` for Instruction (Worker behavior) definitions
 - `../gates/` for validation criteria
+- [ADR-002](../../../docs/adr/002-constitution-instruction-separation.md) for Constitution/Instruction separation
+- [ADR-003](../../../docs/adr/003-template-annotation-system.md) for template annotation system
