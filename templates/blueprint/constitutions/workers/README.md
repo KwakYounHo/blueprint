@@ -76,27 +76,17 @@ target-workers: [{worker-name}]
 ```markdown
 # Constitution: {Worker Name}
 
-## Role Definition
-[Clear statement of this Worker's purpose]
-
-## Core Responsibilities
-[What this Worker is responsible for]
+## Worker-Specific Principles
+[Principles unique to this Worker role - what they must always follow]
 
 ## Quality Standards
 [Specific quality criteria for this Worker's output]
 
-## Input Requirements
-[What this Worker expects to receive]
-
-## Output Requirements
-[What this Worker must produce]
-
 ## Boundaries
 [What this Worker should NOT do]
-
-## Handoff Protocol
-[How to communicate results back to Orchestrator]
 ```
+
+> **Note**: Role Definition, Responsibilities, Input/Output Requirements, Handoff Protocol belong in **Instruction** (`.claude/agents/*.md`), not Constitution. See [ADR-002](../../../../docs/adr/002-constitution-instruction-separation.md).
 
 ---
 
@@ -106,41 +96,41 @@ target-workers: [{worker-name}]
 
 | Section | Content |
 |---------|---------|
-| Role | Coordinate Workers, manage state, handle user decisions |
-| Responsibilities | Task delegation, result aggregation, confirmation requests |
+| Principles | Coordination-specific rules |
 | Standards | Minimal context retention, structured handoffs |
 | Boundaries | No direct implementation, no code generation |
-| Handoff | N/A (top-level coordinator) |
+
+> Role, Responsibilities → defined in Instruction (`.claude/agents/orchestrator.md`)
 
 ### specifier.md
 
 | Section | Content |
 |---------|---------|
-| Role | Analyze requirements, create specifications |
-| Responsibilities | Requirement extraction, feasibility check, Stage/Task breakdown |
+| Principles | Specification-specific rules |
 | Standards | Complete specs, clear acceptance criteria |
 | Boundaries | No implementation, no code |
-| Handoff | spec.md, plan.md with structured summary |
+
+> Role, Responsibilities, Handoff → defined in Instruction (`.claude/agents/specifier.md`)
 
 ### implementer.md
 
 | Section | Content |
 |---------|---------|
-| Role | Implement code based on Tasks |
-| Responsibilities | Code generation, test writing, documentation |
-| Standards | Follow base.md coding standards, pass linters |
+| Principles | Implementation-specific rules |
+| Standards | Output quality criteria |
 | Boundaries | Only assigned Task scope, no scope creep |
-| Handoff | File paths, changes summary |
+
+> Role, Responsibilities, Handoff → defined in Instruction (`.claude/agents/implementer.md`)
 
 ### reviewer.md
 
 | Section | Content |
 |---------|---------|
-| Role | Validate artifacts against Criteria |
-| Responsibilities | Check compliance, provide feedback |
+| Principles | Validation-specific rules |
 | Standards | Objective assessment, actionable feedback |
 | Boundaries | No implementation, no direct fixes |
-| Handoff | Pass/Fail status, detailed findings |
+
+> Role, Responsibilities, Handoff → defined in Instruction (`.claude/agents/reviewer.md`)
 
 ---
 
@@ -172,14 +162,15 @@ Each constitution should be:
 
 ### Use References
 
-Instead of duplicating, reference:
+Instead of duplicating, reference base.md principles:
 
 ```markdown
-## Coding Standards
-Follow all standards defined in `../base.md#code-standards`.
-Additionally, for this Worker:
-- [Worker-specific additions]
+## Boundaries
+In addition to `../base.md#boundaries`:
+- [Worker-specific boundary additions]
 ```
+
+> **Note**: Code Standards are validated by Gate/Aspects, not defined in Constitution.
 
 ### Version Together
 

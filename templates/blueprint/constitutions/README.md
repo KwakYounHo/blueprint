@@ -89,27 +89,28 @@ target-workers: [all] | [specifier, implementer, ...]
 ---
 ```
 
-### Content Structure
+### Content Structure (base.md)
 
 ```markdown
 # Constitution: {Name}
 
-## Core Principles
-[Fundamental rules that must always be followed]
+## Project Identity [INFER]
+[Vision and Mission - compressed for Worker context]
 
-## Quality Standards
-[Measurable criteria for quality]
+## Document Standards [FIXED]
+[FrontMatter requirements, Schema compliance]
 
-## Boundaries
-[What is NOT allowed, what to avoid]
+## Handoff Protocol [FIXED]
+[Result reporting rules, required fields]
 
-## Patterns
-[Recommended patterns to follow]
-References to existing code patterns if applicable.
+## Boundaries [FIXED]
+[What is NOT allowed, framework constraints]
 
-## Exceptions
-[When rules can be relaxed and under what conditions]
+## Governance [FIXED]
+[Amendment process, version policy]
 ```
+
+> **Note**: Tech Stack, Code Standards, Quality Standards are validated by Gate/Aspects, not defined in base Constitution.
 
 ---
 
@@ -119,13 +120,15 @@ References to existing code patterns if applicable.
 
 Applies to **all Workers**. Contains:
 
-| Section | Content |
-|---------|---------|
-| Project Identity | Project purpose, domain |
-| Tech Stack | Languages, frameworks, versions |
-| Dependencies | Allowed/forbidden packages |
-| Code Standards | Naming, formatting, structure |
-| Communication | Language rules, documentation style |
+| Section | Annotation | Content |
+|---------|------------|---------|
+| Project Identity | `[INFER]` | Vision and Mission (compressed) |
+| Document Standards | `[FIXED]` | FrontMatter requirements |
+| Handoff Protocol | `[FIXED]` | Result reporting rules |
+| Boundaries | `[FIXED]` | Framework constraints |
+| Governance | `[FIXED]` | Amendment process |
+
+> Tech Stack, Code Standards → handled by Gate/Aspects (see `../gates/`)
 
 ### workers/*.md (Worker-Specific)
 
@@ -189,7 +192,7 @@ If a Constitution is `archived`, Reviewer should:
 
 ## Template Annotations
 
-Constitution templates use a three-level annotation system for LLM-guided initialization. See [ADR-003](../../../docs/adr/003-template-annotation-system.md) for details.
+Constitution templates use a four-level annotation system (`[FIXED]`, `[INFER]`, `[DECIDE]`, `[ADAPT]`) for LLM-guided initialization. See [ADR-003](../../../docs/adr/003-template-annotation-system.md) for details.
 
 ---
 

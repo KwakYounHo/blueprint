@@ -12,187 +12,126 @@
 | Item | Copied to Target? | Purpose |
 |------|-------------------|---------|
 | `templates/blueprint/*` | ✅ Yes → `blueprint/` | Framework core (schemas, constitutions, gates) |
-| `templates/claude-agents/*` | ✅ Yes → `.claude/agents/` | Worker definitions |
+| `templates/claude-agents/*` | ✅ Yes → `.claude/agents/` | Worker definitions (Instructions) |
 | `commands/*` | ✅ Yes → `.claude/commands/` | Slash commands |
 | `README.md` files (all) | ❌ No | Developer documentation only |
-| `initializers/*` | ❌ No | Used to copy templates |
 | `docs/adr/*` | ❌ No | Framework design decisions |
 
-### README.md Files
-- All README.md files are **for framework developers**, not end users.
-- They explain the structure and design decisions.
-- They are NOT copied to target projects.
-- Template files' `related` field should only reference files that will be copied together.
-
-### Template Files
-- Use **placeholders** (e.g., `{{project-name}}`, `{{date}}`) for values that vary per project.
+### Template Rules
+- Use **placeholders** (`{{project-name}}`, `{{date}}`) for values that vary per project.
 - Provide **minimal required structure** - let project maintainers customize.
-- Include **guidelines as comments** within templates when needed.
+- **Token efficiency** is critical: base.md ~500 tokens, worker constitutions ~300-500 tokens each.
 
 ## Context Window Management Strategy
 - Actively leverage Subagents when summarization or deep analysis is needed.
 - Treat the Main Session's context window as a precious resource.
-- If tasks can be parallelized, consider using Subagents to boost efficiency.
 - Workers are defined in `.claude/agents/` - use them for delegated tasks.
 
 ## Conversation Rules
 - **IMPORTANT** You must converse with the user in Korean, as it's their native language.
 - Writing documentation and code in English, but keep user-facing messages in Korean.
-- When translating Korean to English, express it naturally as a native speaker would, rather than translating literally.
 
 ## Development Status
 - **Current Phase**: Template creation (Phase 2 of ADR-001)
-- **Completed Schemas**: base, constitution, gate, aspect, phase, stage, task, progress
-- **In Progress**: Constitution templates (base.md, workers/*.md)
+- **Completed**: All schemas, `constitutions/base.md`
+- **Next**: `constitutions/workers/*.md` (orchestrator, specifier, implementer, reviewer)
 - Reference `docs/adr/001-schema-first-development.md` for implementation order.
 
-### Template Creation Guide (for next session)
+### Key ADRs for Current Phase
+| ADR | Topic | Reference |
+|-----|-------|-----------|
+| ADR-001 | Schema-First Development | Implementation phases |
+| ADR-002 | Constitution/Instruction Separation | Constitution=Law, Instruction=Responsibility |
+| ADR-003 | Template Annotation System | `[FIXED]`, `[INFER]`, `[DECIDE]`, `[ADAPT]` |
 
-#### 1. ADR-001 Implementation Phases
+### Phase 2: Constitution Templates
 
-| Phase | Status | Content |
-|-------|--------|---------|
-| Phase 1: Schema Definition | ✅ Complete | `front-matters/*.schema.md` |
-| Phase 2: Constitution | 🔄 In Progress | `constitutions/base.md`, `constitutions/workers/*.md` |
-| Phase 3: Workers | ⏳ Pending | `templates/claude-agents/*.md` → `.claude/agents/` |
-| Phase 4: Gates | ⏳ Pending | `gates/**/gate.md`, `gates/**/aspects/*.md` |
-| Phase 5: Tooling | ⏳ Pending | `initializers/`, `commands/` |
-
-#### 2. Phase 2: Constitution Templates
-
-**Reference Files**:
-- Schema: `templates/blueprint/front-matters/constitution.schema.md`
-- Blueprint: `templates/blueprint/constitutions/README.md`
-- Worker Blueprint: `templates/blueprint/constitutions/workers/README.md`
+**Completed**:
+- `constitutions/base.md` (v0.2.0) - ~500 tokens, lean structure
 
 **Files to Create**:
 ```
-constitutions/
-├── base.md                    # scope: global, target-workers: ["all"]
-└── workers/
-    ├── orchestrator.md        # scope: worker-specific, target-workers: ["orchestrator"]
-    ├── specifier.md           # scope: worker-specific, target-workers: ["specifier"]
-    ├── implementer.md         # scope: worker-specific, target-workers: ["implementer"]
-    └── reviewer.md            # scope: worker-specific, target-workers: ["reviewer"]
+constitutions/workers/
+├── orchestrator.md
+├── specifier.md
+├── implementer.md
+└── reviewer.md
 ```
 
-**Constitution FrontMatter** (from constitution.schema.md):
-```yaml
----
-type: constitution
-status: active
-version: 1.0.0
-created: {{date}}
-updated: {{date}}
-tags: [principles, ...]
-dependencies: []  # or ["../base.md"] for worker-specific
-
-scope: global | worker-specific
-target-workers: ["all"] | ["specifier", ...]
----
-```
-
-**Body Structure** (from README):
+**Worker Constitution Structure** (from workers/README.md):
 ```markdown
-# Constitution: {Name}
+# Constitution: {Worker Name}
 
-## Core Principles
+## Worker-Specific Principles
 ## Quality Standards
 ## Boundaries
-## Patterns
-## Exceptions
 ```
 
-**Token Budget**: ~500-800 tokens per file (from research on context efficiency)
+> Role, Responsibilities, Handoff → belong in **Instruction** (`.claude/agents/*.md`), not Constitution.
 
-#### 3. Template Rules (IMPORTANT)
+### Annotation System (ADR-003)
 
-| Rule | Description |
-|------|-------------|
-| Placeholders | Use `{{project-name}}`, `{{date}}` for variable values |
-| Minimal Structure | Provide only required structure, let projects customize |
-| Body in README | Body structure is defined in README, not schema |
-| Token Efficiency | Keep Constitution files short (~500-800 tokens) |
-| Status | Templates should be `status: active` (ready to use after copy) |
+| Annotation | Purpose | LLM Action |
+|------------|---------|------------|
+| `[FIXED]` | Framework core rules | Do NOT modify without user confirmation |
+| `[INFER]` | Codebase-derivable content | Analyze and fill |
+| `[DECIDE]` | User judgment needed | AskUserQuestion |
+| `[ADAPT]` | Conditional content | Evaluate and include/exclude |
 
-#### 4. Worker-Constitution-Gate Relationship
+### Constitution vs Instruction (ADR-002)
+
+| | Constitution | Instruction |
+|---|-------------|-------------|
+| **Essence** | Law to obey | Responsibility to fulfill |
+| **Location** | `blueprint/constitutions/` | `.claude/agents/` |
+| **Content** | Principles, Boundaries | Role, Workflow, Handoff format |
 
 ```
-.claude/agents/specifier.md          (HOW - behavior/system prompt)
-        │
-        └──► blueprint/constitutions/
-             ├── base.md              (WHAT - global principles)
-             └── workers/specifier.md (WHAT - specific principles)
-
-Reviewer Worker
-        │
-        └──► blueprint/gates/
-             └── specification/
-                 ├── gate.md
-                 └── aspects/completeness.md (Criteria to check)
+Worker Runtime
+├── Constitution (laws) → blueprint/constitutions/base.md + workers/*.md
+└── Instruction (duties) → .claude/agents/*.md
 ```
 
-#### 5. Recommended Creation Order
+### Design Decision: Lean Constitution
 
-1. **Constitution base.md** - Global principles (foundation for all)
-2. **Constitution workers/*.md** - Worker-specific principles
-3. **Worker definitions** - Reference constitutions
-4. **Gate definitions** - Define validation checkpoints
-5. **Aspect definitions** - Define specific criteria
+Tech Stack, Code Standards, Quality Standards are **NOT** in base.md.
+- These are validated by **Gate/Aspects** at review time
+- Only Reviewer loads Gate/Aspects; other Workers stay lightweight
+- base.md contains only: Project Identity, Document Standards, Handoff Protocol, Boundaries, Governance
 
 ## Blueprint-First Principle
-
-README files in this project serve as **blueprints** for framework elements:
 
 ```
 README (Blueprint) → Schema (Contract) → Instance (Actual Document)
 ```
 
-| Layer | Role | Example |
-|-------|------|---------|
-| README | Design specification for developers | `gates/README.md` |
-| Schema | Formal contract (FrontMatter definition) | `gate.schema.md` |
-| Instance | Actual framework document | `gates/specification/gate.md` |
-
-**Workflow**:
 1. Design/update README (blueprint) first
 2. Generate/update Schema based on README
 3. Create instances that conform to Schema
 
-This ensures READMEs remain the source of truth for framework design.
-
 ## Project Structure
 ```
 agent-docs/
-├── docs/
-│   └── adr/                 # Architecture Decision Records
+├── docs/adr/                 # Architecture Decision Records
 ├── templates/
-│   ├── claude-agents/       # Worker definitions for .claude/agents/
-│   └── blueprint/           # Framework core templates
-│       ├── front-matters/   # FrontMatter Schema definitions
-│       ├── constitutions/   # Principles
-│       ├── gates/           # Validation checkpoints (incl. documentation/)
-│       └── workflows/       # Work containers (Phase, Stage, Task, Progress)
-├── initializers/            # Setup scripts
-├── commands/                # Slash commands
-└── .conversation/           # Session summaries
+│   ├── claude-agents/        # Worker definitions (Instructions)
+│   └── blueprint/
+│       ├── front-matters/    # FrontMatter Schema definitions
+│       ├── constitutions/    # Principles (base.md ✅, workers/*.md 🔄)
+│       ├── gates/            # Validation checkpoints
+│       └── workflows/        # Work containers
+├── initializers/             # Setup scripts
+└── commands/                 # Slash commands
 ```
 
 ## Key Terminology
 | Term | Definition |
 |------|------------|
-| Agent | Top-level: LLM + Tools + Memory |
-| Orchestrator | Coordinates Workers, manages state |
-| Worker | Executes delegated tasks (Specifier, Implementer, Reviewer) |
-| Constitution | Principles to follow |
-| Gate | Validation checkpoint between Phases |
-| Aspect | Expertise area within Gate (1:1 with Reviewer) |
-| Criteria | Minimum requirements to pass |
-| Workflow | Container for Phase, Stage, Task, Progress; synced with Branch |
-| Phase | "Why" - Background and purpose (spec.md) |
-| Stage | "What" - Requirements to fulfill (stage-*.md) |
-| Task | "How" - Methods to achieve (task-*.md) |
-| Progress | "How much" - Completion tracking (progress.md) |
+| Constitution | Laws/Principles Workers must obey |
+| Instruction | Responsibilities Workers must fulfill (`.claude/agents/`) |
+| Gate | Validation checkpoint (Code Standards, Quality → here, not Constitution) |
+| Aspect | Specific criteria within Gate |
+| `[FIXED]` | Framework core annotation - requires user confirmation to modify |
 
 ## Commands
 - `/specify` - Start specification for a new workflow

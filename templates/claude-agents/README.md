@@ -120,12 +120,13 @@ Workers return structured summaries to Orchestrator:
 
 ```yaml
 handoff:
-  status: success | fail | partial
-  artifact: path/to/created/file
-  summary: "1-2 sentence description"
-  decisions_made: []
-  needs_confirmation: []
+  status: completed | blocked | failed
+  summary: "Brief description of work done"
+  artifacts: [path/to/created/files]
+  next-steps: ["Recommended follow-up actions"]
 ```
+
+See `blueprint/constitutions/base.md#handoff-protocol` for required fields.
 
 ### Orchestrator → Reviewer
 
@@ -168,6 +169,7 @@ Claude automatically selects based on `description`:
 
 ## Related
 
-- `../blueprint/constitutions/workers/` for Worker-specific principles
-- `../blueprint/constitutions/base.md` for common principles
+- `../blueprint/constitutions/workers/` for Worker-specific principles (Constitution)
+- `../blueprint/constitutions/base.md` for common principles (Constitution)
+- [ADR-002](../../docs/adr/002-constitution-instruction-separation.md) for Constitution/Instruction separation
 - `../../README.md` for Worker type definitions
