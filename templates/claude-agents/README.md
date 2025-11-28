@@ -44,20 +44,16 @@ Workers use **Markdown with YAML front matter**:
 name: worker-name
 description: When and why to use this worker. Use PROACTIVELY when...
 tools: Read, Grep, Glob, Write, Edit, Bash
-model: sonnet
 ---
 
 System prompt content...
-
-## Your Role
-...
 
 ## Constitution Reference
 You MUST read and follow:
 - blueprint/constitutions/base.md
 - blueprint/constitutions/workers/{worker-name}.md
 
-## Output Format
+## Your Role
 ...
 ```
 
@@ -86,18 +82,57 @@ You MUST read and follow:
 
 ---
 
-## Planned Workers
+## Workers
 
 | Worker | File | Role |
 |--------|------|------|
-| **Orchestrator** | `orchestrator.template.md` | Coordinates Workers, manages state, handles `[DECIDE]` markers |
-| **Specifier** | `specifier.template.md` | Creates specifications from requirements |
-| **Implementer** | `implementer.template.md` | Implements code based on tasks |
-| **Reviewer** | `reviewer.template.md` | Validates artifacts against criteria |
+| **Orchestrator** | `orchestrator.md` | Coordinates Workers, manages state, communicates with user |
+| **Specifier** | `specifier.md` | Create & Modify specification documents |
+| **Implementer** | `implementer.md` | Create & Modify code based on tasks |
+| **Reviewer** | `reviewer.md` | Validate quality & compliance per Aspect |
 
-### `[DECIDE]` Marker Handling
+### Orchestrator (Special Worker)
 
-Workers (Specifier, Implementer) use `[DECIDE]` markers to indicate items requiring user judgment:
+Orchestrator can be used as:
+- **Main Session Persona**: Agent directly conversing with user acts as Orchestrator
+- **Subagent**: Another Agent explicitly invokes Orchestrator
+
+### Reviewer (Per-Aspect)
+
+Each Reviewer instance validates **one Aspect** only. Multiple Reviewers run in parallel for different Aspects.
+
+```
+Gate (e.g., specification)
+├── Aspect: completeness ──► Reviewer Instance A
+├── Aspect: feasibility ───► Reviewer Instance B (parallel)
+└── ...
+```
+
+---
+
+## Core Principle: 1 Depth + User Confirm
+
+**All Workers follow this principle:**
+
+1. **1 Depth Rule**: One user command = One work unit
+   - Worker creates only one level of output per invocation
+   - Chained work without user instruction is FORBIDDEN
+
+2. **User Confirm Required**: User confirmation is REQUIRED after every Worker task
+   - Orchestrator MUST report result to user after Worker completion
+   - Proceeding to next task without user confirmation is FORBIDDEN
+
+```
+User command → Orchestrator → Worker → Result → Orchestrator → User (confirm required)
+                                                                  ↓
+                                                User next command → ...
+```
+
+---
+
+## `[DECIDE]` Marker Handling
+
+Workers use `[DECIDE]` markers to indicate items requiring user judgment:
 
 - **Specifier**: Marks ambiguous requirements that need clarification
 - **Implementer**: Marks unclear specifications that cannot be implemented without user decision
@@ -110,13 +145,13 @@ Workers (Specifier, Implementer) use `[DECIDE]` markers to indicate items requir
 Each Worker references its Constitution:
 
 ```
-.claude/agents/specifier.md          (Behavior: how to act)
+.claude/agents/specifier.md          (Instruction: how to act)
         │
-        └──► blueprint/constitutions/workers/specifier.md  (Principles: what to follow)
+        └──► blueprint/constitutions/workers/specifier.md  (Constitution: what to follow)
 ```
 
-The Worker file defines **behavior** (system prompt).
-The Constitution file defines **principles** (rules to follow).
+The Worker file defines **behavior** (Instruction).
+The Constitution file defines **principles** (Constitution).
 
 ---
 
@@ -128,40 +163,72 @@ Workers return structured summaries to Orchestrator:
 
 ```yaml
 handoff:
-  status: completed | blocked | failed
+  status: completed | blocked
   summary: "Brief description of work done"
   artifacts: [path/to/created/files]
-  decide-markers: [path/to/file#marker-location]  # If any [DECIDE] markers were added
+  decide-markers: [path/to/file#marker-location]  # If any
   next-steps: ["Recommended follow-up actions"]
 ```
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `status` | Yes | `completed`, `blocked`, or `failed` |
+| `status` | Yes | `completed` or `blocked` |
 | `summary` | Yes | Brief description of work done |
 | `artifacts` | If any | Paths to created/modified files |
 | `decide-markers` | If any | Locations of `[DECIDE]` markers requiring user decision |
 | `next-steps` | If any | Recommended follow-up actions |
 
-See `blueprint/constitutions/base.md#handoff-protocol` for required fields.
-
 ### Orchestrator → Reviewer
 
-Orchestrator sends documents for gate validation:
+Orchestrator sends **one Aspect** per Reviewer invocation:
 
 ```yaml
 handoff:
   action: review
   document: path/to/document
-  required-gates:           # Gate `name` field values
-    - specification         # Code Gate (validates: code)
-    - documentation         # Document Gate (validates: document)
+  gate: specification
+  aspect: completeness
   context:
     workflow-id: "001-workflow"
     phase: specification
 ```
 
-See `blueprint/gates/README.md` for complete Handoff structure.
+| Field | Required | Description |
+|-------|----------|-------------|
+| `action` | Yes | Always `review` |
+| `document` | Yes | Path to document to validate |
+| `gate` | Yes | Gate name (specification, implementation, documentation) |
+| `aspect` | Yes | Single Aspect to validate |
+| `context` | No | Additional context |
+
+### Reviewer → Orchestrator
+
+```yaml
+handoff:
+  status: pass | fail
+  gate: specification
+  aspect: completeness
+  document: path/to/document
+  criteria:
+    required: [...]
+    recommended: [...]
+  summary: "Validation result summary"
+```
+
+See `blueprint/gates/README.md` for Gate and Aspect definitions.
+
+---
+
+## Gate Validation Recommendation
+
+Orchestrator recommends Gate validation whenever any Artifact is created or modified.
+
+| Worker | Recommended Gates |
+|--------|-------------------|
+| Specifier | `gates/specification`, `gates/documentation` |
+| Implementer | `gates/implementation` |
+
+**Note**: Gate validation is recommended, not forced. Respect user's choice.
 
 ---
 
