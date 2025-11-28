@@ -150,18 +150,19 @@ workflow-id: "{workflow-id}"
 ## Background
 [Why this workflow is needed - problem statement]
 
-## Purpose
-[What this workflow aims to achieve - goals]
+## Objective
+[What this workflow aims to achieve - goals (use action verbs)]
 
 ## Scope
-### In Scope
-- [What is included]
+### Boundaries
+- [Domain/functional areas this workflow covers]
+- [Write at high level - specific requirements go in Stage]
 
 ### Out of Scope
 - [What is explicitly excluded]
 
 ## Success Criteria
-- [Measurable outcomes that define completion]
+- [ ] [Measurable outcomes that define completion]
 ```
 
 ---
@@ -195,16 +196,20 @@ order: 1
 ## Description
 [What this stage covers]
 
+**Related Boundary**: [Corresponding item from Phase.Boundaries]
+
 ## Requirements
-- [Requirement 1]
-- [Requirement 2]
+- **REQ-{SS}-001**: [Requirement 1]
+  - Priority: [High | Medium | Low]
+- **REQ-{SS}-002**: [Requirement 2]
+  - Priority: [High | Medium | Low]
 
 ## Acceptance Criteria
-- [ ] Criterion 1
-- [ ] Criterion 2
+- [ ] **AC-{SS}-001**: [Verifiable criterion 1]
+- [ ] **AC-{SS}-002**: [Verifiable criterion 2]
 
-## Dependencies
-[What must be completed before this stage]
+## Prerequisites
+[What must be completed before this stage, or "None"]
 ```
 
 ---
@@ -240,8 +245,20 @@ parallel-group: null  # or "group-name" for parallel execution
 ## Objective
 [What this task accomplishes]
 
+**Related Requirement**: [REQ-SS-NNN]
+
+## Technical Specification
+
+### Tech Stack
+- **Language**: [language]
+- **Framework**: [framework]
+- **Libraries**: [libraries]
+
+### Implementation Details
+[API endpoints, data models, interfaces, etc.]
+
 ## Approach
-[How to complete this task]
+[How to complete this task and why this approach]
 
 ## Steps
 1. [Step 1]
@@ -249,11 +266,13 @@ parallel-group: null  # or "group-name" for parallel execution
 3. [Step 3]
 
 ## Acceptance Criteria
-- [ ] Criterion 1
-- [ ] Criterion 2
+- [ ] **AC-{SS}-{TT}-001**: [Verifiable criterion 1]
+- [ ] **AC-{SS}-{TT}-002**: [Verifiable criterion 2]
 
-## Deliverables
-- [Expected outputs]
+## Expected Artifacts
+| Artifact | Path | Type |
+|----------|------|------|
+| [Name] | [src/path/file.ts] | [code/test/config] |
 ```
 
 ---
@@ -282,23 +301,39 @@ dependencies: [task-01-01-*.md, task-01-02-*.md, ...]
 # Progress: {Workflow Name}
 
 ## Overview
-| Stage | Tasks | Completed | Status |
-|-------|-------|-----------|--------|
+| Stage | Tasks | Completed | Progress |
+|-------|-------|-----------|----------|
 | Stage 1 | 3 | 2 | 67% |
 | Stage 2 | 2 | 0 | 0% |
 | **Total** | **5** | **2** | **40%** |
 
 ## Stage 1: {Stage Name}
-- [x] task-01-01: {Task Name} - Completed YYYY-MM-DD
-- [x] task-01-02: {Task Name} - Completed YYYY-MM-DD
-- [ ] task-01-03: {Task Name} - In Progress
+- [x] `task-01-01`: {Task Name} - Completed YYYY-MM-DD
+- [x] `task-01-02`: {Task Name} - Completed YYYY-MM-DD
+- [ ] `task-01-03`: {Task Name} - In Progress
 
 ## Stage 2: {Stage Name}
-- [ ] task-02-01: {Task Name} - Pending
-- [ ] task-02-02: {Task Name} - Pending
+- [ ] `task-02-01`: {Task Name} - Pending
+- [ ] `task-02-02`: {Task Name} - Pending
 
 ## Notes
-[Any blockers, decisions, or observations]
+
+### Blockers
+[Issues blocking progress - cannot proceed until resolved]
+
+### Issues
+[Problems found after Gate passed - continue work, fix later]
+
+### Decisions
+[Decisions made during workflow execution]
+
+### Observations
+[Noteworthy observations]
+
+## Change Log
+| Date | Change |
+|------|--------|
+| YYYY-MM-DD | Progress document initialized |
 ```
 
 ---

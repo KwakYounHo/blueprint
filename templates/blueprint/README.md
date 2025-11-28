@@ -60,11 +60,15 @@ blueprint/
 │       └── aspects/
 │
 └── workflows/                   # Work containers
+    ├── spec.template.md         # Phase template (Specifier reference)
+    ├── stage.template.md        # Stage template (Specifier reference)
+    ├── task.template.md         # Task template (Specifier reference)
+    ├── progress.template.md     # Progress template (Specifier reference)
     └── {workflow-id}/           # e.g., 001-initialize-documents
-        ├── spec.md              # Phase: Background and purpose
-        ├── stage-*.md           # Stage: Requirements
-        ├── task-*.md            # Task: Methods
-        └── progress.md          # Progress: Tracking
+        ├── spec.md              # Phase: Background, Objective, Scope, Success Criteria
+        ├── stage-*.md           # Stage: Description, Requirements, Acceptance Criteria, Prerequisites
+        ├── task-*.md            # Task: Objective, Technical Spec, Approach, Steps, AC, Expected Artifacts
+        └── progress.md          # Progress: Overview, Stage checklists, Notes, Change Log
 ```
 
 ---

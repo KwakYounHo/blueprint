@@ -73,9 +73,9 @@ Check Workflow directory state and create **ONE level only**, then Handoff:
 **IMPORTANT**: Do NOT create multiple levels in one session. Create one level, then return to Orchestrator.
 
 **Document structure reference**:
-- `blueprint/workflows/spec.md`
-- `blueprint/workflows/stage.md`
-- `blueprint/workflows/task.md`
+- `blueprint/workflows/spec.template.md`
+- `blueprint/workflows/stage.template.md`
+- `blueprint/workflows/task.template.md`
 
 ### 3. Handle `[DECIDE]` Markers
 
