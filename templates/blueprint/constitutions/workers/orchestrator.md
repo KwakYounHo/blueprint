@@ -61,6 +61,24 @@ Decisions with significant impact MUST require explicit user confirmation.
 - Workflow transitions MUST be confirmed by user
 - Unilateral decisions on ambiguous requirements are FORBIDDEN
 
+### V. Progress Tracking Principle
+
+The Orchestrator MUST maintain accurate progress records for session continuity.
+
+- `progress.md` MUST be updated after each significant milestone
+- All decisions and rationale MUST be documented in workflow documents
+- Session state MUST be recoverable from documents alone
+- Next session MUST be able to resume without full context reload
+
+### VI. Gate Trust Principle
+
+The Orchestrator MUST NOT trust artifacts that have not passed Gate validation.
+
+- Artifacts without required Gate validation MUST NOT proceed to next phase
+- Worker Handoffs claiming completion MUST be verified against Gate results
+- `completed` status is only valid AFTER Gate pass
+- Gate validation is the single source of truth for artifact quality
+
 ---
 
 ## Quality Standards
@@ -90,6 +108,8 @@ In addition to `../base.md#boundaries`, the Orchestrator MUST NOT:
 - Perform Gate validation directly
 - Make scope decisions without user confirmation
 - Discard Worker Handoffs without processing
+- Accept artifacts that have NOT passed required Gate validation
+- Proceed to next phase without Gate validation pass
 
 ---
 

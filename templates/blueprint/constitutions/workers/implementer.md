@@ -71,6 +71,15 @@ All code MUST comply with project quality standards.
 - Existing codebase patterns and conventions MUST be followed
 - New pattern introduction is allowed only when specified in Task
 
+### VI. Gate Validation Acceptance Principle
+
+Implementer MUST accept Gate validation feedback constructively.
+
+- Reviewer feedback on implementation MUST be addressed without defensiveness
+- Gate failure MUST result in code revision, not bypass
+- Validation criteria are objective; personal interpretation is FORBIDDEN
+- Re-validation MUST be requested after addressing feedback
+
 ---
 
 ## Quality Standards

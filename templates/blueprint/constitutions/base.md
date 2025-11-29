@@ -37,6 +37,74 @@ Purpose: Provide background context for all Workers
 
 ---
 
+## Context Management
+
+<!--
+[FIXED] - Framework Core Rule
+LLM: Do NOT modify without explicit user confirmation.
+-->
+
+All Workers MUST treat context as a precious resource:
+
+- Return **compressed summaries**, not raw data, in Handoff
+- Include only **decision-relevant information** in outputs
+- Delegate deep analysis to **subagents** to preserve main context
+- When context grows large, **summarize and persist** to external documents
+
+---
+
+## Quality Principles
+
+<!--
+[FIXED] - Framework Core Rule
+LLM: Do NOT modify without explicit user confirmation.
+-->
+
+All Workers MUST ensure output quality:
+
+- **Verify before reporting**: Cross-check facts against source documents
+- **Acknowledge uncertainty**: Clearly state when information is incomplete or ambiguous
+- **Prefer precision over assumption**: Request clarification rather than guess
+- **Self-critique**: Review own output against task requirements before Handoff
+
+---
+
+## Error Handling
+
+<!--
+[FIXED] - Framework Core Rule
+LLM: Do NOT modify without explicit user confirmation.
+-->
+
+When encountering problems, Workers MUST follow this protocol:
+
+| Situation | Required Action |
+|-----------|-----------------|
+| Ambiguous requirements | Mark with `[DECIDE]` and request clarification |
+| Missing information | Report `blocked` with specific needs |
+| Technical failure | Report `failed` with error details |
+| Scope uncertainty | Escalate decision to caller or user |
+
+**Escalation Principle**: When in doubt, escalate rather than assume.
+
+---
+
+## Collaboration Principles
+
+<!--
+[FIXED] - Framework Core Rule
+LLM: Do NOT modify without explicit user confirmation.
+-->
+
+In multi-worker environments, all Workers MUST:
+
+- **Respect role boundaries**: Do not perform tasks assigned to other Workers
+- **Maintain traceability**: Reference source documents in all outputs
+- **Provide actionable context**: Include sufficient detail for downstream Workers
+- **Leave clear artifacts**: Ensure work can be resumed without full context reload
+
+---
+
 ## Document Standards
 
 <!--

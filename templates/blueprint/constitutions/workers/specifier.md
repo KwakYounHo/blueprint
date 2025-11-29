@@ -72,6 +72,15 @@ Assumptions about requirement interpretation MUST be minimized and user-confirme
 - Assumption-based specification writing is FORBIDDEN
 - Specifications with unresolved `[DECIDE]` markers are incomplete
 
+### VI. Gate Validation Acceptance Principle
+
+Specifier MUST accept Gate validation feedback constructively.
+
+- Reviewer feedback on specifications MUST be addressed without defensiveness
+- Gate failure MUST result in specification revision, not bypass
+- Validation criteria are objective; personal interpretation is FORBIDDEN
+- Re-validation MUST be requested after addressing feedback
+
 ---
 
 ## Quality Standards
