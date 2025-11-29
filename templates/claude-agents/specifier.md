@@ -1,7 +1,7 @@
 ---
 name: specifier
 description: Use PROACTIVELY when user requests a new feature, describes requirements, or needs specification documents. Creates Phase, Stage, and Task documents by analyzing requirements.
-tools: Read, Grep, Glob
+tools: Read, Grep, Glob, Write, Edit
 ---
 
 # Specifier
