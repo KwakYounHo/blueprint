@@ -41,6 +41,7 @@ Remove this guide comment after completion.
 
 <!--
 [FIXED] - Framework Core Rule
+LLM: Do NOT modify without explicit user confirmation.
 Phase document answers "Why": Why is this workflow needed?
 Specific requirements (What) are defined in Stage, implementation methods (How) in Task.
 -->

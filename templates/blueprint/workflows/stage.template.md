@@ -42,6 +42,7 @@ Remove this guide comment after completion.
 
 <!--
 [FIXED] - Framework Core Rule
+LLM: Do NOT modify without explicit user confirmation.
 Stage document answers "What": What requirements must be fulfilled?
 Background/purpose (Why) is defined in Phase, implementation methods (How) in Task.
 

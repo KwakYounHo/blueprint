@@ -34,6 +34,7 @@ Remove this guide comment after completion.
 
 <!--
 [FIXED] - Framework Core Rule
+LLM: Do NOT modify without explicit user confirmation.
 Progress document answers "How much": How much progress has been made?
 
 [Responsibilities]
