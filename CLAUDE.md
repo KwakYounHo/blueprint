@@ -22,6 +22,7 @@
 |------|-------------------|---------|
 | `templates/blueprint/*` | ✅ Yes → `blueprint/` | Framework core (schemas, constitutions, gates) |
 | `templates/claude-agents/*` | ✅ Yes → `.claude/agents/` | Worker definitions (Instructions) |
+| `templates/claude-skills/*` | ✅ Yes → `.claude/skills/` | Custom Skills (FrontMatter search, etc.) |
 | `commands/*` | ✅ Yes → `.claude/commands/` | Slash commands |
 | `README.md` files (all) | ❌ No | Developer documentation only |
 | `docs/adr/*` | ❌ No | Framework design decisions |
@@ -46,7 +47,8 @@
 agent-docs/
 ├── docs/adr/                 # Architecture Decision Records
 ├── templates/
-│   ├── claude-agents/        # Worker definitions (Instructions) 🔄 Next
+│   ├── claude-agents/        # Worker definitions (Instructions)
+│   ├── claude-skills/        # Custom Skills (FrontMatter search, etc.)
 │   └── blueprint/
 │       ├── front-matters/    # FrontMatter Schema definitions ✅
 │       ├── constitutions/    # Principles ✅ Complete

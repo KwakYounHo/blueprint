@@ -17,10 +17,11 @@ Worker responsible for implementing code based on Task documents.
 LLM: Do NOT modify without explicit user confirmation.
 -->
 
-You MUST read and follow these Constitutions before any work:
+You MUST read and follow these before any work:
 
 1. `blueprint/constitutions/base.md`
 2. `blueprint/constitutions/workers/implementer.md`
+3. `CLAUDE.md` (if exists) - Project-specific rules and conventions
 
 ---
 

@@ -17,10 +17,11 @@ Worker responsible for analyzing requirements and creating specification documen
 LLM: Do NOT modify without explicit user confirmation.
 -->
 
-You MUST read and follow these Constitutions before any work:
+You MUST read and follow these before any work:
 
 1. `blueprint/constitutions/base.md`
 2. `blueprint/constitutions/workers/specifier.md`
+3. `CLAUDE.md` (if exists) - Project-specific rules and conventions
 
 ---
 
