@@ -51,10 +51,12 @@ All fields from `base.schema.md`:
 | Rule | Description |
 |------|-------------|
 | Type | `type` field must be `phase` |
-| Status | Must be: `draft`, `active`, `deprecated`, `archived` |
+| Status | Must be: `draft`, `archived`, `deprecated` |
 | File Name | Phase document must be named `spec.md` |
 | Uniqueness | `workflow-id` must be unique across all workflows |
 | Directory Match | Parent directory name must equal `workflow-id` |
+
+**Status Note**: Phase does not use `active` status. Once the problem definition is finalized, Phase transitions directly from `draft` to `archived`. This reflects the principle that **the problem being solved should not change** - if it does, it becomes a different Workflow.
 
 ## Field Guidelines
 
@@ -71,7 +73,7 @@ All fields from `base.schema.md`:
 
 ## Usage Examples
 
-### New Workflow - Document Initialization
+### New Workflow - Draft Phase
 
 ```yaml
 ---
@@ -87,12 +89,12 @@ workflow-id: "001-initialize-documents"
 ---
 ```
 
-### Active Workflow - User Authentication
+### Finalized Phase - Ready for Implementation
 
 ```yaml
 ---
 type: phase
-status: active
+status: archived
 version: 1.0.0
 created: 2025-11-20
 updated: 2025-11-28
@@ -135,11 +137,13 @@ Workflow Directory (workflows/{workflow-id}/)
 Phase Created (status: draft)
     │
     ▼
-Phase Reviewed & Approved (status: active)
+Phase Finalized (status: archived)  ← Problem definition confirmed
     │
     ▼
 Stages & Tasks Created (referencing this Phase)
     │
     ▼
-Workflow Completed (status: archived)
+Workflow Completed (Phase remains archived)
 ```
+
+**Key Principle**: Phase transitions directly from `draft` to `archived`. The `archived` status for Phase means "problem definition is finalized" - Stage/Task creation can only begin after Phase is archived.

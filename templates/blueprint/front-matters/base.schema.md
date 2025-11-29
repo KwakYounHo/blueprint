@@ -44,13 +44,28 @@ dependencies: []
 - **Required**: Yes
 - **Description**: Current state of the document. Valid values depend on document category.
 
-**Definition Documents** (`schema`, `constitution`, `worker`, `gate`, `aspect`, `phase`, `stage`, `task`):
+**Definition Documents** (`schema`, `constitution`, `worker`, `gate`, `aspect`):
 | Value | Description |
 |-------|-------------|
 | `draft` | Work in progress, not ready for use |
 | `active` | Current and in use |
 | `deprecated` | Superseded, avoid using |
 | `archived` | No longer relevant, kept for history |
+
+**Specification Documents - Phase** (`phase`):
+| Value | Description |
+|-------|-------------|
+| `draft` | Problem definition in progress |
+| `archived` | Problem definition finalized, ready for Stage/Task creation |
+| `deprecated` | Workflow cancelled or superseded |
+
+**Specification Documents - Stage/Task** (`stage`, `task`):
+| Value | Description |
+|-------|-------------|
+| `draft` | Solution design in progress |
+| `active` | Currently being implemented, may be modified |
+| `deprecated` | Superseded, avoid using |
+| `archived` | Implementation approach finalized |
 
 **Task Documents** (`progress`):
 | Value | Description |
@@ -139,7 +154,7 @@ base.schema.md modified
 | `worker` | Definition | `draft`, `active`, `deprecated`, `archived` |
 | `gate` | Definition | `draft`, `active`, `deprecated`, `archived` |
 | `aspect` | Definition | `draft`, `active`, `deprecated`, `archived` |
-| `phase` | Definition | `draft`, `active`, `deprecated`, `archived` |
-| `stage` | Definition | `draft`, `active`, `deprecated`, `archived` |
-| `task` | Definition | `draft`, `active`, `deprecated`, `archived` |
+| `phase` | Specification | `draft`, `archived`, `deprecated` |
+| `stage` | Specification | `draft`, `active`, `deprecated`, `archived` |
+| `task` | Specification | `draft`, `active`, `deprecated`, `archived` |
 | `progress` | Task | `pending`, `in-progress`, `completed`, `failed` |

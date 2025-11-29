@@ -140,6 +140,9 @@ handoff:
   document: "path/to/artifact"
   gate: specification | implementation | documentation
   aspect: completeness | feasibility | schema-validation | ...
+  context:
+    workflow-id: "NNN-description"
+    phase: specification | implementation
 ```
 
 ---

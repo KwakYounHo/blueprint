@@ -108,8 +108,11 @@ Fields shared by **all document types**:
 | Document Types | Category | Valid Status Values |
 |----------------|----------|---------------------|
 | `schema`, `constitution`, `gate`, `aspect`, `worker` | Definition | `draft`, `active`, `deprecated`, `archived` |
-| `phase`, `stage`, `task` | Definition | `draft`, `active`, `deprecated`, `archived` |
+| `phase` | Specification | `draft`, `archived`, `deprecated` |
+| `stage`, `task` | Specification | `draft`, `active`, `deprecated`, `archived` |
 | `progress` | Task | `pending`, `in-progress`, `completed`, `failed` |
+
+**Note on Phase Status**: Phase does not use `active` status. Once the problem definition is finalized, Phase transitions directly from `draft` to `archived`. This ensures that Stage/Task creation only begins after the problem is confirmed.
 
 ---
 
