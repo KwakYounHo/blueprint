@@ -9,9 +9,11 @@
 Commands are **slash commands** that trigger workflow operations:
 
 1. `/init` - Initialize framework in current project
-2. `/specify` - Start specification for a new workflow
-3. `/implement` - Begin implementation phase
-4. `/review` - Run gate validation
+2. `/orchestrator` - Apply Orchestrator persona to Main Session
+3. `/lorekeeper` - Apply Lorekeeper persona for discussion recording
+4. `/specify` - Start specification for a new workflow
+5. `/implement` - Begin implementation phase
+6. `/review` - Run gate validation
 
 ---
 
@@ -45,6 +47,8 @@ Commands provide:
 commands/
 ├── README.md                    # This file
 ├── init.md                      # /init command
+├── orchestrator.md              # /orchestrator command
+├── lorekeeper.md                # /lorekeeper command
 ├── specify.md                   # /specify command
 ├── implement.md                 # /implement command
 └── review.md                    # /review command
@@ -68,6 +72,41 @@ commands/
 /init
 /init --with-templates
 ```
+
+### /orchestrator
+
+**Purpose**: Apply Orchestrator persona to Main Session.
+
+**Behavior**:
+1. Read `.claude/agents/orchestrator.md`
+2. Adopt Orchestrator role as Main Session persona
+3. Begin coordinating workflow with user
+
+**Usage**:
+```
+/orchestrator
+```
+
+**Note**: Use this instead of `@orchestrator` when you want Orchestrator as your Main Session persona rather than spawning a Subagent.
+
+### /lorekeeper
+
+**Purpose**: Apply Lorekeeper persona for discussion recording.
+
+**Behavior**:
+1. Read `.claude/agents/lorekeeper.md`
+2. Adopt Lorekeeper role as Main Session persona
+3. Begin recording all discussions verbatim
+4. Create `blueprint/discussions/{NNN}.md`
+5. Use markers `[D-]`, `[A-]`, `[C-]`, `[Q-]` inline
+6. Rename to `{NNN}-{brief-summary}.md` when done
+
+**Usage**:
+```
+/lorekeeper
+```
+
+**Note**: Lorekeeper records EVERYTHING - no summarizing. Specifier extracts and organizes later.
 
 ### /specify
 

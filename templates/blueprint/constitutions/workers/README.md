@@ -9,6 +9,7 @@
 Worker-specific Constitutions define **principles unique to each Worker role**:
 
 - **Orchestrator**: Delegation rules, state management principles
+- **Lorekeeper**: Faithful recording rules, intent validation principles
 - **Specifier**: Requirement analysis rules, specification standards
 - **Implementer**: Coding standards, implementation patterns
 - **Reviewer**: Validation criteria, feedback format
@@ -46,6 +47,7 @@ Total: ~1,300 tokens (vs 3,000+ if all loaded)
 workers/
 ├── README.md               # This file
 ├── orchestrator.md         # Orchestrator principles
+├── lorekeeper.md           # Lorekeeper principles
 ├── specifier.md            # Specifier principles
 ├── implementer.md          # Implementer principles
 └── reviewer.md             # Reviewer principles
@@ -102,6 +104,16 @@ target-workers: [{worker-name}]
 
 > Role, Responsibilities → defined in Instruction (`.claude/agents/orchestrator.md`)
 
+### lorekeeper.md
+
+| Section | Content |
+|---------|---------|
+| Principles | Faithful recording, neutrality, completeness, intent preservation |
+| Standards | Verbatim recording, chronological flow, marker usage |
+| Boundaries | No summarizing, no organizing, no other Worker responsibilities |
+
+> Role, Responsibilities → defined in Instruction (`.claude/agents/lorekeeper.md`)
+
 ### specifier.md
 
 | Section | Content |
@@ -139,14 +151,14 @@ target-workers: [{worker-name}]
 ```
 base.md (Global)
     │
-    ├──────────────────┬──────────────────┬──────────────────┐
-    ▼                  ▼                  ▼                  ▼
-orchestrator.md    specifier.md    implementer.md    reviewer.md
-    │                  │                  │                  │
-    ▼                  ▼                  ▼                  ▼
-.claude/agents/    .claude/agents/    .claude/agents/    .claude/agents/
-orchestrator.md    specifier.md       implementer.md     reviewer.md
-(behavior)         (behavior)         (behavior)         (behavior)
+    ├────────────────┬────────────────┬────────────────┬────────────────┐
+    ▼                ▼                ▼                ▼                ▼
+orchestrator.md  lorekeeper.md  specifier.md  implementer.md  reviewer.md
+    │                │                │                │                │
+    ▼                ▼                ▼                ▼                ▼
+.claude/agents/  .claude/agents/  .claude/agents/  .claude/agents/  .claude/agents/
+orchestrator.md  lorekeeper.md    specifier.md     implementer.md   reviewer.md
+(behavior)       (behavior)       (behavior)       (behavior)       (behavior)
 ```
 
 ---

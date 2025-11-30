@@ -87,15 +87,25 @@ You MUST read and follow:
 | Worker | File | Role |
 |--------|------|------|
 | **Orchestrator** | `orchestrator.md` | Coordinates Workers, manages state, communicates with user |
+| **Lorekeeper** | `lorekeeper.md` | Records all discussions verbatim, validates intent alignment |
 | **Specifier** | `specifier.md` | Create & Modify specification documents |
 | **Implementer** | `implementer.md` | Create & Modify code based on tasks |
 | **Reviewer** | `reviewer.md` | Validate quality & compliance per Aspect |
 
-### Orchestrator (Special Worker)
+### Special Workers
 
-Orchestrator can be used as:
-- **Main Session Persona**: Agent directly conversing with user acts as Orchestrator
-- **Subagent**: Another Agent explicitly invokes Orchestrator
+Special Workers can be used as **Main Session Persona** or **Subagent**:
+
+| Worker | Main Session Role | Subagent Role |
+|--------|-------------------|---------------|
+| **Orchestrator** | Coordinates workflow with user | Invoked by another agent for coordination |
+| **Lorekeeper** | Records discussions in real-time | Validates artifacts against discussion records |
+
+**Lorekeeper's unique role**:
+- **Beginning of Workflow**: Records EVERYTHING - every word, tangent, decision, concern
+- **End of Workflow**: Validates that artifacts match the original intent discussed
+- Uses markers `[D-]`, `[A-]`, `[C-]`, `[Q-]` inline while maintaining chronological flow
+- Does NOT summarize - that's Specifier's job
 
 ### Reviewer (Per-Aspect)
 
