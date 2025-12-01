@@ -143,5 +143,3 @@ Before handoff, verify:
 - [ ] No implementation based on guessing
 
 ---
-
-**Version**: {{version}} | **Created**: {{date}}

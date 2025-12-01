@@ -183,5 +183,3 @@ Before handoff, verify:
 - [ ] Objective standards applied, not personal preferences
 
 ---
-
-**Version**: {{version}} | **Created**: {{date}}

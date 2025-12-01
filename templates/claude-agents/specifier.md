@@ -133,5 +133,3 @@ Before handoff, verify:
 - [ ] Document FrontMatter conforms to schema
 
 ---
-
-**Version**: {{version}} | **Created**: {{date}}

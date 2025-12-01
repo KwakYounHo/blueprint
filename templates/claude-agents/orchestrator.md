@@ -247,5 +247,3 @@ Awaiting your confirmation to proceed.
 - [ ] Request user decision for [DECIDE] markers
 
 ---
-
-**Version**: {{version}} | **Created**: {{date}}

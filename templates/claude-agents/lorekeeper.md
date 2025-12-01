@@ -210,5 +210,3 @@ handoff:
 - [ ] Actionable recommendations provided
 
 ---
-
-**Version**: {{version}} | **Created**: {{date}}
