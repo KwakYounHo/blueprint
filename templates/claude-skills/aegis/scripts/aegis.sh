@@ -1,12 +1,12 @@
 #!/bin/bash
-# Gate Viewer
+# Aegis - Gate Viewer
 # View gate definitions and their aspects
 #
 # Usage:
-#   gate.sh --list                    List all gates
-#   gate.sh <gate>                    Show gate definition
-#   gate.sh <gate> --aspects          List aspects for gate
-#   gate.sh <gate> <aspect>           Show specific aspect
+#   aegis --list                    List all gates
+#   aegis <gate>                    Show gate definition
+#   aegis <gate> --aspects          List aspects for gate
+#   aegis <gate> <aspect>           Show specific aspect
 
 set -e
 
@@ -54,17 +54,19 @@ fi
 
 # No argument: show usage
 if [ -z "$1" ]; then
+  echo "Aegis - Gate Viewer"
+  echo ""
   echo "Usage:"
-  echo "  gate.sh --list                 List all gates"
-  echo "  gate.sh <gate>                 Show gate definition"
-  echo "  gate.sh <gate> --aspects       List aspects for gate"
-  echo "  gate.sh <gate> <aspect>        Show specific aspect"
+  echo "  aegis --list                 List all gates"
+  echo "  aegis <gate>                 Show gate definition"
+  echo "  aegis <gate> --aspects       List aspects for gate"
+  echo "  aegis <gate> <aspect>        Show specific aspect"
   echo ""
   echo "Examples:"
-  echo "  gate.sh --list"
-  echo "  gate.sh specification"
-  echo "  gate.sh specification --aspects"
-  echo "  gate.sh specification workflow-structure"
+  echo "  aegis --list"
+  echo "  aegis specification"
+  echo "  aegis specification --aspects"
+  echo "  aegis specification workflow-structure"
   exit 1
 fi
 
@@ -79,13 +81,13 @@ if [ ! -d "$GATE_DIR" ]; then
   exit 1
 fi
 
-# gate.sh <gate> --aspects
+# aegis <gate> --aspects
 if [ "$2" = "--aspects" ] || [ "$2" = "-a" ]; then
   list_aspects "$GATE"
   exit 0
 fi
 
-# gate.sh <gate> <aspect>
+# aegis <gate> <aspect>
 if [ -n "$2" ]; then
   ASPECT="$2"
   ASPECT_FILE="$GATE_DIR/aspects/$ASPECT.md"
@@ -101,7 +103,7 @@ if [ -n "$2" ]; then
   exit 0
 fi
 
-# gate.sh <gate> - show gate definition
+# aegis <gate> - show gate definition
 GATE_FILE="$GATE_DIR/gate.md"
 
 if [ ! -f "$GATE_FILE" ]; then
