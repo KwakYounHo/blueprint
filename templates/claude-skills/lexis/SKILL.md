@@ -12,21 +12,21 @@ Constitution viewer for Worker roles.
 
 ```bash
 # List all workers
-bash .claude/skills/lexis/lexis.sh --list
+.claude/skills/lexis/lexis.sh --list
 
 # Show base + worker constitution
-bash .claude/skills/lexis/lexis.sh <worker>
+.claude/skills/lexis/lexis.sh <worker>
 
 # Show base constitution only
-bash .claude/skills/lexis/lexis.sh --base
+.claude/skills/lexis/lexis.sh --base
 ```
 
 ## Examples
 
 ```bash
-bash .claude/skills/lexis/lexis.sh --list
-bash .claude/skills/lexis/lexis.sh orchestrator
-bash .claude/skills/lexis/lexis.sh specifier
-bash .claude/skills/lexis/lexis.sh implementer
-bash .claude/skills/lexis/lexis.sh --base
+.claude/skills/lexis/lexis.sh --list
+.claude/skills/lexis/lexis.sh orchestrator
+.claude/skills/lexis/lexis.sh specifier
+.claude/skills/lexis/lexis.sh implementer
+.claude/skills/lexis/lexis.sh --base
 ```
