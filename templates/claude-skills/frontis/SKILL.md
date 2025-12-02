@@ -12,13 +12,16 @@ FrontMatter search and schema viewer.
 
 ```bash
 # Search documents by FrontMatter field
-frontis search <field> <value> [path]
+bash .claude/skills/frontis/frontis.sh search <field> <value> [path]
+
+# Show frontmatter of file(s)
+bash .claude/skills/frontis/frontis.sh show <file> [file...]
 
 # View schema definition
-frontis schema <type>
+bash .claude/skills/frontis/frontis.sh schema <type>
 
 # List available schemas
-frontis schema --list
+bash .claude/skills/frontis/frontis.sh schema --list
 ```
 
 - `path`: optional, defaults to current directory (`.`)
@@ -26,10 +29,12 @@ frontis schema --list
 ## Examples
 
 ```bash
-frontis search type task
-frontis search status active blueprint/
-frontis schema aspect
-frontis schema --list
+bash .claude/skills/frontis/frontis.sh search type task
+bash .claude/skills/frontis/frontis.sh search status active blueprint/
+bash .claude/skills/frontis/frontis.sh show blueprint/tasks/task-001.md
+bash .claude/skills/frontis/frontis.sh show file1.md file2.md file3.md
+bash .claude/skills/frontis/frontis.sh schema aspect
+bash .claude/skills/frontis/frontis.sh schema --list
 ```
 
 ## Why Frontis?

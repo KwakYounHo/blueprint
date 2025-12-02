@@ -3,6 +3,7 @@
 #
 # Usage:
 #   frontis search <field> <value> [path]    Search documents by FrontMatter
+#   frontis show <file> [file...]            Show frontmatter of file(s)
 #   frontis schema <type>                    View schema definition
 #   frontis schema --list                    List available schemas
 
@@ -31,6 +32,31 @@ do_search() {
     if echo "$frontmatter" | grep -q "^${field}: *${value}"; then
       echo "$file"
     fi
+  done
+}
+
+# === SHOW ===
+do_show() {
+  if [ $# -eq 0 ]; then
+    echo "Usage: frontis show <file> [file...]"
+    echo ""
+    echo "Examples:"
+    echo "  frontis show blueprint/tasks/task-001.md"
+    echo "  frontis show file1.md file2.md file3.md"
+    exit 1
+  fi
+
+  for file in "$@"; do
+    if [ ! -f "$file" ]; then
+      echo "=== $file ==="
+      echo "File not found"
+      echo ""
+      continue
+    fi
+
+    echo "=== $file ==="
+    awk '/^---$/{if(++c==2){print "---"; exit}}{if(c)print}' "$file" 2>/dev/null
+    echo ""
   done
 }
 
@@ -87,6 +113,10 @@ case "$COMMAND" in
     shift
     do_search "$@"
     ;;
+  show)
+    shift
+    do_show "$@"
+    ;;
   schema)
     shift
     do_schema "$@"
@@ -96,11 +126,13 @@ case "$COMMAND" in
     echo ""
     echo "Usage:"
     echo "  frontis search <field> <value> [path]    Search by FrontMatter"
+    echo "  frontis show <file> [file...]            Show frontmatter"
     echo "  frontis schema <type>                    View schema"
     echo "  frontis schema --list                    List schemas"
     echo ""
     echo "Examples:"
     echo "  frontis search type task"
+    echo "  frontis show blueprint/tasks/task-001.md"
     echo "  frontis schema aspect"
     exit 1
     ;;

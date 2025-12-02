@@ -12,17 +12,17 @@ Handoff form viewer for Worker communication.
 
 ```bash
 # List all handoff forms
-hermes --list
+bash .claude/skills/hermes/hermes.sh --list
 
 # Show specific handoff form
-hermes <from> <to>
+bash .claude/skills/hermes/hermes.sh <from> <to>
 ```
 
 ## Examples
 
 ```bash
-hermes --list
-hermes orchestrator specifier
-hermes specifier orchestrator
-hermes orchestrator implementer
+bash .claude/skills/hermes/hermes.sh --list
+bash .claude/skills/hermes/hermes.sh orchestrator specifier
+bash .claude/skills/hermes/hermes.sh specifier orchestrator
+bash .claude/skills/hermes/hermes.sh orchestrator implementer
 ```

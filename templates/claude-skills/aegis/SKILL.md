@@ -12,25 +12,25 @@ Gate viewer for validation checkpoints.
 
 ```bash
 # List all gates
-aegis --list
+bash .claude/skills/aegis/aegis.sh --list
 
 # Show gate definition
-aegis <gate>
+bash .claude/skills/aegis/aegis.sh <gate>
 
 # List aspects for a gate
-aegis <gate> --aspects
+bash .claude/skills/aegis/aegis.sh <gate> --aspects
 
 # Show specific aspect
-aegis <gate> <aspect>
+bash .claude/skills/aegis/aegis.sh <gate> <aspect>
 ```
 
 ## Examples
 
 ```bash
-aegis --list
-aegis specification
-aegis specification --aspects
-aegis specification workflow-structure
+bash .claude/skills/aegis/aegis.sh --list
+bash .claude/skills/aegis/aegis.sh specification
+bash .claude/skills/aegis/aegis.sh specification --aspects
+bash .claude/skills/aegis/aegis.sh specification workflow-structure
 ```
 
 ## Extensibility
