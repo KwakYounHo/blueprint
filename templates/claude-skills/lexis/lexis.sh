@@ -15,12 +15,18 @@ WORKERS_DIR="$CONST_DIR/workers"
 
 # Check if constitutions exist
 if [ ! -f "$BASE_FILE" ]; then
-  echo "Base constitution not found: $BASE_FILE"
+  echo "[ERROR] Base constitution not found: $BASE_FILE"
   exit 1
 fi
 
 # --list: Show all workers
 if [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
+  if [ ! -d "$WORKERS_DIR" ]; then
+    echo "[ERROR] Workers directory not found: $WORKERS_DIR"
+    exit 1
+  fi
+
+  found=0
   echo "Available workers:"
   echo ""
   for file in "$WORKERS_DIR"/*.md; do
@@ -28,9 +34,14 @@ if [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
       name=$(basename "$file" .md)
       if [ "$name" != "README" ]; then
         echo "  - $name"
+        found=1
       fi
     fi
   done
+
+  if [ "$found" -eq 0 ]; then
+    echo "  (no workers found)"
+  fi
   exit 0
 fi
 
@@ -61,7 +72,7 @@ WORKER_FILE="$WORKERS_DIR/$WORKER.md"
 
 # Check if worker exists
 if [ ! -f "$WORKER_FILE" ]; then
-  echo "Worker constitution not found: $WORKER"
+  echo "[ERROR] Worker constitution not found: $WORKER"
   echo ""
   echo "Available workers:"
   for file in "$WORKERS_DIR"/*.md; do

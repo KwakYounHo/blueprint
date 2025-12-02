@@ -12,7 +12,7 @@ FORMS_FILE="blueprint/forms/handoffs.md"
 
 # Check if forms file exists
 if [ ! -f "$FORMS_FILE" ]; then
-  echo "Handoff forms not found: $FORMS_FILE"
+  echo "[ERROR] Handoff forms not found: $FORMS_FILE"
   exit 1
 fi
 
@@ -20,11 +20,18 @@ fi
 if [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
   echo "Available handoff forms:"
   echo ""
-  grep -o '\[F\][A-Za-z]*&\[T\][A-Za-z]*' "$FORMS_FILE" | while read -r line; do
+
+  found=0
+  while read -r line; do
     from=$(echo "$line" | sed 's/\[F\]\([A-Za-z]*\)&\[T\].*/\1/')
     to=$(echo "$line" | sed 's/.*&\[T\]\([A-Za-z]*\)/\1/')
     echo "  - $from → $to"
-  done
+    found=1
+  done < <(grep -o '\[F\][A-Za-z]*&\[T\][A-Za-z]*' "$FORMS_FILE" 2>/dev/null)
+
+  if [ "$found" -eq 0 ]; then
+    echo "  (no handoff forms found)"
+  fi
   exit 0
 fi
 
@@ -54,7 +61,7 @@ MARKER="[F]${FROM_CAP}&[T]${TO_CAP}"
 
 # Check if marker exists
 if ! grep -qF "$MARKER" "$FORMS_FILE"; then
-  echo "Handoff form not found: $FROM_CAP → $TO_CAP"
+  echo "[ERROR] Handoff form not found: $FROM_CAP → $TO_CAP"
   echo ""
   echo "Available forms:"
   grep -o '\[F\][A-Za-z]*&\[T\][A-Za-z]*' "$FORMS_FILE" | while read -r line; do

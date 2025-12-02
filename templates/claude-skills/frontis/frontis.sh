@@ -27,12 +27,24 @@ do_search() {
     exit 1
   fi
 
-  find "$search_path" -name "*.md" -type f 2>/dev/null | while read -r file; do
+  # Check if search path exists
+  if [ ! -d "$search_path" ]; then
+    echo "[ERROR] Search path not found: $search_path"
+    exit 1
+  fi
+
+  local found=0
+  while IFS= read -r file; do
     frontmatter=$(awk '/^---$/{if(++c==2)exit}c' "$file" 2>/dev/null)
     if echo "$frontmatter" | grep -q "^${field}: *${value}"; then
       echo "$file"
+      found=1
     fi
-  done
+  done < <(find "$search_path" -name "*.md" -type f 2>/dev/null)
+
+  if [ "$found" -eq 0 ]; then
+    echo "[INFO] No documents found with ${field}: ${value} in ${search_path}"
+  fi
 }
 
 # === SHOW ===
@@ -66,14 +78,25 @@ do_schema() {
 
   # --list: Show available schemas
   if [ "$type" = "--list" ] || [ "$type" = "-l" ]; then
+    if [ ! -d "$SCHEMA_DIR" ]; then
+      echo "[ERROR] Schema directory not found: $SCHEMA_DIR"
+      exit 1
+    fi
+
+    local found=0
     echo "Available schemas:"
     echo ""
     for file in "$SCHEMA_DIR"/*.schema.md; do
       if [ -f "$file" ]; then
         name=$(basename "$file" .schema.md)
         echo "  - $name"
+        found=1
       fi
     done
+
+    if [ "$found" -eq 0 ]; then
+      echo "  (no schemas found)"
+    fi
     exit 0
   fi
 

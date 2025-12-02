@@ -14,6 +14,12 @@ GATES_DIR="blueprint/gates"
 
 # Helper: list all gates
 list_gates() {
+  if [ ! -d "$GATES_DIR" ]; then
+    echo "[ERROR] Gates directory not found: $GATES_DIR"
+    return 1
+  fi
+
+  local found=0
   echo "Available gates:"
   echo ""
   for dir in "$GATES_DIR"/*/; do
@@ -21,9 +27,14 @@ list_gates() {
       name=$(basename "$dir")
       if [ "$name" != "README.md" ]; then
         echo "  - $name"
+        found=1
       fi
     fi
   done
+
+  if [ "$found" -eq 0 ]; then
+    echo "  (no gates found)"
+  fi
 }
 
 # Helper: list aspects for a gate
@@ -32,18 +43,24 @@ list_aspects() {
   local aspects_dir="$GATES_DIR/$gate/aspects"
 
   if [ ! -d "$aspects_dir" ]; then
-    echo "No aspects found for gate: $gate"
+    echo "[INFO] No aspects directory for gate: $gate"
     return
   fi
 
+  local found=0
   echo "Aspects for '$gate' gate:"
   echo ""
   for file in "$aspects_dir"/*.md; do
     if [ -f "$file" ]; then
       name=$(basename "$file" .md)
       echo "  - $name"
+      found=1
     fi
   done
+
+  if [ "$found" -eq 0 ]; then
+    echo "  (no aspects found)"
+  fi
 }
 
 # --list: Show all gates
@@ -75,7 +92,7 @@ GATE_DIR="$GATES_DIR/$GATE"
 
 # Check if gate exists
 if [ ! -d "$GATE_DIR" ]; then
-  echo "Gate not found: $GATE"
+  echo "[ERROR] Gate not found: $GATE"
   echo ""
   list_gates
   exit 1
@@ -93,7 +110,7 @@ if [ -n "$2" ]; then
   ASPECT_FILE="$GATE_DIR/aspects/$ASPECT.md"
 
   if [ ! -f "$ASPECT_FILE" ]; then
-    echo "Aspect not found: $ASPECT"
+    echo "[ERROR] Aspect not found: $ASPECT"
     echo ""
     list_aspects "$GATE"
     exit 1
@@ -107,7 +124,7 @@ fi
 GATE_FILE="$GATE_DIR/gate.md"
 
 if [ ! -f "$GATE_FILE" ]; then
-  echo "Gate definition not found: $GATE_FILE"
+  echo "[ERROR] Gate definition not found: $GATE_FILE"
   exit 1
 fi
 
