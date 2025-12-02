@@ -35,7 +35,7 @@ dependencies: []
 
 - **Type**: enum
 - **Required**: Yes
-- **Values**: `schema` | `constitution` | `worker` | `gate` | `aspect` | `phase` | `stage` | `task` | `progress`
+- **Values**: `schema` | `constitution` | `worker` | `gate` | `aspect` | `phase` | `stage` | `task` | `progress` | `discussion`
 - **Description**: Identifies the document category for routing and validation.
 
 ### status
@@ -74,6 +74,12 @@ dependencies: []
 | `in-progress` | Currently being worked on |
 | `completed` | Successfully finished |
 | `failed` | Did not complete successfully |
+
+**Discussion Documents** (`discussion`):
+| Value | Description |
+|-------|-------------|
+| `recording` | Discussion in progress, sessions can be added |
+| `archived` | Discussion complete, no more sessions |
 
 ### version
 
@@ -158,3 +164,4 @@ base.schema.md modified
 | `stage` | Specification | `draft`, `active`, `deprecated`, `archived` |
 | `task` | Specification | `draft`, `active`, `deprecated`, `archived` |
 | `progress` | Task | `pending`, `in-progress`, `completed`, `failed` |
+| `discussion` | Discussion | `recording`, `archived` |
