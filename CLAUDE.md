@@ -3,7 +3,7 @@
 
 ## Conversation Rules
 - **IMPORTANT** You must converse with the user in Korean, as it's their native language.
-- Writing documentation and code in English, but keep user-facing messages in Korean.
+- Always write code and comments in English, but keep the user-facing language in Korean.
 
 ## **Project Identity (MUST READ)**
 
