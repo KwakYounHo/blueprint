@@ -3,7 +3,7 @@
 
 ## Conversation Rules
 - **IMPORTANT** You must converse with the user in Korean, as it's their native language.
-- Always write code and comments in English, but keep the user-facing language in Korean.
+- Always write documents and code (including comments) in English, but keep the user-facing language in Korean.
 
 ## **Project Identity (MUST READ)**
 
@@ -20,11 +20,15 @@
 ### What Gets Copied vs What Stays
 | Item | Copied to Target? | Purpose |
 |------|-------------------|---------|
-| `templates/blueprint/*` | ✅ Yes → `blueprint/` | Framework core (schemas, constitutions, gates) |
-| `templates/claude-agents/*` | ✅ Yes → `.claude/agents/` | Worker definitions (Instructions) |
-| `templates/claude-skills/*` | ✅ Yes → `.claude/skills/` | Custom Skills (FrontMatter search, etc.) |
-| `commands/*` | ✅ Yes → `.claude/commands/` | Slash commands |
+| `core/claude/*` | ✅ Yes → `.claude/` | Claude Code config (agents, commands, skills) |
+| `core/constitutions/*` | ✅ Yes → `blueprint/constitutions/` | Principle definitions |
+| `core/forms/*` | ✅ Yes → `blueprint/forms/` | Handoff formats |
+| `core/front-matters/*` | ✅ Yes → `blueprint/front-matters/` | FrontMatter schemas |
+| `core/gates/*` | ✅ Yes → `blueprint/gates/` | Validation checkpoints |
+| `core/workflows/*` | ✅ Yes → `blueprint/workflows/` | Workflow templates |
+| `core/initializers/*` | ✅ Yes | Setup scripts |
 | `README.md` files (all) | ❌ No | Developer documentation only |
+| `blueprint/*` | ❌ No | Dogfooding - this project's own config |
 | `docs/adr/*` | ❌ No | Framework design decisions |
 
 ### Template Rules
@@ -41,19 +45,3 @@
 | **Essence** | Law to obey | Responsibility to fulfill |
 | **Location** | `blueprint/constitutions/` | `.claude/agents/` |
 | **Content** | Principles, Boundaries | Role, Workflow, Handoff format |
-
-## Project Structure
-```
-agent-docs/
-├── docs/adr/                 # Architecture Decision Records
-├── templates/
-│   ├── claude-agents/        # Worker definitions (Instructions)
-│   ├── claude-skills/        # Custom Skills (FrontMatter search, etc.)
-│   └── blueprint/
-│       ├── front-matters/    # FrontMatter Schema definitions ✅
-│       ├── constitutions/    # Principles ✅ Complete
-│       ├── gates/            # Validation checkpoints
-│       └── workflows/        # Work containers
-├── initializers/             # Setup scripts
-└── commands/                 # Slash commands
-```
