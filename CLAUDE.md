@@ -45,3 +45,14 @@
 | **Essence** | Law to obey | Responsibility to fulfill |
 | **Location** | `blueprint/constitutions/` | `.claude/agents/` |
 | **Content** | Principles, Boundaries | Role, Workflow, Handoff format |
+
+### Core vs Dogfooding
+
+| | Framework Core | Dogfooding |
+|---|----------------|------------|
+| **Location** | `core/*` | `blueprint/*`, `.claude/*` |
+| **Purpose** | Template for other projects | This project's own config |
+| **Placeholders** | `{{project-name}}`, `{{date}}` | Actual values filled in |
+
+- When modifying files, **clearly distinguish** whether it's a framework core change or a dogfooding change.
+- If uncertain which to modify → **ASK the user before proceeding**.
