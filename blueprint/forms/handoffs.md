@@ -93,3 +93,40 @@ handoff:
   summary: "{human-readable summary}"
 ```
 ---e
+
+[F]Orchestrator&[T]Annotator
+---s
+```yaml
+task:
+  action: annotate | revise
+  discussion: "{path/to/discussion/file.md}"
+  context: "{optional context or focus area}"
+  feedback: "{user feedback for revision, empty if action is annotate}"
+```
+---e
+
+[F]Annotator&[T]Orchestrator
+---s
+```yaml
+handoff:
+  status: completed | blocked
+  summary: "{what was annotated}"
+  artifacts:
+    - "{path/to/annotated/discussion.md}"
+  markers:
+    decisions: {count}
+    constraints: {count}
+    questions: {count}
+    alternatives: {count}
+  confirmation-prompt: |
+    I've identified the following key points:
+    - {N} decisions
+    - {N} constraints
+    - {N} open questions
+    - {N} alternatives
+
+    Is there anything I missed or misunderstood?
+  next-steps:
+    - "{recommended follow-up action}"
+```
+---e
