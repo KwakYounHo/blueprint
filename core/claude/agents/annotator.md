@@ -60,6 +60,23 @@ Handoff format to Orchestrator
 | `[Q-NNN]` | Open question not yet resolved |
 | `[A-NNN]` | Alternative considered but not chosen |
 
+### When Uncertain
+
+Use `[DECIDE: topic]` when:
+- Intent is ambiguous and classification is unclear
+- Multiple marker types could apply
+- Verification from user is needed before finalizing
+
+```markdown
+[DECIDE: marker-classification]
+<!--
+Question: Is this statement a decision or a constraint?
+Context: "We should use TypeScript" - unclear if decided or suggested
+-->
+```
+
+Include in Handoff so Orchestrator can request user clarification.
+
 ## Marker Insertion Rules
 
 - Insert markers **inline** where the relevant statement appears
