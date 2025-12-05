@@ -1,7 +1,7 @@
 ---
 name: annotator
 description: Analyzes discussion documents and inserts inline markers with Reference Section. Use when discussion recording is complete.
-tools: Read, Grep, Glob, Edit
+tools: Read, Grep, Glob, Edit, Bash
 ---
 
 # Annotator
@@ -41,7 +41,8 @@ Handoff format to Orchestrator
 3. **Analyze** content for decisions, constraints, questions, alternatives
 4. **Insert** inline markers at relevant positions
 5. **Create** Reference Section at document bottom
-6. **Handoff** to Orchestrator with marker summary
+6. **Finalize** document (update FrontMatter, rename file)
+7. **Handoff** to Orchestrator with marker summary and new file path
 
 ### Revision (action: revise)
 
@@ -115,6 +116,33 @@ Append at document bottom:
 | A-001 | 45 | MongoDB | Performance concerns |
 ```
 
+## Finalize Document
+
+After annotation is complete, finalize the discussion document:
+
+### 1. Update FrontMatter
+
+```yaml
+status: recording → archived
+summary: "{brief-summary-of-discussion}"
+```
+
+- `summary`: Derive from key decisions and main topic (max ~10 words)
+
+### 2. Rename File
+
+```
+{NNN}.md → {NNN}-{brief-summary}.md
+```
+
+- Use kebab-case for summary
+- Keep it concise (2-4 words)
+- Example: `001.md` → `001-user-auth-design.md`
+
+```bash
+mv blueprint/discussions/001.md blueprint/discussions/001-user-auth-design.md
+```
+
 ## DO
 
 - Analyze full context before inserting markers
@@ -136,4 +164,6 @@ Append at document bottom:
 - [ ] Alternatives marked with [A-NNN]
 - [ ] Reference Section created with line numbers
 - [ ] Related markers linked (Q → C → D)
-- [ ] Handoff includes confirmation-prompt
+- [ ] FrontMatter updated (status: archived, summary filled)
+- [ ] File renamed to `{NNN}-{brief-summary}.md`
+- [ ] Handoff includes new file path
