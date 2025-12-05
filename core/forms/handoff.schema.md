@@ -1,6 +1,16 @@
+---
+type: schema
+status: draft
+version: 1.0.0
+created: "{{date}}"
+updated: "{{date}}"
+tags: [schema, handoff, worker, communication]
+dependencies: []
+---
+
 # Handoff Forms
 
-Worker 간 통신 양식 정의.
+Defines communication forms between Workers.
 
 Use **Hermes** skill to view specific forms: `hermes orchestrator specifier`
 
@@ -13,6 +23,7 @@ task:
   action: specify
   workflow-id: "{NNN-description}"
   requirements: "{clarified-requirements}"
+  discussion: "{path/to/discussion.md}"  # optional
 ```
 ---e
 
@@ -23,12 +34,12 @@ handoff:
   status: completed | blocked
   summary: "{what was created/modified}"
   artifacts:
-    - "{path/to/created/file.md}"
+    - "{blueprint/workflows/NNN-desc/spec.md}"
+    # or when from discussion:
+    # - "{blueprint/discussions/NNN-topic.context.md}"
   decide-markers:
     - location: "{file:line}"
       question: "{question requiring user decision}"
-  next-steps:
-    - "{recommended follow-up action}"
 ```
 ---e
 
@@ -62,7 +73,7 @@ handoff:
 [F]Orchestrator&[T]Reviewer
 ---s
 ```yaml
-handoff:
+task:
   action: review
   document: "{path/to/artifact}"
   gate: specification | implementation | documentation
@@ -85,11 +96,19 @@ handoff:
     required:
       - criterion: "{criterion-name}"
         status: pass | fail
-        violations: []
+        violations:
+          - location: "{file:line or section}"
+            expected: "{what was expected}"
+            actual: "{what was found}"
+            suggestion: "{how to fix}"
     recommended:
       - criterion: "{criterion-name}"
         status: pass | fail
-        violations: []
+        violations:
+          - location: "{file:line or section}"
+            expected: "{what was expected}"
+            actual: "{what was found}"
+            suggestion: "{how to fix}"
   summary: "{human-readable summary}"
 ```
 ---e
@@ -112,12 +131,15 @@ handoff:
   status: completed | blocked
   summary: "{what was annotated}"
   artifacts:
-    - "{path/to/annotated/discussion.md}"
+    - "{blueprint/discussions/NNN-brief-summary.md}"
   markers:
     decisions: {count}
     constraints: {count}
     questions: {count}
     alternatives: {count}
+  decide-markers:
+    - location: "{file:line}"
+      question: "{question requiring user decision}"
   confirmation-prompt: |
     I've identified the following key points:
     - {N} decisions
@@ -126,7 +148,5 @@ handoff:
     - {N} alternatives
 
     Is there anything I missed or misunderstood?
-  next-steps:
-    - "{recommended follow-up action}"
 ```
 ---e
