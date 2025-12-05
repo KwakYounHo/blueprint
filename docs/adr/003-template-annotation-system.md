@@ -2,12 +2,12 @@
 id: "003"
 title: Template Annotation System
 created: 2025-11-28
-status: accepted
+status: superseded
 scope: implementation
 tags: [annotation, template, placeholder, llm, initialization]
 related: ["002"]
 supersedes: null
-superseded-by: null
+superseded-by: "004"
 ---
 
 # ADR-003: Template Annotation System
