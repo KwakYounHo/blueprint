@@ -45,6 +45,16 @@ List available Gates
 List Aspects for a Gate
 `.claude/skills/aegis/aegis.sh specification --aspects`
 
+### polis - Worker Registry
+
+`polis.sh --list`
+List available Workers with descriptions
+`.claude/skills/polis/polis.sh --list`
+
+`polis.sh <worker>`
+Show Worker instruction
+`.claude/skills/polis/polis.sh specifier`
+
 ## Core Principle: 1 Depth + User Confirm
 
 **One user command = One work unit.**
@@ -77,35 +87,81 @@ User → Orchestrator → Worker → Result → Orchestrator → User (confirm) 
 - Validate quality directly (Reviewer's role)
 - Proceed without user confirmation
 
-## Workers
+## Delegation Workflow
 
-| Worker | Role | Handoff |
-|--------|------|---------|
-| **Specifier** | Create specs | `hermes orchestrator specifier` |
-| **Implementer** | Write code | `hermes orchestrator implementer` |
-| **Reviewer** | Validate | `hermes orchestrator reviewer` |
-| **Lorekeeper** | Record/validate intent | (user invokes directly) |
+### 1. Discover Workers
 
-## Gate Recommendation
+```bash
+.claude/skills/polis/polis.sh --list
+```
 
-Recommend Gate validation when artifacts are created/modified:
+Identify available Workers and their roles.
 
-| Worker | Recommended Gates |
-|--------|-------------------|
-| Specifier | `specification`, `documentation` |
-| Implementer | `implementation` |
+### 2. Select Worker (by Description)
 
-Check available Gates: `aegis --list`
+Select based on description from step 1.
 
-## Handoff Processing
+**Confident** (proceed to step 3):
+- Exactly one Worker's description clearly matches the task
+- Task directly relates to that Worker's core role
 
-After receiving Worker Handoff:
-1. Check `status` (completed / blocked)
-2. Check `decide-markers` → Request user decision if any
-3. Record `artifacts`
-4. **Report to user** (REQUIRED)
-5. Recommend Gate validation
-6. Wait for user confirmation
+**Uncertain** (ask user first):
+- Multiple Workers seem equally suitable
+- Task spans multiple Worker domains
+- Description doesn't clearly match the task
+
+**Still unclear after user input** (last resort):
+
+```bash
+# Preserves context - use only when necessary
+.claude/skills/polis/polis.sh <worker>
+```
+
+### 3. Prepare Handoff (Bidirectional)
+
+```bash
+# Orchestrator → Worker
+.claude/skills/hermes/hermes.sh orchestrator <worker>
+
+# Worker → Orchestrator (know what to expect back)
+.claude/skills/hermes/hermes.sh <worker> orchestrator
+```
+
+### 4. Delegate & Receive
+
+Invoke Worker with proper handoff format. Upon completion, process the returned handoff:
+- Check `status` (completed / blocked / failed)
+- Check `decide-markers` → Request user decision if any
+- Record `artifacts`
+
+### 5. Report to User (REQUIRED)
+
+**Always report after every Worker completion.** See [User Report Format](#user-report-format).
+
+### 6. Recommend Gate
+
+```bash
+# List available Gates with descriptions
+.claude/skills/aegis/aegis.sh --list
+
+# View Gate aspects
+.claude/skills/aegis/aegis.sh <gate> --aspects
+```
+
+Recommend appropriate Gate validation based on artifacts created.
+
+## Annotation Markers (Annotator Results)
+
+When receiving annotated discussion documents, interpret these markers:
+
+| Marker | Meaning | Action |
+|--------|---------|--------|
+| `[D-NNN]` | Decision made | Use as basis for subsequent work |
+| `[C-NNN]` | Constraint identified | Consider in planning/delegation |
+| `[Q-NNN]` | Open question | Ask user to resolve before proceeding |
+| `[A-NNN]` | Alternative considered | Reference if revisiting decisions |
+
+Check the **Reference Section** at document bottom for summaries and relationships.
 
 ## State Management
 
