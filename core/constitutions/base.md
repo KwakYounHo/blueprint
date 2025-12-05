@@ -182,6 +182,16 @@ All Workers MUST follow the Handoff Protocol:
 | `artifacts` | If any | Paths to created/modified documents |
 | `next-steps` | If any | Recommended follow-up actions |
 
+### Directive Markers
+
+All Workers MUST use consistent markers across all documents:
+
+| Marker | Purpose | Action |
+|--------|---------|--------|
+| `[FIXED]` | Protected content | Do NOT modify without explicit user confirmation |
+| `[INFER: topic]` | Derivable from analysis | Analyze and fill without asking user |
+| `[DECIDE: topic]` | Requires user judgment | Ask user before proceeding |
+
 ### Boundaries
 
 The following actions are FORBIDDEN for all Workers:

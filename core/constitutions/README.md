@@ -190,9 +190,9 @@ If a Constitution is `archived`, Reviewer should:
 
 ---
 
-## Template Annotations
+## Directive Markers
 
-Constitution templates use a four-level annotation system (`[FIXED]`, `[INFER]`, `[DECIDE]`, `[ADAPT]`) for LLM-guided initialization. See [ADR-003](../../../docs/adr/003-template-annotation-system.md) for details.
+Constitution templates use a three-marker system (`[FIXED]`, `[INFER]`, `[DECIDE]`) usable by any Worker in any context. See [ADR-004](../../../docs/adr/004-marker-convention-system.md) for details.
 
 ---
 
@@ -202,4 +202,4 @@ Constitution templates use a four-level annotation system (`[FIXED]`, `[INFER]`,
 - `../../claude-agents/` for Instruction (Worker behavior) definitions
 - `../gates/` for validation criteria
 - [ADR-002](../../../docs/adr/002-constitution-instruction-separation.md) for Constitution/Instruction separation
-- [ADR-003](../../../docs/adr/003-template-annotation-system.md) for template annotation system
+- [ADR-004](../../../docs/adr/004-marker-convention-system.md) for marker convention system
