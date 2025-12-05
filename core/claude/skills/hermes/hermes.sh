@@ -8,7 +8,7 @@
 
 set -e
 
-FORMS_FILE="blueprint/forms/handoffs.md"
+FORMS_FILE="blueprint/forms/handoff.schema.md"
 
 # Check if forms file exists
 if [ ! -f "$FORMS_FILE" ]; then

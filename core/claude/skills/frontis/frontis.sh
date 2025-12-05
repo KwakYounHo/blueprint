@@ -112,6 +112,11 @@ do_schema() {
   fi
 
   # Show specific schema
+  # "schema" type uses base.schema.md (avoids self-referential schema.schema.md)
+  if [ "$type" = "schema" ]; then
+    type="base"
+  fi
+
   local schema_file="$SCHEMA_DIR/${type}.schema.md"
 
   if [ ! -f "$schema_file" ]; then
