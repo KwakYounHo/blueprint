@@ -12,7 +12,34 @@ set -e
 
 GATES_DIR="blueprint/gates"
 
-# Helper: list all gates
+# Extract FrontMatter from file (between first and second ---)
+get_frontmatter() {
+  local file="$1"
+  awk '/^---$/{if(++c==2)exit}c' "$file" 2>/dev/null
+}
+
+# Extract field value from FrontMatter
+get_field() {
+  local frontmatter="$1"
+  local field="$2"
+  echo "$frontmatter" | grep "^${field}:" | sed "s/^${field}:[[:space:]]*//" | sed 's/^"//' | sed 's/"$//'
+}
+
+# Extract description from FrontMatter (proper YAML parsing)
+get_description() {
+  local file="$1"
+  local frontmatter
+  frontmatter=$(get_frontmatter "$file")
+  local desc
+  desc=$(get_field "$frontmatter" "description")
+  if [ -z "$desc" ]; then
+    echo "(no description)"
+  else
+    echo "$desc"
+  fi
+}
+
+# Helper: list all gates with descriptions
 list_gates() {
   if [ ! -d "$GATES_DIR" ]; then
     echo "[ERROR] Gates directory not found: $GATES_DIR"
@@ -26,7 +53,13 @@ list_gates() {
     if [ -d "$dir" ]; then
       name=$(basename "$dir")
       if [ "$name" != "README.md" ]; then
-        echo "  - $name"
+        local gate_file="$dir/gate.md"
+        if [ -f "$gate_file" ]; then
+          desc=$(get_description "$gate_file")
+          printf "  %-20s %s\n" "$name" "$desc"
+        else
+          printf "  %-20s %s\n" "$name" "(no gate.md)"
+        fi
         found=1
       fi
     fi
@@ -37,7 +70,7 @@ list_gates() {
   fi
 }
 
-# Helper: list aspects for a gate
+# Helper: list aspects for a gate with descriptions
 list_aspects() {
   local gate="$1"
   local aspects_dir="$GATES_DIR/$gate/aspects"
@@ -53,7 +86,8 @@ list_aspects() {
   for file in "$aspects_dir"/*.md; do
     if [ -f "$file" ]; then
       name=$(basename "$file" .md)
-      echo "  - $name"
+      desc=$(get_description "$file")
+      printf "  %-25s %s\n" "$name" "$desc"
       found=1
     fi
   done
