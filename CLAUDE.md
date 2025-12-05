@@ -48,13 +48,21 @@
 | **Location** | `blueprint/constitutions/` | `.claude/agents/` |
 | **Content** | Principles, Boundaries | Role, Workflow, Handoff format |
 
-### Core vs Dogfooding
+### Symlink Structure (Development Only)
 
-| | Framework Core | Dogfooding |
-|---|----------------|------------|
-| **Location** | `core/*` | `blueprint/*`, `.claude/*` |
-| **Purpose** | Template for other projects | This project's own config |
-| **Placeholders** | `{{project-name}}`, `{{date}}` | Actual values filled in |
+This repository uses symlinks to avoid duplicate maintenance:
 
-- When modifying files, **clearly distinguish** whether it's a framework core change or a dogfooding change.
-- If uncertain which to modify → **ASK the user before proceeding**.
+| Path | Type | Edit Target |
+|------|------|-------------|
+| `.claude/agents/` | symlink | `core/claude/agents/` |
+| `.claude/skills/` | symlink | `core/claude/skills/` |
+| `.claude/commands/` | symlink | `core/claude/commands/` |
+| `blueprint/forms/` | symlink | `core/forms/` |
+| `blueprint/front-matters/` | symlink | `core/front-matters/` |
+| `blueprint/gates/` | symlink | `core/gates/` |
+| `blueprint/constitutions/workers/` | symlink | `core/constitutions/workers/` |
+| `blueprint/constitutions/base.md` | **real file** | Edit directly |
+| `blueprint/discussions/` | **real dir** | Project data |
+| `blueprint/workflows/` | **real dir** | Project data |
+
+**Rule**: If editing a symlinked path, modify the `core/` source instead.
