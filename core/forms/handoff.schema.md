@@ -113,40 +113,52 @@ handoff:
 ```
 ---e
 
-[F]Orchestrator&[T]Annotator
+[F]Specifier&[T]Lexer
 ---s
 ```yaml
 task:
-  action: annotate | revise
-  discussion: "{path/to/discussion/file.md}"
-  context: "{optional context or focus area}"
-  feedback: "{user feedback for revision, empty if action is annotate}"
+  action: tokenize
+  discussion: "{path/to/discussion.md}"
 ```
 ---e
 
-[F]Annotator&[T]Orchestrator
+[F]Lexer&[T]Specifier
 ---s
 ```yaml
 handoff:
   status: completed | blocked
-  summary: "{what was annotated}"
+  summary: "{what was tokenized}"
   artifacts:
-    - "{blueprint/discussions/NNN-brief-summary.md}"
-  markers:
+    - "{path/to/discussion.tokens.yaml}"
+  token-summary:
     decisions: {count}
     constraints: {count}
     questions: {count}
     alternatives: {count}
-  decide-markers:
-    - location: "{file:line}"
-      question: "{question requiring user decision}"
-  confirmation-prompt: |
-    I've identified the following key points:
-    - {N} decisions
-    - {N} constraints
-    - {N} open questions
-    - {N} alternatives
+    problems: {count}
+    reasoning: {count}
+```
+---e
 
-    Is there anything I missed or misunderstood?
+[F]Specifier&[T]Parser
+---s
+```yaml
+task:
+  action: parse
+  tokens: "{path/to/discussion.tokens.yaml}"
+```
+---e
+
+[F]Parser&[T]Specifier
+---s
+```yaml
+handoff:
+  status: completed | blocked
+  summary: "{what was parsed}"
+  artifacts:
+    - "{path/to/discussion.ast.yaml}"
+  node-summary:
+    total: {count}
+    relationships: {count}
 ```
 ---e
