@@ -6,11 +6,26 @@
 #   frontis show <file> [file...]            Show frontmatter of file(s)
 #   frontis schema <type>                    View schema definition
 #   frontis schema --list                    List available schemas
+#
+# Supports both Markdown (.md) and YAML (.yaml) files
 
 set -e
 
 COMMAND="$1"
 SCHEMA_DIR="blueprint/front-matters"
+
+# === HELPER: Extract FrontMatter ===
+extract_frontmatter() {
+  local file="$1"
+
+  if [[ "$file" == *.yaml ]]; then
+    # YAML: entire file is structured data, treat top-level as frontmatter
+    cat "$file" 2>/dev/null
+  else
+    # Markdown: extract --- block
+    awk '/^---$/{if(++c==2)exit}c' "$file" 2>/dev/null
+  fi
+}
 
 # === SEARCH ===
 do_search() {
@@ -22,8 +37,9 @@ do_search() {
     echo "Usage: frontis search <field> <value> [path]"
     echo ""
     echo "Examples:"
-    echo "  frontis search type task"
-    echo "  frontis search status active blueprint/"
+    echo "  frontis search type spec"
+    echo "  frontis search status complete specs/"
+    echo "  frontis search spec-type implementation specs/lib/"
     exit 1
   fi
 
@@ -34,13 +50,14 @@ do_search() {
   fi
 
   local found=0
+  # Search both .md and .yaml files
   while IFS= read -r file; do
-    frontmatter=$(awk '/^---$/{if(++c==2)exit}c' "$file" 2>/dev/null)
+    frontmatter=$(extract_frontmatter "$file")
     if echo "$frontmatter" | grep -q "^${field}: *${value}"; then
       echo "$file"
       found=1
     fi
-  done < <(find "$search_path" -name "*.md" -type f 2>/dev/null)
+  done < <(find "$search_path" \( -name "*.md" -o -name "*.yaml" \) -type f 2>/dev/null)
 
   if [ "$found" -eq 0 ]; then
     echo "[INFO] No documents found with ${field}: ${value} in ${search_path}"
@@ -53,8 +70,8 @@ do_show() {
     echo "Usage: frontis show <file> [file...]"
     echo ""
     echo "Examples:"
-    echo "  frontis show blueprint/tasks/task-001.md"
-    echo "  frontis show file1.md file2.md file3.md"
+    echo "  frontis show blueprint/discussions/001.md"
+    echo "  frontis show specs/lib/prompt/spec.yaml"
     exit 1
   fi
 
@@ -67,7 +84,13 @@ do_show() {
     fi
 
     echo "=== $file ==="
-    awk '/^---$/{if(++c==2){print "---"; exit}}{if(c)print}' "$file" 2>/dev/null
+    if [[ "$file" == *.yaml ]]; then
+      # YAML: show entire file (it's all structured data)
+      cat "$file" 2>/dev/null
+    else
+      # Markdown: show frontmatter block only
+      awk '/^---$/{if(++c==2){print "---"; exit}}{if(c)print}' "$file" 2>/dev/null
+    fi
     echo ""
   done
 }
@@ -106,8 +129,9 @@ do_schema() {
     echo "       frontis schema --list"
     echo ""
     echo "Examples:"
-    echo "  frontis schema task"
-    echo "  frontis schema aspect"
+    echo "  frontis schema spec"
+    echo "  frontis schema tokens"
+    echo "  frontis schema ast"
     exit 1
   fi
 
@@ -158,10 +182,13 @@ case "$COMMAND" in
     echo "  frontis schema <type>                    View schema"
     echo "  frontis schema --list                    List schemas"
     echo ""
+    echo "Supported file types: .md, .yaml"
+    echo ""
     echo "Examples:"
-    echo "  frontis search type task"
-    echo "  frontis show blueprint/tasks/task-001.md"
-    echo "  frontis schema aspect"
+    echo "  frontis search type spec"
+    echo "  frontis search status complete specs/"
+    echo "  frontis show specs/lib/prompt/spec.yaml"
+    echo "  frontis schema spec"
     exit 1
     ;;
 esac
