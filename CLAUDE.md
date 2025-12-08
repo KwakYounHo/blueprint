@@ -27,9 +27,9 @@
 | `core/forms/*` | ✅ Yes → `blueprint/forms/` | Handoff formats |
 | `core/front-matters/*` | ✅ Yes → `blueprint/front-matters/` | FrontMatter schemas |
 | `core/gates/*` | ✅ Yes → `blueprint/gates/` | Validation checkpoints |
-| `core/workflows/*` | ✅ Yes → `blueprint/workflows/` | Workflow templates |
+| `core/specs/*` | ✅ Yes → `blueprint/specs/` | Specification templates |
 | `core/initializers/*` | ✅ Yes | Setup scripts |
-| `README.md` files (all) | ❌ No | Developer documentation only |
+| `README.md` files | ❌ No | Written at 0.1.0 release |
 | `blueprint/*` | ❌ No | Dogfooding - this project's own config |
 | `docs/adr/*` | ❌ No | Framework design decisions |
 
@@ -63,6 +63,6 @@ This repository uses symlinks to avoid duplicate maintenance:
 | `blueprint/constitutions/workers/` | symlink | `core/constitutions/workers/` |
 | `blueprint/constitutions/base.md` | **real file** | Edit directly |
 | `blueprint/discussions/` | **real dir** | Project data |
-| `blueprint/workflows/` | **real dir** | Project data |
+| `blueprint/specs/` | **real dir** | Project data |
 
 **Rule**: If editing a symlinked path, modify the `core/` source instead.
