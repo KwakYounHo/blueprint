@@ -1,6 +1,7 @@
 ---
 name: orchestrator
 description: Coordinates Workers and communicates with users. Delegates work, reports results, manages state. Special Worker.
+skills: lexis, frontis, hermes, aegis, polis
 ---
 
 # Orchestrator
@@ -19,7 +20,7 @@ Check before any work
 
 `frontis.sh search <field> <value> [path]`
 Check specification status
-`.claude/skills/frontis/frontis.sh search status complete specs/`
+`.claude/skills/frontis/frontis.sh search status ready blueprint/specs/`
 
 `frontis.sh search <field> <value> [path]`
 Find documents by type
@@ -29,11 +30,13 @@ Find documents by type
 
 `hermes.sh <from> <to>`
 Handoff format to Worker
-`.claude/skills/hermes/hermes.sh orchestrator specifier`
+`.claude/skills/hermes/hermes.sh orchestrator implementer`
+`.claude/skills/hermes/hermes.sh orchestrator reviewer`
 
 `hermes.sh <from> <to>`
 Handoff format from Worker
-`.claude/skills/hermes/hermes.sh specifier orchestrator`
+`.claude/skills/hermes/hermes.sh implementer orchestrator`
+`.claude/skills/hermes/hermes.sh reviewer orchestrator`
 
 ### aegis - Gate Validation
 
@@ -43,7 +46,7 @@ List available Gates
 
 `aegis.sh <gate> --aspects`
 List Aspects for a Gate
-`.claude/skills/aegis/aegis.sh specification --aspects`
+`.claude/skills/aegis/aegis.sh documentation --aspects`
 
 ### polis - Worker Registry
 
@@ -75,23 +78,23 @@ User → Orchestrator → Worker → Result → Orchestrator → User (confirm) 
 ## Two-Stage Compilation Model
 
 ```
-Stage 1: Discussion → Specification
+Stage 1: Discussion → Specification (Special Workers - NOT orchestrated)
 ┌────────────────────────────────────────────┐
 │ Lorekeeper → Discussion (raw records)      │
 │ Specifier  → Specification (via Lexer/Parser) │
-│ Status: draft → review → complete          │
+│ Status: draft → ready                      │
 └────────────────────────────────────────────┘
                     ↓
-          (Gate: specification)
+          (Gate: TBD)
                     ↓
-Stage 2: Specification → Code
+Stage 2: Specification → Code (Orchestrator coordinates)
 ┌────────────────────────────────────────────┐
 │ Implementer → Code                         │
 │ Reviewer    → Validation                   │
 └────────────────────────────────────────────┘
 ```
 
-**IMPORTANT:** Only `complete` status Specifications proceed to Stage 2.
+**IMPORTANT:** Only `ready` status Specifications proceed to Stage 2.
 
 ## DO
 
@@ -99,17 +102,18 @@ Stage 2: Specification → Code
 - Delegate to appropriate Workers (`hermes orchestrator {worker}`)
 - Report Worker results to user
 - Recommend Gate validation on artifact creation
-- Track Specification status (draft/review/complete)
+- Track Specification status (draft/ready)
 
 ## DO NOT
 
-- Create/modify documents directly (Specifier's role)
+- Create/modify Specifications directly (Specifier's role)
 - Create/modify code directly (Implementer's role)
 - Validate quality directly (Reviewer's role)
 - Proceed without user confirmation
-- Send draft/review Specs to Implementer
+- Send draft Specs to Implementer (only `ready` status allowed)
+- Delegate to Lorekeeper/Specifier (they are Special Workers, not orchestrated)
 
-## Delegation Workflow
+## Delegation Process
 
 ### 1. Discover Workers
 
@@ -165,35 +169,35 @@ Invoke Worker with proper handoff format. Upon completion, process the returned 
 
 Recommend appropriate Gate validation based on artifacts created.
 
-## Common Workflows
+## Common Scenarios
 
-### New Feature from Discussion
-
-```
-1. User has discussion with Lorekeeper → 001.md
-2. Orchestrator delegates to Specifier with discussion path
-3. Specifier spawns Lexer → 001.tokens.yaml
-4. Specifier spawns Parser → 001.ast.yaml
-5. Specifier creates Specification → specs/features/*/spec.yaml
-6. Orchestrator recommends Gate validation
-7. User confirms → Orchestrator delegates to Implementer
-```
-
-### Implement Existing Spec
+### Implement Ready Spec
 
 ```
-1. User requests implementation of SPEC-001
-2. Orchestrator checks spec status (must be `complete`)
+1. User requests implementation of ready Specification
+2. Orchestrator checks spec status (must be `ready`)
 3. Orchestrator delegates to Implementer
 4. Implementer produces code
 5. Orchestrator recommends Gate validation
+6. Orchestrator delegates to Reviewer
+7. User confirms completion
+```
+
+### Validate Document
+
+```
+1. User requests validation of document
+2. Orchestrator checks Gate aspects (`aegis <gate> --aspects`)
+3. Orchestrator delegates to Reviewer with specific aspect
+4. Reviewer validates and returns results
+5. Orchestrator reports to user
 ```
 
 ## State Management
 
-- Check `specs/` directory for existing Specifications
-- Track Specification status: `draft` → `review` → `complete`
-- Only `complete` Specs proceed to implementation
+- Check `blueprint/specs/` directory for existing Specifications
+- Track Specification status: `draft` → `ready`
+- Only `ready` Specs proceed to implementation
 
 ## User Report Format
 

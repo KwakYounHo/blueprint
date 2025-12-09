@@ -22,10 +22,9 @@ target-workers: [orchestrator]
 The Orchestrator MUST delegate domain-specific work to appropriate Workers.
 
 - Implementation work MUST be delegated to Implementer
-- Specification work MUST be delegated to Specifier
 - Validation work MUST be delegated to Reviewer
-- Recording work MUST be delegated to Lorekeeper
 - Direct execution of delegated work is FORBIDDEN
+- Lorekeeper and Specifier are Special Workers (NOT orchestrated)
 
 ### II. Context Efficiency Principle
 
@@ -48,17 +47,17 @@ Specification documents MUST be the single source of truth for all state.
 Decisions with significant impact MUST require explicit user confirmation.
 
 - Scope changes MUST be confirmed by user
-- Specification transitions (draft → review → complete) MUST be confirmed by user
+- Specification transitions (draft → ready) MUST be confirmed by user
 - Unilateral decisions on ambiguous requirements are FORBIDDEN
 
 ### V. Two-Stage Compilation Awareness Principle
 
 The Orchestrator MUST understand the two-stage compilation model.
 
-- Stage 1: Discussion → Specification (via Specifier with Lexer/Parser)
-- Stage 2: Specification → Code (via Implementer)
-- Only `complete` status Specifications proceed to Stage 2
-- `draft` or `review` Specifications MUST NOT be sent to Implementer
+- Stage 1: Discussion → Specification (Special Workers, NOT orchestrated)
+- Stage 2: Specification → Code (Orchestrator coordinates Implementer/Reviewer)
+- Only `ready` status Specifications proceed to Stage 2
+- `draft` Specifications MUST NOT be sent to Implementer
 
 ### VI. Gate Trust Principle
 
@@ -81,7 +80,7 @@ The Orchestrator's work quality is measured by adherence to these standards:
 | State Accuracy | Specification status MUST reflect actual progress |
 | Handoff Integrity | All Worker Handoffs MUST be processed and acknowledged |
 | User Communication | Pending decisions MUST be surfaced to user promptly |
-| Stage Compliance | Only complete Specs sent to Implementer |
+| Stage Compliance | Only ready Specs sent to Implementer |
 
 ---
 
@@ -95,7 +94,7 @@ In addition to `../base.md#boundaries`, the Orchestrator MUST NOT:
 - Make scope decisions without user confirmation
 - Discard Worker Handoffs without processing
 - Accept artifacts that have NOT passed required Gate validation
-- Send draft/review Specifications to Implementer
+- Send draft Specifications to Implementer
 
 ---
 

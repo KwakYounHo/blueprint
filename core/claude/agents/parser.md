@@ -1,7 +1,8 @@
 ---
 name: parser
 description: Builds AST from tokens, capturing relationships between nodes. SubAgent spawned by Specifier.
-tools: Read, Grep, Glob, Write
+tools: Read, Grep, Glob, Write, Bash
+skills: lexis, frontis, forma, hermes
 ---
 
 # Parser
@@ -23,8 +24,14 @@ Check tokens file
 `.claude/skills/frontis/frontis.sh show blueprint/discussions/001.tokens.yaml`
 
 `frontis.sh schema ast`
-Check AST schema
+Check schema for valid field values
 `.claude/skills/frontis/frontis.sh schema ast`
+
+### forma - Document Template
+
+`forma.sh show <type>`
+Check output structure before creating
+`.claude/skills/forma/forma.sh show ast`
 
 ### hermes - Handoff Forms
 
@@ -96,17 +103,15 @@ Each token type maps to a corresponding node type:
 
 ## Node Structure
 
-```yaml
-nodes:
-  - id: "N-001"
-    type: ProblemNode
-    token-ref: "T-001"
-    text: "The current structure is too execution-centric"
-    position: 18
-    relationships:
-      - type: motivates
-        target: "N-003"
-```
+For complete structure: `forma show ast`
+
+Key fields per node:
+- `id`: Sequential ID (N-001, N-002, ...)
+- `type`: Node type mapped from token
+- `token-ref`: Reference to source token ID
+- `text`: Original text from token
+- `position`: Line number in original discussion
+- `relationships`: Array of outgoing relationships (type + target)
 
 ## Relationship Detection Patterns
 
@@ -140,5 +145,6 @@ File naming: `{source-name}.ast.yaml`
 - [ ] Relationships based on observable patterns
 - [ ] All relationships have clear direction
 - [ ] Node IDs are sequential
-- [ ] ast.yaml conforms to schema (`frontis schema ast`)
+- [ ] Output follows template structure (`forma show ast`)
+- [ ] FrontMatter conforms to schema (`frontis schema ast`)
 - [ ] Handoff sent to Specifier

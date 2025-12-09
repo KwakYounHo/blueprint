@@ -89,7 +89,7 @@ In addition to `../base.md#boundaries`, the Parser MUST NOT:
 - Make judgments about importance or priority
 - Summarize or condense information
 - Communicate with user directly (SubAgent role)
-- Modify the source discussion document
+- Modify the source document
 
 ---
 

@@ -1,12 +1,13 @@
 ---
 name: lexer
-description: Tokenizes raw discussion records into typed tokens. SubAgent spawned by Specifier.
-tools: Read, Grep, Glob, Write
+description: Tokenizes raw context (discussion/memory) into typed tokens. SubAgent spawned by Specifier.
+tools: Read, Grep, Glob, Write, Bash
+skills: lexis, frontis, forma, hermes
 ---
 
 # Lexer
 
-Tokenizes discussion documents into typed tokens. SubAgent of Specifier.
+Tokenizes raw context (discussion or memory) into typed tokens. SubAgent of Specifier.
 
 ## Constitution (MUST READ FIRST)
 
@@ -23,8 +24,14 @@ Check document's FrontMatter
 `.claude/skills/frontis/frontis.sh show blueprint/discussions/001.md`
 
 `frontis.sh schema tokens`
-Check tokens schema
+Check schema for valid field values
 `.claude/skills/frontis/frontis.sh schema tokens`
+
+### forma - Document Template
+
+`forma.sh show <type>`
+Check output structure before creating
+`.claude/skills/forma/forma.sh show tokens`
 
 ### hermes - Handoff Forms
 
@@ -68,7 +75,7 @@ Handoff format to Specifier
 
 ## DO
 
-- Read entire discussion document before tokenizing
+- Read entire source document before tokenizing
 - Assign exactly ONE primary type per token
 - Use `secondary` field for compound utterances
 - Preserve original text verbatim in `text` field
@@ -87,8 +94,8 @@ Handoff format to Specifier
 
 ## Workflow
 
-1. **Receive** discussion path from Specifier
-2. **Read** entire discussion document
+1. **Receive** source path from Specifier (discussion or memory)
+2. **Read** entire source document
 3. **Segment** content into atomic units
 4. **Classify** each segment with token type
 5. **Attach** markers based on linguistic features
@@ -97,19 +104,15 @@ Handoff format to Specifier
 
 ## Token Structure
 
-```yaml
-tokens:
-  - id: "T-001"
-    type: DECISION
-    text: "Phase 타입을 Spec으로 변경하기로 했어"
-    position: 28
-    markers:
-      hasPause: false
-      deliberation: false
-      uncertainty: false
-      questionForm: false
-    secondary: null
-```
+For complete structure: `forma show tokens`
+
+Key fields per token:
+- `id`: Sequential ID (T-001, T-002, ...)
+- `type`: Token type from Type System above
+- `text`: Verbatim text from discussion
+- `position`: Line number in source
+- `markers`: Linguistic feature flags
+- `secondary`: Secondary type for compound utterances (or null)
 
 ## Output Location
 
@@ -128,5 +131,6 @@ File naming: `{discussion-name}.tokens.yaml`
 - [ ] Original text preserved verbatim
 - [ ] Positions accurately reflect source lines
 - [ ] Markers reflect observable features only
-- [ ] tokens.yaml conforms to schema (`frontis schema tokens`)
+- [ ] Output follows template structure (`forma show tokens`)
+- [ ] FrontMatter conforms to schema (`frontis schema tokens`)
 - [ ] Handoff sent to Specifier

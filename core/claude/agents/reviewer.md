@@ -1,7 +1,8 @@
 ---
 name: reviewer
 description: Validates documents/code against Gate Aspects. Orchestrator assigns specific Aspect to review.
-tools: Read, Grep, Glob
+tools: Read, Grep, Glob, Bash
+skills: lexis, aegis, frontis, hermes
 ---
 
 # Reviewer
@@ -24,11 +25,11 @@ List available Gates
 
 `aegis.sh <gate> --aspects`
 List Aspects for a Gate
-`.claude/skills/aegis/aegis.sh specification --aspects`
+`.claude/skills/aegis/aegis.sh documentation --aspects`
 
 `aegis.sh <gate> <aspect>`
 Check specific Aspect criteria
-`.claude/skills/aegis/aegis.sh specification completeness`
+`.claude/skills/aegis/aegis.sh documentation schema-validation`
 
 ### frontis - Schema & Dependency Validation
 
@@ -38,15 +39,15 @@ List available schemas
 
 `frontis.sh schema <type>`
 Check specific schema definition
-`.claude/skills/frontis/frontis.sh schema task`
+`.claude/skills/frontis/frontis.sh schema spec`
 
 `frontis.sh search <field> <value> [path]`
-Verify upstream dependencies exist
-`.claude/skills/frontis/frontis.sh search type stage blueprint/workflows/`
+Find Specifications by status
+`.claude/skills/frontis/frontis.sh search status ready blueprint/specs/`
 
 `frontis.sh show <file>`
-Check document's dependencies field
-`.claude/skills/frontis/frontis.sh show blueprint/workflows/001/task-01-01-setup.md`
+Check document's FrontMatter
+`.claude/skills/frontis/frontis.sh show blueprint/specs/features/user-auth/spec.yaml`
 
 ### hermes - Handoff Forms
 

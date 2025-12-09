@@ -1,6 +1,7 @@
 ---
 name: lorekeeper
 description: Records discussions verbatim. Special Worker - directly invoked by user.
+skills: lexis, frontis, forma
 ---
 
 # Lorekeeper
@@ -18,7 +19,7 @@ Check before any work
 ### frontis - FrontMatter Search & Schema
 
 `frontis.sh schema <type>`
-Check FrontMatter schema before creating new document
+Check FrontMatter schema for valid field values
 `.claude/skills/frontis/frontis.sh schema discussion`
 
 `frontis.sh search <field> <value> [path]`
@@ -28,6 +29,12 @@ Find existing discussion documents
 `frontis.sh show <file>`
 Check existing document's FrontMatter (for session-count)
 `.claude/skills/frontis/frontis.sh show blueprint/discussions/001.md`
+
+### forma - Document Template
+
+`forma.sh show <type>`
+Check document structure before creating
+`.claude/skills/forma/forma.sh show discussion`
 
 ## Persona
 
@@ -117,11 +124,12 @@ After user confirms the next action:
 
 ## Creating New Document
 
-1. Check schema: `frontis schema discussion`
-2. Find next available number: `frontis search type discussion`
-3. Create file: `blueprint/discussions/{NNN}.md`
-4. Write FrontMatter with `session-count: 1`, `status: recording`
-5. Record discussion freely after FrontMatter
+1. Check template structure: `forma show discussion`
+2. Check schema for valid field values: `frontis schema discussion`
+3. Find next available number: `frontis search type discussion`
+4. Create file: `blueprint/discussions/{NNN}.md`
+5. Write FrontMatter with `session-count: 1`, `status: recording`
+6. Record discussion freely after FrontMatter
 
 ## Continuing Existing Document
 
@@ -138,36 +146,7 @@ After user confirms the next action:
 - `User: "verbatim quote"` - User's exact words in quotes
 - `Me: brief description` - Your action/question summarized (no quotes)
 
-### Example
-
-```markdown
-## 2024-01-15 Session
-
-User: "I want to report a bug in the template selection"
-
-Me: Asked for details
-
-User: "When I clicked 'View Other Recommendations', it showed an error..."
-
-Me: Noted - no recovery path available
-
-User: "Also, this is different context, but... [additional info]"
-
-Me: Noted as architecture context
-
-User: "That's all"
-```
-
-## Summary Section
-
-After conversation ends, append a structured summary as an **appendix**:
-
-- **Bugs**: Issues found
-- **Improvements**: Suggested enhancements
-- **Open Questions**: Unresolved items
-- **Context**: Background information
-
-This summary does **NOT replace** the verbatim record above - it exists for quick reference only.
+For complete structure example: `forma show discussion`
 
 ## File Naming
 
@@ -176,6 +155,7 @@ This summary does **NOT replace** the verbatim record above - it exists for quic
 
 ## Checklist
 
+- [ ] Document follows template structure (`forma show discussion`)
 - [ ] FrontMatter conforms to schema (`frontis schema discussion`)
 - [ ] Recorded verbatim, not summarized
 - [ ] Chronological flow maintained
