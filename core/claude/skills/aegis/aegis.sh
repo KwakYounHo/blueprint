@@ -115,9 +115,9 @@ if [ -z "$1" ]; then
   echo ""
   echo "Examples:"
   echo "  aegis --list"
-  echo "  aegis specification"
-  echo "  aegis specification --aspects"
-  echo "  aegis specification workflow-structure"
+  echo "  aegis documentation"
+  echo "  aegis documentation --aspects"
+  echo "  aegis documentation schema-validation"
   exit 1
 fi
 

@@ -38,8 +38,8 @@ do_search() {
     echo ""
     echo "Examples:"
     echo "  frontis search type spec"
-    echo "  frontis search status complete specs/"
-    echo "  frontis search spec-type implementation specs/lib/"
+    echo "  frontis search status ready blueprint/specs/"
+    echo "  frontis search spec-type lib blueprint/specs/lib/"
     exit 1
   fi
 
@@ -71,7 +71,7 @@ do_show() {
     echo ""
     echo "Examples:"
     echo "  frontis show blueprint/discussions/001.md"
-    echo "  frontis show specs/lib/prompt/spec.yaml"
+    echo "  frontis show blueprint/specs/lib/prompt/spec.yaml"
     exit 1
   fi
 
@@ -186,8 +186,8 @@ case "$COMMAND" in
     echo ""
     echo "Examples:"
     echo "  frontis search type spec"
-    echo "  frontis search status complete specs/"
-    echo "  frontis show specs/lib/prompt/spec.yaml"
+    echo "  frontis search status ready blueprint/specs/"
+    echo "  frontis show blueprint/specs/lib/prompt/spec.yaml"
     echo "  frontis schema spec"
     exit 1
     ;;

@@ -12,36 +12,9 @@ dependencies: []
 
 Defines communication forms between Workers.
 
-Use **Hermes** skill to view specific forms: `hermes orchestrator specifier`
+Use **Hermes** skill to view specific forms: `hermes orchestrator implementer`
 
 ---
-
-[F]Orchestrator&[T]Specifier
----s
-```yaml
-task:
-  action: specify
-  workflow-id: "{NNN-description}"
-  requirements: "{clarified-requirements}"
-  discussion: "{path/to/discussion.md}"  # optional
-```
----e
-
-[F]Specifier&[T]Orchestrator
----s
-```yaml
-handoff:
-  status: completed | blocked
-  summary: "{what was created/modified}"
-  artifacts:
-    - "{blueprint/workflows/NNN-desc/spec.md}"
-    # or when from discussion:
-    # - "{blueprint/discussions/NNN-topic.context.md}"
-  decide-markers:
-    - location: "{file:line}"
-      question: "{question requiring user decision}"
-```
----e
 
 [F]Orchestrator&[T]Implementer
 ---s
@@ -76,11 +49,8 @@ handoff:
 task:
   action: review
   document: "{path/to/artifact}"
-  gate: specification | implementation | documentation
+  gate: "{gate-name}"
   aspect: "{aspect-name}"
-  context:
-    workflow-id: "{NNN-description}"
-    phase: specification | implementation
 ```
 ---e
 
@@ -118,7 +88,7 @@ handoff:
 ```yaml
 task:
   action: tokenize
-  discussion: "{path/to/discussion.md}"
+  source: "{path/to/file.md}"  # discussion or memory
 ```
 ---e
 
