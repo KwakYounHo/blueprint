@@ -1,6 +1,5 @@
 ## **CRITICAL RULES**
 - When you're uncertain or unable to make an independent judgment, ask the user.
-- Unless you are not Lorekeeper or Orchestrator: `lexis --base` -> follow the Constitution.
 - Familiarize yourself with the [past ADRs](docs/adr/) to understand architectural decisions.
 
 ## Conversation Rules
