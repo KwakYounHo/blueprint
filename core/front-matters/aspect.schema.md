@@ -71,60 +71,12 @@ All fields from `base.schema.md`:
 - Should reference the parent gate document
 - Example: `[../gate.md]`
 
-## Usage Examples
+## Template
 
-### Specification Gate - Completeness Aspect
+For complete example, use:
 
-```yaml
----
-type: aspect
-status: active
-version: 1.0.0
-created: 2025-11-28
-updated: 2025-11-28
-tags: [aspect, specification, completeness]
-dependencies: [../gate.md]
-
-name: completeness
-gate: specification
-description: "Validates that all functional and non-functional requirements are captured"
----
-```
-
-### Implementation Gate - Code Style Aspect
-
-```yaml
----
-type: aspect
-status: active
-version: 1.0.0
-created: 2025-11-28
-updated: 2025-11-28
-tags: [aspect, implementation, code-style]
-dependencies: [../gate.md]
-
-name: code-style
-gate: implementation
-description: "Validates code style compliance with project standards"
----
-```
-
-### Documentation Gate - Schema Validation Aspect
-
-```yaml
----
-type: aspect
-status: active
-version: 1.0.0
-created: 2025-11-28
-updated: 2025-11-28
-tags: [aspect, documentation, schema-validation]
-dependencies: [../gate.md]
-
-name: schema-validation
-gate: documentation
-description: "Validates document FrontMatter compliance against schema definitions"
----
+```bash
+forma show aspect
 ```
 
 ## Hierarchy Context

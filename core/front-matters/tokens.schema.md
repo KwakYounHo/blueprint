@@ -10,7 +10,7 @@ dependencies: [front-matters/base.schema.md]
 
 # Schema: Tokens FrontMatter
 
-> Extends base schema with Tokens-specific fields. Tokens are the output of Lexer, representing typed segments of a discussion.
+> Extends base schema with Tokens-specific fields. Tokens are the output of Lexer, representing typed segments of raw context (discussion or memory).
 
 ## Inherits
 
@@ -22,7 +22,7 @@ All fields from `base.schema.md`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `source` | string | Path to source discussion file |
+| `source` | string | Path to source file (discussion or memory) |
 | `token-count` | number | Total number of tokens |
 
 ## Additional Optional Fields
@@ -37,9 +37,9 @@ All fields from `base.schema.md`:
 
 - **Type**: string
 - **Required**: Yes
-- **Format**: Relative path to discussion file
-- **Examples**: `"001.md"`, `"002-api-design.md"`
-- **Description**: The discussion file that was tokenized.
+- **Format**: Relative path to source file
+- **Examples**: `"001.md"`, `"002-api-design.md"`, `"001-memory.md"`
+- **Description**: The source file (discussion or memory) that was tokenized.
 
 ### token-count
 
@@ -124,52 +124,12 @@ tokens:
 | `draft` | Tokenization in progress |
 | `complete` | Tokenization finished |
 
-## Usage Examples
+## Template
 
-### Complete Tokens File
+For complete example, use:
 
-```yaml
----
-type: tokens
-status: complete
-version: 1.0.0
-created: 2025-12-07
-updated: 2025-12-07
-tags: [tokens]
-dependencies: []
-
-source: "001.md"
-token-count: 15
-token-summary:
-  decisions: 5
-  constraints: 2
-  questions: 3
-  alternatives: 2
-  reasoning: 3
----
-
-tokens:
-  - id: "T-001"
-    type: PROBLEM
-    text: "The current Phase/Stage/Task structure is too execution-centric"
-    position: 18
-    markers:
-      hasPause: false
-      deliberation: false
-      uncertainty: false
-      questionForm: false
-    secondary: null
-
-  - id: "T-002"
-    type: DECISION
-    text: "Decided to treat Specification as a high-level language"
-    position: 24
-    markers:
-      hasPause: false
-      deliberation: false
-      uncertainty: false
-      questionForm: false
-    secondary: null
+```bash
+forma show tokens
 ```
 
 ## File Naming Convention

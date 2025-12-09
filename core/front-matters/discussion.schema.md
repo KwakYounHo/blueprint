@@ -87,40 +87,12 @@ All fields from `base.schema.md`:
 - Generally empty for discussions
 - May reference related discussions if continuation
 
-## Usage Examples
+## Template
 
-### New Discussion (Recording)
+For complete example, use:
 
-```yaml
----
-type: discussion
-status: recording
-version: 1.0.0
-created: 2025-12-03
-updated: 2025-12-03
-tags: [discussion]
-dependencies: []
-
-session-count: 1
-summary: null
----
-```
-
-### Completed Discussion (Archived)
-
-```yaml
----
-type: discussion
-status: archived
-version: 1.0.0
-created: 2025-12-03
-updated: 2025-12-05
-tags: [discussion, user-auth, oauth]
-dependencies: []
-
-session-count: 3
-summary: "user-auth-design"
----
+```bash
+forma show discussion
 ```
 
 ## File Naming Convention

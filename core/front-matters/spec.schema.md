@@ -33,6 +33,7 @@ All fields from `base.schema.md`:
 | `parent` | string | `null` | Parent spec ID for hierarchy |
 | `children` | array | `[]` | Child spec references |
 | `source-discussion` | string | `null` | Path to originating discussion |
+| `source-memory` | string | `null` | Path to memory file (if used) |
 
 ## Field Definitions
 
@@ -40,13 +41,17 @@ All fields from `base.schema.md`:
 
 - **Type**: enum
 - **Required**: Yes
-- **Values**: `implementation`, `feature`
-- **Description**: Distinguishes between library (declaration) and main (invocation) specs.
+- **Values**: `lib`, `feature`
+- **Description**: Distinguishes between library (declaration) and feature (invocation) specs.
 
 | Value | Analogy | Purpose |
 |-------|---------|---------|
-| `implementation` | Library | Reusable unit, declaration, pure function |
+| `lib` | Library | Reusable unit, declaration, pure function |
 | `feature` | Main | Business flow, invocation, composition |
+
+**Naming Convention**:
+- Lib specs: `LIB-{namespace}/{module}` (e.g., `LIB-elevenlabs/schema`)
+- Feature specs: `FEAT-{name}` (e.g., `FEAT-elevenlabs-tts-integration`)
 
 ### spec-id
 
@@ -97,342 +102,250 @@ children:
 - **Examples**: `"blueprint/discussions/001-sdd-redesign.md"`
 - **Description**: Traceability to originating discussion.
 
-## Spec Body Fields (10 Required Sections)
+## Lib Spec Body (5 Required Sections)
 
-The body of the spec.yaml contains these required sections:
+Lib specs enable **deterministic implementation** - any Implementer produces identical code.
 
-### 1. what
+### 1. Purpose
 
-What are we building?
+Single sentence describing what this module does.
 
-```yaml
-what:
-  statement: "Brief one-line statement"
-  description: "Detailed description"
+```markdown
+## 1. Purpose
+
+Pure utility for hashing and verifying passwords using bcrypt.
 ```
 
-### 2. why
+### 2. File Location
 
-Why are we building it?
+Exact path where implementation file will be created.
 
-```yaml
-why:
-  problem: "Problem being solved"
-  motivation: "Why now, why this approach"
-  benefit: "Expected outcome"
+```markdown
+## 2. File Location
+
+```
+src/lib/auth/password-hasher.ts
+```
 ```
 
-### 3. scope
+### 3. Implementation
 
-What's the boundary?
+Complete code with NO placeholders. Forbidden: `// TODO`, `...`, `REPLACE_*`.
 
-```yaml
-scope:
-  includes:
-    - "What is included"
-  excludes:
-    - "What is explicitly excluded"
+```markdown
+## 3. Implementation
+
+```typescript
+import bcrypt from "bcrypt";
+
+const SALT_ROUNDS = 12;
+
+export async function hashPassword(plaintext: string): Promise<string> {
+  return bcrypt.hash(plaintext, SALT_ROUNDS);
+}
+
+export async function verifyPassword(
+  plaintext: string,
+  hash: string
+): Promise<boolean> {
+  return bcrypt.compare(plaintext, hash);
+}
+```
 ```
 
-### 4. constraints
+### 4. Integration Point
 
-What constraints apply?
+Where this module is called from.
 
-```yaml
-constraints:
-  - statement: "Constraint description"
-    type: technical | business | resource
-    reason: "Why this constraint exists"
+```markdown
+## 4. Integration Point
+
+**Called from**: `src/services/auth/register.ts:45` in `registerUser`
+
+```typescript
+import { hashPassword } from "@/lib/auth/password-hasher";
+
+const hashedPassword = await hashPassword(input.password);
+```
 ```
 
-### 5. input
+### 5. Acceptance Criteria
 
-What goes in?
+Verifiable conditions for completion.
 
-```yaml
-input:
-  - name: "inputName"
-    type: "string"
-    description: "What this input represents"
-    required: true
+```markdown
+## 5. Acceptance Criteria
+
+| # | Criterion | Verification |
+|---|-----------|--------------|
+| 1 | hashPassword returns valid bcrypt hash | Unit test |
+| 2 | verifyPassword matches correct pairs | Unit test |
 ```
 
-### 6. output
+---
 
-What comes out?
+## Feature Spec Body (5 Required Sections)
 
-```yaml
-output:
-  - name: "outputName"
-    type: "string"
-    description: "What this output represents"
+Feature specs define composition of Lib specs and integration points.
+
+### 1. Summary
+
+What, Why, and Scope.
+
+```markdown
+## 1. Summary
+
+### What
+JWT-based user authentication with session management.
+
+### Why
+- Secure user identity verification
+- Stateless authentication for API scalability
+
+### Scope
+- **Include**: Login, Register, Token refresh, Logout
+- **Exclude**: OAuth providers, MFA, Password reset
 ```
 
-### 7. edge_cases
+### 2. Lib Dependencies
 
-What are the exceptions?
+List of Lib specs this feature composes.
 
-```yaml
-edge_cases:
-  - situation: "When X happens"
-    expected_behavior: "System should Y"
+```markdown
+## 2. Lib Dependencies
+
+| Lib Spec | Role |
+|----------|------|
+| LIB-auth/password-hasher | Password hashing/verification |
+| LIB-auth/jwt-validator | Token generation/validation |
+| LIB-auth/session-manager | Session storage/retrieval |
 ```
 
-### 8. anti_patterns
+### 3. Integration Points
 
-What should we avoid?
+Where lib modules are called (file:line).
 
-```yaml
-anti_patterns:
-  - description: "What not to do"
-    reason: "Why it's problematic"
+```markdown
+## 3. Integration Points
+
+### 3.1 Login Endpoint
+
+**File**: `src/routes/auth/login.ts` (Line 23-35)
+
+```typescript
+import { verifyPassword } from "@/lib/auth/password-hasher";
+import { generateToken } from "@/lib/auth/jwt-validator";
+
+const isValid = await verifyPassword(input.password, user.passwordHash);
+const token = generateToken({ userId: user.id });
+```
 ```
 
-### 9. dependencies
+### 4. Implementation Order
 
-What do we depend on?
+Dependency-based sequence.
 
-```yaml
-dependencies:
-  technical:
-    - "Node.js >= 18"
-    - "TypeScript"
-  internal:
-    - "LIB-prompt"
-  decisions:
-    - "SPEC-001"
+```markdown
+## 4. Implementation Order
+
+```
+Phase 1: Core Utilities
+├── LIB-auth/password-hasher
+└── LIB-auth/jwt-validator
+
+Phase 2: Session Management
+└── LIB-auth/session-manager
+
+Phase 3: Integration (This Spec)
+├── Login endpoint
+└── Auth middleware
+```
 ```
 
-### 10. acceptance_criteria
+### 5. Acceptance Criteria
 
-How do we know it's done?
+Verifiable conditions for the complete feature.
 
-```yaml
-acceptance_criteria:
-  - criterion: "What must be true"
-    verification: "How to verify"
+```markdown
+## 5. Acceptance Criteria
+
+| # | Criterion | Verification |
+|---|-----------|--------------|
+| 1 | Login returns valid JWT | API test |
+| 2 | Protected routes reject invalid tokens | API test |
+| 3 | TypeScript compiles | `npx tsc --noEmit` |
 ```
 
-## Feature Spec Additional Fields
+---
 
-Feature specs (spec-type: feature) have additional fields:
+## [DECIDE] Markers
 
-### flow
+Unresolved items requiring user input (draft status only).
 
-Composition of implementation specs:
-
-```yaml
-flow:
-  - step: 1
-    action: "Display prompt"
-    uses: "LIB-prompt"
-    params:
-      message: "What to output?"
-    returns: "void"
-  - step: 2
-    action: "Read user input"
-    uses: "LIB-input"
-    returns: "userInput"
+```markdown
+[DECIDE: api-integration]
+<!--
+Question: SDK vs REST API?
+Options:
+- Option A: SDK - Type safety, built-in retry
+- Option B: REST - No dependency, manual types
+Recommendation: SDK (matches existing pattern)
+Related: D-001
+-->
 ```
 
-### open_questions
-
-Unresolved items (draft status only):
-
-```yaml
-open_questions:
-  - id: "Q-001"
-    question: "Which runtime environment?"
-    options:
-      - "Node.js"
-      - "Deno"
-      - "Bun"
-    required: true
-    answered: false
-    answer: null
-```
+**Rule**: All `[DECIDE]` markers MUST be resolved before status changes to `ready`.
 
 ## Constraints
 
 | Rule | Description |
 |------|-------------|
 | Type | `type` field must be `spec` |
-| Status | Must be: `draft`, `review`, `complete` |
-| Spec Type | `spec-type` must be `implementation` or `feature` |
-| Location | Implementation in `specs/lib/`, Feature in `specs/features/` |
+| Status | Must be: `draft`, `ready` |
+| Spec Type | `spec-type` must be `lib` or `feature` |
+| Location | Lib in `blueprint/specs/lib/{namespace}/{module}/`, Feature in `blueprint/specs/features/{name}/` |
+| Deterministic | Lib specs MUST enable identical code generation by any Implementer |
+| No Placeholders | `// TODO`, `...`, `REPLACE_*` are FORBIDDEN in implementation code |
+| [DECIDE] Resolution | All `[DECIDE]` markers must be resolved before `ready` status |
 
 ## Status Definitions
 
 | Value | Description |
 |-------|-------------|
-| `draft` | Specification in progress, may have open questions |
-| `review` | Ready for review, all questions answered |
-| `complete` | Approved, ready for implementation |
+| `draft` | Specification in progress, may have [DECIDE] markers |
+| `ready` | All [DECIDE] resolved, user approved, ready for implementation |
 
-## Usage Examples
+## Templates
 
-### Implementation Spec (lib)
+For complete examples, use `forma show <type>`:
 
-```yaml
----
-type: spec
-status: complete
-version: 1.0.0
-created: 2025-12-07
-updated: 2025-12-07
-tags: [spec, lib, prompt]
-dependencies: []
-
-spec-type: implementation
-spec-id: "LIB-prompt"
-name: "Prompt Display"
-parent: null
-children: []
-source-discussion: "blueprint/discussions/001-echo-program.md"
----
-
-what:
-  statement: "Display a prompt message to the user"
-  description: "Outputs a formatted prompt string to stdout, preparing for user input"
-
-why:
-  problem: "Need to communicate with user before receiving input"
-  motivation: "Standard UX pattern for CLI applications"
-  benefit: "Clear user guidance"
-
-scope:
-  includes:
-    - "Writing prompt text to stdout"
-    - "Formatting with optional prefix"
-  excludes:
-    - "Reading user input"
-    - "Validation"
-
-constraints:
-  - statement: "Must not read from stdin"
-    type: technical
-    reason: "Single responsibility - reading is separate concern"
-
-input:
-  - name: "message"
-    type: "string"
-    description: "The prompt message to display"
-    required: true
-
-output:
-  - name: "void"
-    type: "void"
-    description: "No return value, side effect is stdout"
-
-edge_cases:
-  - situation: "Empty message"
-    expected_behavior: "Display empty line"
-
-anti_patterns:
-  - description: "Including input reading in prompt function"
-    reason: "Violates single responsibility"
-
-dependencies:
-  technical:
-    - "Node.js >= 18"
-  internal: []
-  decisions: []
-
-acceptance_criteria:
-  - criterion: "Prompt message appears on stdout"
-    verification: "Visual inspection or stdout capture"
-```
-
-### Feature Spec (features)
-
-```yaml
----
-type: spec
-status: draft
-version: 1.0.0
-created: 2025-12-07
-updated: 2025-12-07
-tags: [spec, feature, echo]
-dependencies: []
-
-spec-type: feature
-spec-id: "FEAT-echo-program"
-name: "Echo Program"
-parent: null
-children:
-  - ref: "LIB-prompt"
-    relationship: "how"
-    required: true
-  - ref: "LIB-input"
-    relationship: "how"
-    required: true
-  - ref: "LIB-output"
-    relationship: "how"
-    required: true
-source-discussion: "blueprint/discussions/001-echo-program.md"
----
-
-what:
-  statement: "CLI program that echoes user input"
-  description: "Prompts user for input, reads their response, and outputs it back"
-
-why:
-  problem: "Need a simple demonstration of input/output flow"
-  motivation: "Validate the SDD compilation process"
-  benefit: "Working example of spec-to-code compilation"
-
-# ... (other required sections)
-
-flow:
-  - step: 1
-    action: "Display prompt"
-    uses: "LIB-prompt"
-    params:
-      message: "What to output?"
-    returns: "void"
-  - step: 2
-    action: "Read user input"
-    uses: "LIB-input"
-    returns: "userInput"
-  - step: 3
-    action: "Output the input"
-    uses: "LIB-output"
-    params:
-      content: "userInput"
-    returns: "void"
-
-open_questions:
-  - id: "Q-001"
-    question: "Which runtime environment?"
-    options:
-      - "Node.js"
-      - "Deno"
-    required: true
-    answered: false
-    answer: null
+```bash
+forma show spec-lib    # Lib Specification template
+forma show spec-feat   # Feature Specification template
 ```
 
 ## Directory Structure
 
 ```
-specs/
+blueprint/specs/
 ├── features/
-│   └── echo-program/
-│       └── spec.yaml       # Feature spec
+│   └── user-authentication/
+│       └── spec.yaml           # Feature spec (FEAT-user-authentication)
 └── lib/
-    ├── prompt/
-    │   └── spec.yaml       # Implementation spec
-    ├── input/
-    │   └── spec.yaml
-    └── output/
-        └── spec.yaml
+    └── auth/                   # Namespace grouping
+        ├── jwt-validator/
+        │   └── spec.yaml       # LIB-auth/jwt-validator
+        ├── password-hasher/
+        │   └── spec.yaml       # LIB-auth/password-hasher
+        └── session-manager/
+            └── spec.yaml       # LIB-auth/session-manager
 ```
 
 ## File Naming
 
-All specifications use `spec.yaml` as filename, organized by directory:
+All specifications use `spec.yaml` as filename, organized by namespace:
 
-| Spec Type | Location |
-|-----------|----------|
-| Implementation | `specs/lib/{module-name}/spec.yaml` |
-| Feature | `specs/features/{feature-name}/spec.yaml` |
+| Spec Type | Location | ID Format |
+|-----------|----------|-----------|
+| Lib | `blueprint/specs/lib/{namespace}/{module}/spec.yaml` | `LIB-{namespace}/{module}` |
+| Feature | `blueprint/specs/features/{feature-name}/spec.yaml` | `FEAT-{feature-name}` |

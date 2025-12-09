@@ -10,7 +10,7 @@ dependencies: [front-matters/base.schema.md]
 
 # Schema: AST FrontMatter
 
-> Extends base schema with AST-specific fields. AST is the output of Parser, representing the structural relationships between discussion elements.
+> Extends base schema with AST-specific fields. AST is the output of Parser, representing the structural relationships between context elements.
 
 ## Inherits
 
@@ -119,7 +119,7 @@ nodes:
     type: NodeType       # Node type
     token-ref: string    # Reference to source token ID
     text: string         # Original text from token
-    position: number     # Line number in original discussion
+    position: number     # Line number in original source
     relationships:       # Outgoing relationships
       - type: RelationType
         target: string   # Target node ID
@@ -142,56 +142,12 @@ nodes:
 | `draft` | Parsing in progress |
 | `complete` | Parsing finished |
 
-## Usage Examples
+## Template
 
-### Complete AST File
+For complete example, use:
 
-```yaml
----
-type: ast
-status: complete
-version: 1.0.0
-created: 2025-12-07
-updated: 2025-12-07
-tags: [ast]
-dependencies: []
-
-source: "001.tokens.yaml"
-node-count: 5
-relationship-count: 3
-node-summary:
-  problem: 1
-  decision: 2
-  reasoning: 2
----
-
-nodes:
-  - id: "N-001"
-    type: ProblemNode
-    token-ref: "T-001"
-    text: "The current structure is too execution-centric"
-    position: 18
-    relationships:
-      - type: motivates
-        target: "N-002"
-
-  - id: "N-002"
-    type: DecisionNode
-    token-ref: "T-002"
-    text: "Treat Specification as high-level language"
-    position: 24
-    relationships:
-      - type: resolves
-        target: "N-001"
-
-  - id: "N-003"
-    type: ReasoningNode
-    token-ref: "T-005"
-    text: "This aligns with compiler analogy"
-    position: 28
-    relationships:
-      - type: supports
-        target: "N-002"
+```bash
+forma show ast
 ```
 
 ## File Naming Convention

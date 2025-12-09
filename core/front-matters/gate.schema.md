@@ -75,60 +75,12 @@ All fields from `base.schema.md`:
 - Gates typically have no upstream dependencies
 - Example: `[]`
 
-## Usage Examples
+## Template
 
-### Code Gate (Specification)
+For complete example, use:
 
-```yaml
----
-type: gate
-status: active
-version: 1.0.0
-created: 2025-11-28
-updated: 2025-11-28
-tags: [gate, specification]
-dependencies: []
-
-name: specification
-validates: code
-description: "Validates specification completeness and feasibility before implementation"
----
-```
-
-### Code Gate (Implementation)
-
-```yaml
----
-type: gate
-status: active
-version: 1.0.0
-created: 2025-11-28
-updated: 2025-11-28
-tags: [gate, implementation]
-dependencies: []
-
-name: implementation
-validates: code
-description: "Validates code quality, architecture, and component design"
----
-```
-
-### Document Gate
-
-```yaml
----
-type: gate
-status: active
-version: 1.0.0
-created: 2025-11-28
-updated: 2025-11-28
-tags: [gate, documentation]
-dependencies: []
-
-name: documentation
-validates: document
-description: "Validates document format compliance against schema definitions"
----
+```bash
+forma show gate
 ```
 
 ## Execution Context

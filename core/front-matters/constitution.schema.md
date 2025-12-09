@@ -77,38 +77,10 @@ All fields from `base.schema.md`:
 - Worker-specific constitutions SHOULD include path to base.md
 - Example: `["../base.md"]`
 
-## Usage Examples
+## Template
 
-### Global Constitution
+For complete example, use:
 
-```yaml
----
-type: constitution
-status: active
-version: 1.0.0
-created: 2025-11-28
-updated: 2025-11-28
-tags: [principles, global, constitution]
-dependencies: []
-
-scope: global
-target-workers: ["all"]
----
-```
-
-### Worker-Specific Constitution
-
-```yaml
----
-type: constitution
-status: active
-version: 1.0.0
-created: 2025-11-28
-updated: 2025-11-28
-tags: [worker, specifier, constitution]
-dependencies: ["../base.md"]
-
-scope: worker-specific
-target-workers: ["specifier"]
----
+```bash
+forma show constitution
 ```
