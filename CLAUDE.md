@@ -26,6 +26,7 @@
 | `core/forms/*` | ✅ Yes → `blueprint/forms/` | Handoff formats |
 | `core/front-matters/*` | ✅ Yes → `blueprint/front-matters/` | FrontMatter schemas |
 | `core/gates/*` | ✅ Yes → `blueprint/gates/` | Validation checkpoints |
+| `core/templates/*` | ✅ Yes → `blueprint/templates/` | Document templates |
 | `core/specs/*` | ✅ Yes → `blueprint/specs/` | Specification templates |
 | `core/initializers/*` | ✅ Yes | Setup scripts |
 | `README.md` files | ❌ No | Written at 0.1.0 release |
@@ -59,6 +60,7 @@ This repository uses symlinks to avoid duplicate maintenance:
 | `blueprint/forms/` | symlink | `core/forms/` |
 | `blueprint/front-matters/` | symlink | `core/front-matters/` |
 | `blueprint/gates/` | symlink | `core/gates/` |
+| `blueprint/templates/` | symlink | `core/templates/` |
 | `blueprint/constitutions/workers/` | symlink | `core/constitutions/workers/` |
 | `blueprint/constitutions/base.md` | **real file** | Edit directly |
 | `blueprint/discussions/` | **real dir** | Project data |

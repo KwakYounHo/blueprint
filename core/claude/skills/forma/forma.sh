@@ -5,12 +5,12 @@
 #   forma list                    List available templates
 #   forma show <name>             Show template content
 #
-# Templates are stored in core/templates/*.template.md
+# Templates are stored in blueprint/templates/*.template.md
 
 set -e
 
 COMMAND="$1"
-TEMPLATE_DIR="core/templates"
+TEMPLATE_DIR="blueprint/templates"
 
 # === LIST ===
 do_list() {
