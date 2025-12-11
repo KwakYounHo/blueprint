@@ -9,8 +9,11 @@
 
 set -e
 
+# Project root detection with fallback
+PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
+
 COMMAND="$1"
-TEMPLATE_DIR="blueprint/templates"
+TEMPLATE_DIR="$PROJECT_ROOT/blueprint/templates"
 
 # === LIST ===
 do_list() {

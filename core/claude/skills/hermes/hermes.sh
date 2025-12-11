@@ -8,7 +8,10 @@
 
 set -e
 
-FORMS_FILE="blueprint/forms/handoff.schema.md"
+# Project root detection with fallback
+PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
+
+FORMS_FILE="$PROJECT_ROOT/blueprint/forms/handoff.schema.md"
 
 # Check if forms file exists
 if [ ! -f "$FORMS_FILE" ]; then

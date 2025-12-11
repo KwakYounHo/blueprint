@@ -10,7 +10,10 @@
 
 set -e
 
-GATES_DIR="blueprint/gates"
+# Project root detection with fallback
+PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
+
+GATES_DIR="$PROJECT_ROOT/blueprint/gates"
 
 # Extract FrontMatter from file (between first and second ---)
 get_frontmatter() {

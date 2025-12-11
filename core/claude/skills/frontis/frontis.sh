@@ -11,8 +11,11 @@
 
 set -e
 
+# Project root detection with fallback
+PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
+
 COMMAND="$1"
-SCHEMA_DIR="blueprint/front-matters"
+SCHEMA_DIR="$PROJECT_ROOT/blueprint/front-matters"
 
 # === HELPER: Extract FrontMatter ===
 extract_frontmatter() {

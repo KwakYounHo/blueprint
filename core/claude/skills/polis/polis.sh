@@ -8,7 +8,10 @@
 
 set -e
 
-AGENTS_DIR=".claude/agents"
+# Project root detection with fallback
+PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
+
+AGENTS_DIR="$PROJECT_ROOT/.claude/agents"
 
 # Check if agents directory exists
 if [ ! -d "$AGENTS_DIR" ]; then

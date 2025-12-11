@@ -9,7 +9,10 @@
 
 set -e
 
-CONST_DIR="blueprint/constitutions"
+# Project root detection with fallback
+PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
+
+CONST_DIR="$PROJECT_ROOT/blueprint/constitutions"
 BASE_FILE="$CONST_DIR/base.md"
 WORKERS_DIR="$CONST_DIR/workers"
 
