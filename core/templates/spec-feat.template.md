@@ -78,3 +78,47 @@ Phase 3: Integration (This Spec)
 |---|-----------|--------------|
 | 1 | {criterion} | {how to verify} |
 | 2 | {criterion} | {how to verify} |
+
+---
+
+## 6. Dependency Graph (Optional)
+
+> Transitive dependency analysis for scope prediction.
+
+| Level | Count | Key Files |
+|-------|-------|-----------|
+| 0 (Direct) | {N} | {list key files} |
+| 1 (Import) | {N} | {list key files} |
+| 2 (Type) | {N} | {list key files} |
+| **Predicted Total** | **{N}** | |
+
+### Duplicates Detected
+| Name | Locations | Resolution |
+|------|-----------|------------|
+| {name} | {paths} | {action: consolidate/document difference} |
+
+---
+
+## 7. Architecture Decisions (Optional)
+
+> Key architectural decisions for this feature.
+
+| ADR | Decision | Rationale |
+|-----|----------|-----------|
+| {ADR-NNN} | {what was decided} | {why} |
+
+---
+
+## 8. External Contracts (Optional, Required if external integration)
+
+> Environmental constraints from external systems.
+
+### External APIs
+| API | Constraint | Value |
+|-----|------------|-------|
+| {API name} | {constraint type} | {value} |
+
+### Downstream Requirements
+| System | Requirement | Implication |
+|--------|-------------|-------------|
+| {system} | {requirement} | {what this means for implementation} |

@@ -52,3 +52,44 @@ import { xxx } from "{path}";
 |---|-----------|--------------|
 | 1 | {criterion} | {how to verify} |
 | 2 | {criterion} | {how to verify} |
+
+---
+
+## 6. Prerequisites (Optional)
+
+> Tacit knowledge documentation for new contributors.
+
+### Project Context
+- Directory convention: {describe project-specific structure}
+- Path alias: {document any path aliases used}
+
+### Existing Dependencies
+| Function/Module | Location | Note |
+|-----------------|----------|------|
+| `{functionName}` | `{path}` | {note if duplicates exist or special usage} |
+
+---
+
+## 7. Invariants (Optional)
+
+> System invariants: violations indicate bugs.
+
+| ID | Description | Assertion | Verification |
+|----|-------------|-----------|--------------|
+| INV-001 | {what must always be true} | `{formal assertion}` | {how to verify} |
+
+---
+
+## 8. External Contracts (Optional, Required if external integration)
+
+> Environmental constraints from external systems.
+
+### External APIs
+| API | Constraint | Value |
+|-----|------------|-------|
+| {API name} | {constraint type} | {value} |
+
+### Downstream Requirements
+| System | Requirement | Implication |
+|--------|-------------|-------------|
+| {system} | {requirement} | {what this means for implementation} |
