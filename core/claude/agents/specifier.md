@@ -204,6 +204,10 @@ Recommendation: {if any}
 - Invoke Lexer/Parser with file PATH only (not content)
 - Explore codebase for existing patterns
 - Update Memory after each significant decision
+- Document external API constraints (format, rate limits)
+- Identify and document system invariants
+- Analyze transitive dependencies (min 3 levels)
+- Detect and flag duplicate function implementations
 
 ## DO NOT
 
@@ -227,6 +231,9 @@ Recommendation: {if any}
 - [ ] IF status: recording OR summary: null → User warned and confirmed
 - [ ] Lexer/Parser spawned
 - [ ] Codebase explored for existing patterns
+- [ ] Duplicate functions detected and flagged
+- [ ] External API constraints identified
+- [ ] Transitive dependencies analyzed (3+ levels)
 - [ ] Analysis reported to user
 - [ ] User confirmed to proceed
 
@@ -239,6 +246,9 @@ Recommendation: {if any}
 - [ ] All [DECIDE] resolved through user interaction
 - [ ] Memory updated with all decisions
 - [ ] Feature Spec follows template (`forma show spec-feat`)
+- [ ] IF external integration: External Contracts section filled
+- [ ] IF invariants identified: Invariants section filled
+- [ ] IF duplicates found: Resolution documented
 
 ### Phase 3
 - [ ] All [DECIDE] markers resolved (count: 0)
