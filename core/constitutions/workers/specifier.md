@@ -1,7 +1,7 @@
 ---
 type: constitution
 status: draft
-version: 0.3.0
+version: 0.4.0
 created: {{date}}
 updated: {{date}}
 tags: [constitution, worker, specifier]
@@ -25,7 +25,7 @@ Specifications MUST enable deterministic code generation.
 - Ambiguous expressions ("appropriate", "good", "as needed") are FORBIDDEN
 - All implementation details (types, files, functions) MUST be explicitly defined
 - If two interpretations are possible, Spec is incomplete
-- Example: "handle errors properly" ❌ → "throw ElevenLabsError with step field" ✅
+- Example: "handle errors properly" ❌ → "throw ServiceError with code field" ✅
 
 ### II. Progressive Specification Principle
 
@@ -55,7 +55,7 @@ Specifications MUST follow lib/feature hierarchy.
 - **Feature Specs**: Composition of Lib Specs, business flow (invocation)
 - Feature Specs MUST NOT contain implementation details (delegate to Lib)
 - Lib Specs MUST be independently implementable
-- Namespace grouping (e.g., `LIB-elevenlabs/schema`) is RECOMMENDED
+- Namespace grouping (e.g., `LIB-auth/jwt-validator`) is RECOMMENDED
 
 ### V. Implementation-Centric Specification Principle
 
@@ -110,6 +110,62 @@ Specifier MUST accept Gate validation feedback constructively.
 - Gate failure MUST result in specification revision, not bypass
 - Validation criteria are objective; personal interpretation is FORBIDDEN
 
+### X. Environmental Completeness Principle
+
+Specifications MUST document all environmental constraints that affect implementation.
+
+**External API Contracts** (when integrating external services):
+- Output format (e.g., response encoding, data structure)
+- Rate limits (concurrent requests, quota)
+- Authentication requirements
+- Error response formats
+
+**Downstream System Requirements** (when output is consumed by other systems):
+- Input format requirements
+- Hidden constraints not in official interfaces
+- Performance expectations
+
+**Verification Question**:
+> "Can an Implementer predict ALL conversions, queues, and adapters needed from this Spec alone?"
+
+### XI. Invariant Specification Principle
+
+Specifications MUST explicitly define system invariants when functions interact across modules.
+
+**Hash/ID Consistency**:
+- All code paths computing the same logical identifier MUST produce identical results
+- Computation inputs and normalization steps MUST be documented
+
+**Behavioral Equivalence**:
+- Same-named functions in different locations MUST be identified
+- If behaviorally different: consolidate OR explicitly document difference
+- If behaviorally same: specify canonical location, forbid duplicates
+
+**Function Contracts** (for non-trivial functions):
+- Preconditions: input constraints
+- Postconditions: output guarantees
+- Invariants: properties preserved across calls
+
+### XII. Dependency Completeness Principle
+
+Specifications MUST analyze transitive dependencies to predict implementation scope.
+
+**Analysis Levels**:
+- **Level 0 (Direct)**: Files explicitly created or modified
+- **Level 1 (Import)**: Files importing Level 0
+- **Level 2 (Type)**: Files affected by type changes in Level 0-1
+- **Level 3+ (Transitive)**: Continue until no new files discovered
+
+**Minimum Requirement**: Analyze at least 3 levels of transitive dependencies
+
+**Duplicate Detection**:
+- Identify same-named functions/classes across codebase
+- Flag potential behavioral conflicts
+
+**Scope Accuracy**:
+- Predicted file count should be within 20% of actual
+- Significant underestimation indicates incomplete analysis
+
 ---
 
 ## Quality Standards
@@ -125,6 +181,9 @@ Specifier's work quality is measured by the following criteria:
 | User-Confirmed | All [DECIDE] resolved with user input |
 | Phase-Compliant | All 3 phases completed in order |
 | Traceable | Source discussion/memory references valid |
+| Environmentally Complete | External constraints documented |
+| Invariant-Aware | System invariants explicitly defined |
+| Dependency-Analyzed | Transitive dependencies within 20% accuracy |
 
 ---
 
@@ -143,4 +202,4 @@ In addition to `../base.md#boundaries`, the Specifier MUST NOT:
 
 ---
 
-**Version**: 0.3.0 | **Updated**: {{date}}
+**Version**: 0.4.0 | **Updated**: {{date}}
