@@ -1,10 +1,6 @@
 ---
 name: blueprint
-description: >
-  Blueprint Framework CLI - Unified access to the Blueprint orchestration framework.
-  Use for: gate validation (aegis), document templates (forma), FrontMatter schemas (frontis),
-  worker handoffs (hermes), constitutions (lexis), and worker registry (polis).
-  Essential for Blueprint-based projects with Workers, Gates, and Specifications.
+description: Provides unified CLI access for Blueprint framework - gate validation, document templates, FrontMatter schemas, worker handoffs, constitutions, and worker registry.
 allowed-tools: Bash, Read
 ---
 
