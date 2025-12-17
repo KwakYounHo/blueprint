@@ -1,10 +1,10 @@
 #!/bin/bash
 # Lexis - Constitution Viewer
-# View base constitution + worker-specific constitution
+# View worker-specific constitutions (base loaded via SessionStart hook)
 #
 # Usage:
 #   lexis --list                     List all workers
-#   lexis <worker>                   Show base + worker constitution
+#   lexis <worker>                   Show worker constitution
 #   lexis --base                     Show base constitution only
 
 set -e
@@ -60,7 +60,7 @@ if [ -z "$1" ]; then
   echo ""
   echo "Usage:"
   echo "  lexis --list               List all workers"
-  echo "  lexis <worker>             Show base + worker constitution"
+  echo "  lexis <worker>             Show worker constitution"
   echo "  lexis --base               Show base constitution only"
   echo ""
   echo "Examples:"
@@ -89,11 +89,6 @@ if [ ! -f "$WORKER_FILE" ]; then
   exit 1
 fi
 
-# Show base + worker constitution
-cat "$BASE_FILE"
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Worker Constitution: $WORKER"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
+# Show worker constitution only
+# Note: Base constitution is loaded via SessionStart hook (session-init.sh)
 cat "$WORKER_FILE"
