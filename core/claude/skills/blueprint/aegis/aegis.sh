@@ -10,42 +10,15 @@
 
 set -e
 
-# Project root detection with fallback
-PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
+# Source common functions
+source "$(dirname "$0")/../_common.sh"
 
 GATES_DIR="$PROJECT_ROOT/blueprint/gates"
-
-# Extract FrontMatter from file (between first and second ---)
-get_frontmatter() {
-  local file="$1"
-  awk '/^---$/{if(++c==2)exit}c' "$file" 2>/dev/null
-}
-
-# Extract field value from FrontMatter
-get_field() {
-  local frontmatter="$1"
-  local field="$2"
-  echo "$frontmatter" | grep "^${field}:" | sed "s/^${field}:[[:space:]]*//" | sed 's/^"//' | sed 's/"$//'
-}
-
-# Extract description from FrontMatter (proper YAML parsing)
-get_description() {
-  local file="$1"
-  local frontmatter
-  frontmatter=$(get_frontmatter "$file")
-  local desc
-  desc=$(get_field "$frontmatter" "description")
-  if [ -z "$desc" ]; then
-    echo "(no description)"
-  else
-    echo "$desc"
-  fi
-}
 
 # Helper: list all gates with descriptions
 list_gates() {
   if [ ! -d "$GATES_DIR" ]; then
-    echo "[ERROR] Gates directory not found: $GATES_DIR"
+    error "Gates directory not found: $GATES_DIR"
     return 1
   fi
 
@@ -79,7 +52,7 @@ list_aspects() {
   local aspects_dir="$GATES_DIR/$gate/aspects"
 
   if [ ! -d "$aspects_dir" ]; then
-    echo "[INFO] No aspects directory for gate: $gate"
+    info "No aspects directory for gate: $gate"
     return
   fi
 
@@ -117,10 +90,10 @@ if [ -z "$1" ]; then
   echo "  aegis <gate> <aspect>        Show specific aspect"
   echo ""
   echo "Examples:"
-  echo "  aegis --list"
-  echo "  aegis documentation"
-  echo "  aegis documentation --aspects"
-  echo "  aegis documentation schema-validation"
+  echo "  blueprint.sh aegis --list"
+  echo "  blueprint.sh aegis documentation"
+  echo "  blueprint.sh aegis documentation --aspects"
+  echo "  blueprint.sh aegis documentation schema-validation"
   exit 1
 fi
 
@@ -129,7 +102,7 @@ GATE_DIR="$GATES_DIR/$GATE"
 
 # Check if gate exists
 if [ ! -d "$GATE_DIR" ]; then
-  echo "[ERROR] Gate not found: $GATE"
+  error "Gate not found: $GATE"
   echo ""
   list_gates
   exit 1
@@ -147,7 +120,7 @@ if [ -n "$2" ]; then
   ASPECT_FILE="$GATE_DIR/aspects/$ASPECT.md"
 
   if [ ! -f "$ASPECT_FILE" ]; then
-    echo "[ERROR] Aspect not found: $ASPECT"
+    error "Aspect not found: $ASPECT"
     echo ""
     list_aspects "$GATE"
     exit 1
@@ -161,7 +134,7 @@ fi
 GATE_FILE="$GATE_DIR/gate.md"
 
 if [ ! -f "$GATE_FILE" ]; then
-  echo "[ERROR] Gate definition not found: $GATE_FILE"
+  error "Gate definition not found: $GATE_FILE"
   exit 1
 fi
 

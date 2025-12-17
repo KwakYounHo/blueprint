@@ -8,43 +8,16 @@
 
 set -e
 
-# Project root detection with fallback
-PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
+# Source common functions
+source "$(dirname "$0")/../_common.sh"
 
 AGENTS_DIR="$PROJECT_ROOT/.claude/agents"
 
 # Check if agents directory exists
 if [ ! -d "$AGENTS_DIR" ]; then
-  echo "[ERROR] Agents directory not found: $AGENTS_DIR"
+  error "Agents directory not found: $AGENTS_DIR"
   exit 1
 fi
-
-# Extract FrontMatter from file (between first and second ---)
-get_frontmatter() {
-  local file="$1"
-  awk '/^---$/{if(++c==2)exit}c' "$file" 2>/dev/null
-}
-
-# Extract field value from FrontMatter
-get_field() {
-  local frontmatter="$1"
-  local field="$2"
-  echo "$frontmatter" | grep "^${field}:" | sed "s/^${field}:[[:space:]]*//" | sed 's/^"//' | sed 's/"$//'
-}
-
-# Extract description from FrontMatter (proper YAML parsing)
-get_description() {
-  local file="$1"
-  local frontmatter
-  frontmatter=$(get_frontmatter "$file")
-  local desc
-  desc=$(get_field "$frontmatter" "description")
-  if [ -z "$desc" ]; then
-    echo "(no description)"
-  else
-    echo "$desc"
-  fi
-}
 
 # --list: Show all workers with descriptions
 if [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
@@ -77,9 +50,9 @@ if [ -z "$1" ]; then
   echo "  polis <worker>             Show worker instruction"
   echo ""
   echo "Examples:"
-  echo "  polis --list"
-  echo "  polis orchestrator"
-  echo "  polis specifier"
+  echo "  blueprint.sh polis --list"
+  echo "  blueprint.sh polis orchestrator"
+  echo "  blueprint.sh polis specifier"
   exit 1
 fi
 
@@ -88,7 +61,7 @@ WORKER_FILE="$AGENTS_DIR/$WORKER.md"
 
 # Check if worker exists
 if [ ! -f "$WORKER_FILE" ]; then
-  echo "[ERROR] Worker not found: $WORKER"
+  error "Worker not found: $WORKER"
   echo ""
   echo "Available workers:"
   for file in "$AGENTS_DIR"/*.md; do

@@ -9,8 +9,8 @@
 
 set -e
 
-# Project root detection with fallback
-PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
+# Source common functions
+source "$(dirname "$0")/../_common.sh"
 
 COMMAND="$1"
 TEMPLATE_DIR="$PROJECT_ROOT/blueprint/templates"
@@ -18,7 +18,7 @@ TEMPLATE_DIR="$PROJECT_ROOT/blueprint/templates"
 # === LIST ===
 do_list() {
   if [ ! -d "$TEMPLATE_DIR" ]; then
-    echo "[ERROR] Template directory not found: $TEMPLATE_DIR"
+    error "Template directory not found: $TEMPLATE_DIR"
     exit 1
   fi
 
@@ -29,13 +29,7 @@ do_list() {
   for file in "$TEMPLATE_DIR"/*.template.md; do
     if [ -f "$file" ]; then
       name=$(basename "$file" .template.md)
-      # Extract description from first line after frontmatter
-      desc=$(awk '/^---$/{if(++c==2){getline; while(/^#/ || /^$/){getline}; print; exit}}' "$file" 2>/dev/null | head -1)
-      if [ -z "$desc" ]; then
-        echo "  - $name"
-      else
-        echo "  - $name"
-      fi
+      echo "  - $name"
       found=1
     fi
   done
@@ -53,18 +47,18 @@ do_show() {
     echo "Usage: forma show <name>"
     echo ""
     echo "Examples:"
-    echo "  forma show spec-lib"
-    echo "  forma show memory"
-    echo "  forma show discussion"
+    echo "  blueprint.sh forma show spec-lib"
+    echo "  blueprint.sh forma show memory"
+    echo "  blueprint.sh forma show discussion"
     echo ""
-    echo "Run 'forma list' to see available templates."
+    echo "Run 'blueprint.sh forma list' to see available templates."
     exit 1
   fi
 
   local template_file="$TEMPLATE_DIR/${name}.template.md"
 
   if [ ! -f "$template_file" ]; then
-    echo "[ERROR] Template not found: $name"
+    error "Template not found: $name"
     echo ""
     echo "Available templates:"
     for file in "$TEMPLATE_DIR"/*.template.md; do
@@ -96,9 +90,9 @@ case "$COMMAND" in
     echo "  forma show <name>       Show template content"
     echo ""
     echo "Examples:"
-    echo "  forma list"
-    echo "  forma show spec-lib"
-    echo "  forma show memory"
+    echo "  blueprint.sh forma list"
+    echo "  blueprint.sh forma show spec-lib"
+    echo "  blueprint.sh forma show memory"
     exit 1
     ;;
 esac

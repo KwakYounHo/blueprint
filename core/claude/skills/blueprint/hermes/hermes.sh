@@ -8,14 +8,14 @@
 
 set -e
 
-# Project root detection with fallback
-PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../../.." && pwd)}"
+# Source common functions
+source "$(dirname "$0")/../_common.sh"
 
 FORMS_FILE="$PROJECT_ROOT/blueprint/forms/handoff.schema.md"
 
 # Check if forms file exists
 if [ ! -f "$FORMS_FILE" ]; then
-  echo "[ERROR] Handoff forms not found: $FORMS_FILE"
+  error "Handoff forms not found: $FORMS_FILE"
   exit 1
 fi
 
@@ -47,9 +47,9 @@ if [ -z "$1" ] || [ -z "$2" ]; then
   echo "  hermes <from> <to>         Show specific handoff form"
   echo ""
   echo "Examples:"
-  echo "  hermes --list"
-  echo "  hermes orchestrator specifier"
-  echo "  hermes specifier orchestrator"
+  echo "  blueprint.sh hermes --list"
+  echo "  blueprint.sh hermes orchestrator specifier"
+  echo "  blueprint.sh hermes specifier orchestrator"
   exit 1
 fi
 
@@ -64,7 +64,7 @@ MARKER="[F]${FROM_CAP}&[T]${TO_CAP}"
 
 # Check if marker exists
 if ! grep -qF "$MARKER" "$FORMS_FILE"; then
-  echo "[ERROR] Handoff form not found: $FROM_CAP → $TO_CAP"
+  error "Handoff form not found: $FROM_CAP → $TO_CAP"
   echo ""
   echo "Available forms:"
   grep -o '\[F\][A-Za-z]*&\[T\][A-Za-z]*' "$FORMS_FILE" | while read -r line; do

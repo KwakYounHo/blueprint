@@ -17,6 +17,9 @@ INPUT=$(cat)
 # Extract source field using grep/sed (portable, no jq dependency)
 SOURCE=$(echo "$INPUT" | grep -o '"source"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*"source"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
 
+# Blueprint CLI script path
+BLUEPRINT_SCRIPT="$PROJECT_ROOT/.claude/skills/blueprint/blueprint.sh"
+
 # Determine action based on source
 case "$SOURCE" in
   startup|compact|clear)
@@ -27,12 +30,10 @@ case "$SOURCE" in
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
 
-    LEXIS_SCRIPT="$PROJECT_ROOT/.claude/skills/lexis/lexis.sh"
-
-    if [ -f "$LEXIS_SCRIPT" ]; then
-      "$LEXIS_SCRIPT" --base
+    if [ -f "$BLUEPRINT_SCRIPT" ]; then
+      "$BLUEPRINT_SCRIPT" lexis --base
     else
-      echo "[WARN] Lexis script not found: $LEXIS_SCRIPT"
+      echo "[WARN] Blueprint script not found: $BLUEPRINT_SCRIPT"
       echo "[INFO] Base constitution loading skipped."
     fi
 
@@ -54,10 +55,8 @@ case "$SOURCE" in
     echo "[INFO] Loading Base Constitution (safety measure)"
     echo ""
 
-    LEXIS_SCRIPT="$PROJECT_ROOT/.claude/skills/lexis/lexis.sh"
-
-    if [ -f "$LEXIS_SCRIPT" ]; then
-      "$LEXIS_SCRIPT" --base
+    if [ -f "$BLUEPRINT_SCRIPT" ]; then
+      "$BLUEPRINT_SCRIPT" lexis --base
     fi
     ;;
 esac
