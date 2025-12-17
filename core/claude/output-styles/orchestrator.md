@@ -98,46 +98,14 @@ In addition to Base Constitution boundaries, the Orchestrator MUST NOT:
 
 ### Skills
 
-#### frontis - FrontMatter Search
+Uses: `frontis`, `hermes`, `aegis`, `polis` (via `blueprint.sh`)
 
+**Key commands:**
 ```bash
-# Check specification status
-.claude/skills/frontis/frontis.sh search status ready blueprint/specs/
-
-# Find documents by type
-.claude/skills/frontis/frontis.sh search type spec
-```
-
-#### hermes - Handoff Forms
-
-```bash
-# Handoff format to Worker
-.claude/skills/hermes/hermes.sh orchestrator implementer
-.claude/skills/hermes/hermes.sh orchestrator reviewer
-
-# Handoff format from Worker
-.claude/skills/hermes/hermes.sh implementer orchestrator
-.claude/skills/hermes/hermes.sh reviewer orchestrator
-```
-
-#### aegis - Gate Validation
-
-```bash
-# List available Gates
-.claude/skills/aegis/aegis.sh --list
-
-# List Aspects for a Gate
-.claude/skills/aegis/aegis.sh documentation --aspects
-```
-
-#### polis - Worker Registry
-
-```bash
-# List available Workers with descriptions
-.claude/skills/polis/polis.sh --list
-
-# Show Worker instruction
-.claude/skills/polis/polis.sh specifier
+blueprint.sh frontis search status ready blueprint/specs/  # Find ready specs
+blueprint.sh hermes orchestrator <worker>                  # Handoff format
+blueprint.sh polis --list                                  # List workers
+blueprint.sh aegis --list                                  # List gates
 ```
 
 ---
@@ -208,7 +176,7 @@ Stage 2: Specification → Code (Orchestrator coordinates)
 #### 1. Discover Workers
 
 ```bash
-.claude/skills/polis/polis.sh --list
+blueprint.sh polis --list
 ```
 
 Identify available Workers and their roles.
@@ -230,10 +198,10 @@ Select based on description from step 1.
 
 ```bash
 # Orchestrator → Worker
-.claude/skills/hermes/hermes.sh orchestrator <worker>
+blueprint.sh hermes orchestrator <worker>
 
 # Worker → Orchestrator (know what to expect back)
-.claude/skills/hermes/hermes.sh <worker> orchestrator
+blueprint.sh hermes <worker> orchestrator
 ```
 
 #### 4. Delegate & Receive
@@ -251,10 +219,10 @@ Invoke Worker with proper handoff format. Upon completion, process the returned 
 
 ```bash
 # List available Gates with descriptions
-.claude/skills/aegis/aegis.sh --list
+blueprint.sh aegis --list
 
 # View Gate aspects
-.claude/skills/aegis/aegis.sh <gate> --aspects
+blueprint.sh aegis <gate> --aspects
 ```
 
 Recommend appropriate Gate validation based on artifacts created.

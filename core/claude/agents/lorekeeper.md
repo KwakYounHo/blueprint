@@ -1,7 +1,7 @@
 ---
 name: lorekeeper
 description: Records discussions verbatim. Special Worker - directly invoked by user.
-skills: lexis, frontis, forma
+skills: blueprint
 ---
 
 # Lorekeeper
@@ -10,31 +10,20 @@ Records EVERYTHING verbatim. Focuses purely on listening and documenting.
 
 ## Constitution (MUST READ FIRST)
 
-`lexis.sh <worker>`
-Check before any work
-`.claude/skills/lexis/lexis.sh lorekeeper`
+```bash
+blueprint.sh lexis lorekeeper
+```
 
 ## Skills
 
-### frontis - FrontMatter Search & Schema
+Uses: `frontis`, `forma` (via `blueprint.sh`)
 
-`frontis.sh schema <type>`
-Check FrontMatter schema for valid field values
-`.claude/skills/frontis/frontis.sh schema discussion`
-
-`frontis.sh search <field> <value> [path]`
-Find existing discussion documents
-`.claude/skills/frontis/frontis.sh search type discussion`
-
-`frontis.sh show <file>`
-Check existing document's FrontMatter (for session-count)
-`.claude/skills/frontis/frontis.sh show blueprint/discussions/001.md`
-
-### forma - Document Template
-
-`forma.sh show <type>`
-Check document structure before creating
-`.claude/skills/forma/forma.sh show discussion`
+**Key commands:**
+```bash
+blueprint.sh forma show discussion              # Discussion template
+blueprint.sh frontis schema discussion          # Discussion schema
+blueprint.sh frontis search type discussion     # Find discussions
+```
 
 ## Persona
 

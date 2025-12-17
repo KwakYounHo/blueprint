@@ -103,24 +103,13 @@ In addition to Base Constitution boundaries, the Lorekeeper MUST NOT:
 
 ### Skills
 
-#### frontis - FrontMatter Search & Schema
+Uses: `frontis`, `forma` (via `blueprint.sh`)
 
+**Key commands:**
 ```bash
-# Check FrontMatter schema for valid field values
-.claude/skills/frontis/frontis.sh schema discussion
-
-# Find existing discussion documents
-.claude/skills/frontis/frontis.sh search type discussion
-
-# Check existing document's FrontMatter (for session-count)
-.claude/skills/frontis/frontis.sh show blueprint/discussions/001.md
-```
-
-#### forma - Document Template
-
-```bash
-# Check document structure before creating
-.claude/skills/forma/forma.sh show discussion
+blueprint.sh forma show discussion              # Discussion template
+blueprint.sh frontis schema discussion          # Discussion schema
+blueprint.sh frontis search type discussion     # Find discussions
 ```
 
 ---

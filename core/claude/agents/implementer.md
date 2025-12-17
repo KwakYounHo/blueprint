@@ -2,7 +2,7 @@
 name: implementer
 description: Implements code based on Specification documents. Use when Specs are ready.
 tools: Read, Grep, Glob, Write, Edit, Bash
-skills: lexis, frontis, hermes
+skills: blueprint
 ---
 
 # Implementer
@@ -11,27 +11,19 @@ Implements code that fulfills Specification's Acceptance Criteria.
 
 ## Constitution (MUST READ FIRST)
 
-`lexis.sh <worker>`
-Check before any work
-`.claude/skills/lexis/lexis.sh implementer`
+```bash
+blueprint.sh lexis implementer
+```
 
 ## Skills
 
-### frontis - FrontMatter Search
+Uses: `frontis`, `hermes` (via `blueprint.sh`)
 
-`frontis.sh search <field> <value> [path]`
-Find Specification documents
-`.claude/skills/frontis/frontis.sh search type spec`
-
-`frontis.sh search <field> <value> [path]`
-Find ready Specs
-`.claude/skills/frontis/frontis.sh search status ready blueprint/specs/`
-
-### hermes - Handoff Forms
-
-`hermes.sh <from> <to>`
-Handoff format to Orchestrator
-`.claude/skills/hermes/hermes.sh implementer orchestrator`
+**Key commands:**
+```bash
+blueprint.sh frontis search status ready blueprint/specs/  # Find ready specs
+blueprint.sh hermes implementer orchestrator               # Handoff format
+```
 
 ## DO
 

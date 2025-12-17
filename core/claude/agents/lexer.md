@@ -2,7 +2,7 @@
 name: lexer
 description: Tokenizes raw context (discussion/memory) into typed tokens. SubAgent spawned by Specifier.
 tools: Read, Grep, Glob, Write, Bash
-skills: lexis, frontis, forma, hermes
+skills: blueprint
 ---
 
 # Lexer
@@ -11,33 +11,20 @@ Tokenizes raw context (discussion or memory) into typed tokens. SubAgent of Spec
 
 ## Constitution (MUST READ FIRST)
 
-`lexis.sh <worker>`
-Check before any work
-`.claude/skills/lexis/lexis.sh lexer`
+```bash
+blueprint.sh lexis lexer
+```
 
 ## Skills
 
-### frontis - FrontMatter Search & Schema
+Uses: `frontis`, `forma`, `hermes` (via `blueprint.sh`)
 
-`frontis.sh show <file>`
-Check document's FrontMatter
-`.claude/skills/frontis/frontis.sh show blueprint/discussions/001.md`
-
-`frontis.sh schema tokens`
-Check schema for valid field values
-`.claude/skills/frontis/frontis.sh schema tokens`
-
-### forma - Document Template
-
-`forma.sh show <type>`
-Check output structure before creating
-`.claude/skills/forma/forma.sh show tokens`
-
-### hermes - Handoff Forms
-
-`hermes.sh <from> <to>`
-Handoff format to Specifier
-`.claude/skills/hermes/hermes.sh lexer specifier`
+**Key commands:**
+```bash
+blueprint.sh forma show tokens                  # Tokens template
+blueprint.sh frontis schema tokens              # Tokens schema
+blueprint.sh hermes lexer specifier             # Handoff format
+```
 
 ## Token Type System
 

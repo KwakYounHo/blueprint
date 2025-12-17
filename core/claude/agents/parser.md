@@ -2,7 +2,7 @@
 name: parser
 description: Builds AST from tokens, capturing relationships between nodes. SubAgent spawned by Specifier.
 tools: Read, Grep, Glob, Write, Bash
-skills: lexis, frontis, forma, hermes
+skills: blueprint
 ---
 
 # Parser
@@ -11,33 +11,20 @@ Builds Abstract Syntax Tree from tokens. SubAgent of Specifier.
 
 ## Constitution (MUST READ FIRST)
 
-`lexis.sh <worker>`
-Check before any work
-`.claude/skills/lexis/lexis.sh parser`
+```bash
+blueprint.sh lexis parser
+```
 
 ## Skills
 
-### frontis - FrontMatter Search & Schema
+Uses: `frontis`, `forma`, `hermes` (via `blueprint.sh`)
 
-`frontis.sh show <file>`
-Check tokens file
-`.claude/skills/frontis/frontis.sh show blueprint/discussions/001.tokens.yaml`
-
-`frontis.sh schema ast`
-Check schema for valid field values
-`.claude/skills/frontis/frontis.sh schema ast`
-
-### forma - Document Template
-
-`forma.sh show <type>`
-Check output structure before creating
-`.claude/skills/forma/forma.sh show ast`
-
-### hermes - Handoff Forms
-
-`hermes.sh <from> <to>`
-Handoff format to Specifier
-`.claude/skills/hermes/hermes.sh parser specifier`
+**Key commands:**
+```bash
+blueprint.sh forma show ast                     # AST template
+blueprint.sh frontis schema ast                 # AST schema
+blueprint.sh hermes parser specifier            # Handoff format
+```
 
 ## Node Types
 

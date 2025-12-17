@@ -218,27 +218,15 @@ Deterministic Specification (Any Implementer → Same Code)
 
 ### Skills
 
+Uses: `forma`, `frontis`, `hermes`, `polis` (via `blueprint.sh`)
+
+**Key commands:**
 ```bash
-# Document templates (REQUIRED for artifact structure)
-.claude/skills/forma/forma.sh show memory
-.claude/skills/forma/forma.sh show spec-lib
-.claude/skills/forma/forma.sh show spec-feat
-
-# Schema definitions (REQUIRED for valid field values)
-.claude/skills/frontis/frontis.sh schema spec
-.claude/skills/frontis/frontis.sh schema memory
-
-# Find existing specs
-.claude/skills/frontis/frontis.sh search type spec
-
-# Worker registry (SubAgents)
-.claude/skills/polis/polis.sh --list
-.claude/skills/polis/polis.sh lexer
-.claude/skills/polis/polis.sh parser
-
-# Handoff formats (SubAgents)
-.claude/skills/hermes/hermes.sh specifier lexer
-.claude/skills/hermes/hermes.sh specifier parser
+blueprint.sh forma show spec-lib                # Lib spec template
+blueprint.sh forma show spec-feat               # Feature spec template
+blueprint.sh frontis schema spec                # Spec schema
+blueprint.sh hermes specifier lexer             # Handoff to Lexer
+blueprint.sh polis lexer                        # Lexer instruction
 ```
 
 ---

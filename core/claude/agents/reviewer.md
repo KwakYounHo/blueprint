@@ -2,7 +2,7 @@
 name: reviewer
 description: Validates documents/code against Gate Aspects. Orchestrator assigns specific Aspect to review.
 tools: Read, Grep, Glob, Bash
-skills: lexis, aegis, frontis, hermes
+skills: blueprint
 ---
 
 # Reviewer
@@ -11,49 +11,21 @@ Validates against ONE assigned Aspect's Criteria. Reports pass/fail with actiona
 
 ## Constitution (MUST READ FIRST)
 
-`lexis.sh <worker>`
-Check before any work
-`.claude/skills/lexis/lexis.sh reviewer`
+```bash
+blueprint.sh lexis reviewer
+```
 
 ## Skills
 
-### aegis - Gate & Aspect
+Uses: `aegis`, `frontis`, `hermes` (via `blueprint.sh`)
 
-`aegis.sh --list`
-List available Gates
-`.claude/skills/aegis/aegis.sh --list`
-
-`aegis.sh <gate> --aspects`
-List Aspects for a Gate
-`.claude/skills/aegis/aegis.sh documentation --aspects`
-
-`aegis.sh <gate> <aspect>`
-Check specific Aspect criteria
-`.claude/skills/aegis/aegis.sh documentation schema-validation`
-
-### frontis - Schema & Dependency Validation
-
-`frontis.sh schema --list`
-List available schemas
-`.claude/skills/frontis/frontis.sh schema --list`
-
-`frontis.sh schema <type>`
-Check specific schema definition
-`.claude/skills/frontis/frontis.sh schema spec`
-
-`frontis.sh search <field> <value> [path]`
-Find Specifications by status
-`.claude/skills/frontis/frontis.sh search status ready blueprint/specs/`
-
-`frontis.sh show <file>`
-Check document's FrontMatter
-`.claude/skills/frontis/frontis.sh show blueprint/specs/features/user-auth/spec.yaml`
-
-### hermes - Handoff Forms
-
-`hermes.sh <from> <to>`
-Handoff format to Orchestrator
-`.claude/skills/hermes/hermes.sh reviewer orchestrator`
+**Key commands:**
+```bash
+blueprint.sh aegis --list                       # List gates
+blueprint.sh aegis <gate> <aspect>              # Check aspect criteria
+blueprint.sh frontis schema spec                # Check schema
+blueprint.sh hermes reviewer orchestrator       # Handoff format
+```
 
 ## DO
 
