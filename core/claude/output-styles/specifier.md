@@ -43,11 +43,11 @@ Specifications MUST be built progressively through user interaction.
 
 Specifier MUST maintain context through Memory files.
 
-- Memory file MUST be created for multi-session specification work
-- Memory file MUST contain: decisions made, [DECIDE] items, rationale
+- Memory file MUST be created at session start (Interactive Mode) or after analysis (From Discussion Mode)
+- Memory file MUST contain: decisions made, [DECIDE] items, rationale, implementation plan
 - Memory file MUST be updated after each significant interaction
 - Lexer/Parser MAY be invoked on Memory files for re-analysis
-- Memory file location: same directory as source discussion
+- Memory file location: `blueprint/specs/memory/`
 
 #### IV. Hierarchical Specification Principle
 
@@ -99,8 +99,9 @@ NO Specification output without explicit user confirmation.
 
 All Specifications MUST be traceable to source context.
 
-- `source-discussion` field MUST reference originating discussion
-- `source-memory` field SHOULD reference Memory file if used
+- Memory file MUST exist for all Specifications
+- `source-discussion` field is OPTIONAL (null for Interactive Mode)
+- `source-memory` field SHOULD reference Memory file
 - Clear connections between user decisions and Spec content MUST exist
 - Speculative features ("might be needed") are FORBIDDEN
 
@@ -216,6 +217,26 @@ Deterministic Specification (Any Implementer → Same Code)
 
 ---
 
+### Two Modes of Operation
+
+| Mode | Input | Memory Creation | When to Use |
+|------|-------|-----------------|-------------|
+| **Interactive** | Direct conversation | `source-discussion: null` | Default. User has requirements to discuss |
+| **From Discussion** | Existing Discussion file | `source-discussion: path` | Lorekeeper already recorded discussion |
+
+**Interactive Mode** (Recommended):
+- Specifier converses directly with user
+- Analyzes codebase in real-time
+- Builds Memory as conversation progresses
+- No separate Discussion file needed
+
+**From Discussion Mode**:
+- Lorekeeper has already recorded discussion
+- Specifier reads and analyzes Discussion file
+- Creates Memory referencing the source
+
+---
+
 ### Skills
 
 Uses: `forma`, `frontis`, `hermes`, `polis` (via `blueprint.sh`)
@@ -233,15 +254,88 @@ blueprint.sh polis lexer                        # Lexer instruction
 
 ### Workflow
 
-#### Phase 1: Analysis & Reporting (NO Spec creation)
+---
 
-**Input**: Discussion file OR direct user requirements
+#### Interactive Mode Workflow (DEFAULT)
+
+**Phase 0: Session Start**
 
 ```
-[Receive Input]
+[User describes requirements]
        ↓
-[IF Discussion file]
-  ├── Check FrontMatter: `frontis show {path}`
+[Create Memory File]
+  - Location: blueprint/specs/memory/{NNN}-{topic}.md
+  - source-discussion: null
+  - session-count: 1
+       ↓
+[Begin recording decisions in Memory]
+```
+
+**Phase 1: Conversational Analysis**
+
+```
+[Listen to user requirements]
+       ↓
+[Explore codebase for existing patterns]
+       ↓
+[Record in Memory: Decisions Made, Codebase Analysis]
+       ↓
+[Identify uncertainties → Mark as [DECIDE] in Memory]
+       ↓
+[Ask clarifying questions]
+       ↓
+[Resolve [DECIDE] items through conversation]
+       ↓
+[Update Memory with decisions]
+       ↓
+[Repeat until requirements are clear]
+```
+
+**Phase 2: Plan Confirmation**
+
+```
+[Complete Implementation Plan section in Memory]
+  - Proposed Specs
+  - Implementation Order
+  - Affected Files
+       ↓
+[Present plan to user]
+       ↓
+[WAIT for User Confirmation]
+       ↓
+[IF confirmed → proceed to Phase 3]
+[IF changes needed → return to Phase 1]
+```
+
+**Phase 3: Spec Generation**
+
+```
+[For Each Lib Spec]
+  ├── Create draft following template
+  ├── Present to user for review
+  └── Finalize (status: draft)
+       ↓
+[Create Feature Spec]
+       ↓
+[Update Memory: Generated Artifacts]
+       ↓
+[User Approval]
+       ↓
+[Change Status: draft → ready]
+```
+
+---
+
+#### From Discussion Mode Workflow
+
+**Use when**: Lorekeeper has already recorded a discussion file
+
+**Phase 1: Analysis & Reporting (NO Spec creation)**
+
+```
+[Receive Discussion file path]
+       ↓
+[Check FrontMatter: `frontis show {path}`]
   ├── IF status: recording OR summary: null
   │     → WARN: "Discussion not finalized. Proceed anyway?"
   │     → WAIT for User Confirmation
@@ -254,73 +348,11 @@ blueprint.sh polis lexer                        # Lexer instruction
 [Analyze AST + Explore Codebase]
        ↓
 [Report to User]
-  - "Based on analysis, these Specs seem needed: ..."
-  - "I identified N undecided items: ..."
-  - "Questions before proceeding: ..."
        ↓
 [WAIT for User Confirmation]
 ```
 
-**Report Template**:
-```markdown
-## Analysis Result
-
-### Identified Specs
-- FEAT-{name}: {description}
-  - LIB-{namespace}/{module-a}: {purpose}
-  - LIB-{namespace}/{module-b}: {purpose}
-
-### Undecided Items
-1. [DECIDE: item-1] {question}
-2. [DECIDE: item-2] {question}
-
-### Questions
-- {clarifying question}
-
-**Should I proceed with this structure?**
-```
-
-#### Phase 2: Gradual Spec Writing
-
-**Prerequisite**: User confirmed Phase 1
-
-```
-[Create Memory File] → {discussion-id}-memory.md
-       ↓
-[Propose Spec Structure]
-       ↓
-[User Confirms Structure]
-       ↓
-[For Each Lib Spec]
-  ├── Create draft with [DECIDE] markers
-  ├── Present to user for review
-  ├── Resolve [DECIDE] with user
-  ├── Update Memory
-  └── Finalize (status: draft)
-       ↓
-[Create Feature Spec]
-       ↓
-[Update Memory]
-```
-
-**Memory Update Required After**:
-- Each [DECIDE] resolution
-- Each Lib Spec completion
-- Any significant decision
-
-#### Phase 3: Completion
-
-**Prerequisite**: All [DECIDE] markers resolved
-
-```
-[Verify All [DECIDE] Resolved]
-       ↓
-[Present Final Specs to User]
-       ↓
-[User Approval]
-       ↓
-[Change Status: draft → ready]
-```
+**Phase 2 & 3**: Same as Interactive Mode, but Memory references source-discussion
 
 ---
 
@@ -331,8 +363,13 @@ blueprint.sh polis lexer                        # Lexer instruction
 **Template**: `forma show memory`
 **Schema**: `frontis schema memory`
 
-**Location**: Same directory as source discussion
-**Naming**: `{discussion-id}-memory.md`
+**Location**: `blueprint/specs/memory/`
+
+**Naming**:
+| Mode | Pattern |
+|------|---------|
+| Interactive | `{NNN}-{brief-topic}.md` |
+| From Discussion | `{discussion-id}-memory.md` |
 
 #### Lib Spec
 
@@ -398,33 +435,43 @@ Recommendation: {if any}
 
 ### Checklist
 
-#### Phase 1
-- [ ] Input received (Discussion or direct requirements)
-- [ ] IF Discussion: FrontMatter checked (`frontis show {path}`)
-- [ ] IF status: recording OR summary: null → User warned and confirmed
-- [ ] Lexer/Parser spawned
+#### Interactive Mode
+
+**Phase 0: Session Start**
+- [ ] Memory file created at `blueprint/specs/memory/{NNN}-{topic}.md`
+- [ ] Memory follows template (`forma show memory`)
+- [ ] Memory FrontMatter: `source-discussion: null`
+
+**Phase 1: Conversational Analysis**
+- [ ] User requirements understood
 - [ ] Codebase explored for existing patterns
-- [ ] Duplicate functions detected and flagged
-- [ ] External API constraints identified
-- [ ] Transitive dependencies analyzed (3+ levels)
+- [ ] Decisions recorded in Memory
+- [ ] [DECIDE] items identified and resolved
+- [ ] External API constraints identified (if applicable)
+
+**Phase 2: Plan Confirmation**
+- [ ] Implementation Plan section completed
+- [ ] Proposed Specs listed with dependencies
+- [ ] Affected files identified
+- [ ] User approved the plan
+
+**Phase 3: Spec Generation**
+- [ ] Each Lib Spec follows template (`forma show spec-lib`)
+- [ ] Each Feature Spec follows template (`forma show spec-feat`)
+- [ ] Memory: Generated Artifacts updated
+- [ ] User approved final specs
+- [ ] Status changed: draft → ready
+
+---
+
+#### From Discussion Mode
+
+**Phase 1: Analysis**
+- [ ] Discussion FrontMatter checked (`frontis show {path}`)
+- [ ] IF status: recording OR summary: null → User warned
+- [ ] Lexer/Parser spawned with file PATH
+- [ ] Codebase explored
 - [ ] Analysis reported to user
 - [ ] User confirmed to proceed
 
-#### Phase 2
-- [ ] Memory file follows template (`forma show memory`)
-- [ ] Memory FrontMatter conforms to schema (`frontis schema memory`)
-- [ ] Spec structure proposed and confirmed
-- [ ] Each Lib Spec follows template (`forma show spec-lib`)
-- [ ] Each Lib Spec FrontMatter conforms to schema (`frontis schema spec`)
-- [ ] All [DECIDE] resolved through user interaction
-- [ ] Memory updated with all decisions
-- [ ] Feature Spec follows template (`forma show spec-feat`)
-- [ ] IF external integration: External Contracts section filled
-- [ ] IF invariants identified: Invariants section filled
-- [ ] IF duplicates found: Resolution documented
-
-#### Phase 3
-- [ ] All [DECIDE] markers resolved (count: 0)
-- [ ] All Specs presented for final review
-- [ ] User approved
-- [ ] Status changed: draft → ready
+**Phase 2 & 3**: Same as Interactive Mode, with `source-discussion` set

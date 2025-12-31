@@ -1,7 +1,7 @@
 ---
 type: schema
 status: active
-version: 1.0.0
+version: 1.1.0
 created: {{date}}
 updated: {{date}}
 tags: [schema, memory, specification, front-matter]
@@ -10,7 +10,7 @@ dependencies: [front-matters/base.schema.md]
 
 # Schema: Memory FrontMatter
 
-> Extends base schema with Memory-specific fields. Memory files maintain context across multi-session specification work.
+> Extends base schema with Memory-specific fields. Memory files serve as **Specification Plans** - maintaining context across multi-session specification work and tracking implementation decisions.
 
 ## Inherits
 
@@ -22,7 +22,6 @@ All fields from `base.schema.md`:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `source-discussion` | string | Path to originating discussion file |
 | `session-count` | number | Total interaction sessions count |
 | `last-session` | date | Date of last interaction session |
 
@@ -30,6 +29,7 @@ All fields from `base.schema.md`:
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
+| `source-discussion` | string | `null` | Path to originating discussion file (if created from discussion) |
 | `source-memory` | string | `null` | Path to parent memory (for continuation) |
 | `generated-specs` | array | `[]` | List of specs generated from this memory |
 
@@ -37,11 +37,12 @@ All fields from `base.schema.md`:
 
 ### source-discussion
 
-- **Type**: string
-- **Required**: Yes
+- **Type**: string | null
+- **Required**: No
+- **Default**: `null`
 - **Format**: Relative path to discussion file
-- **Examples**: `"blueprint/discussions/001-elevenlabs-tts.md"`
-- **Description**: Traceability to the originating discussion.
+- **Examples**: `"blueprint/discussions/001-elevenlabs-tts.md"`, `null`
+- **Description**: Traceability to the originating discussion. When `null`, Memory was created through interactive mode (direct conversation with Specifier).
 
 ### session-count
 
@@ -74,28 +75,59 @@ All fields from `base.schema.md`:
 **Structure**:
 ```yaml
 generated-specs:
-  - spec-id: "LIB-elevenlabs/schema"
+  - spec-id: "LIB-auth/token-validator"
     status: ready
-  - spec-id: "FEAT-elevenlabs-tts-integration"
+  - spec-id: "FEAT-user-authentication"
     status: draft
 ```
 
-## Memory Body Sections (4 Required)
+## Memory Body Sections (6 Required)
 
-### 1. Decisions Made
+### 1. Session Log
 
-Resolved decisions with rationale.
+Chronological conversation record with context for decisions. Captures the **why** behind each decision.
+
+```markdown
+## Session Log
+
+### 2025-01-15 Session 1
+
+User: "I want to add authentication to the API."
+
+Me: Clarifying the scope - API-only or full-stack?
+
+User: "API-only. We're using JWT tokens from an external provider."
+
+Me: Understood. Exploring existing patterns in codebase.
+
+> **D-001**: Use middleware pattern for auth - matches existing request handling
+
+User: "Should we validate tokens on every request?"
+
+Me: Proposing two options with trade-offs.
+
+> **D-002**: Validate on every request - security over performance
+```
+
+**Format**:
+- `User: "quoted text"` - User's exact words
+- `Me: description` - Specifier's action/response (not quoted)
+- `> **D-XXX**: decision - rationale` - Inline decision marker
+
+### 2. Decisions Made
+
+Summary table of all decisions (derived from Session Log).
 
 ```markdown
 ## Decisions Made
 
 | ID | Decision | Rationale | Session |
 |----|----------|-----------|---------|
-| D-001 | Use SDK over REST API | Type safety, built-in retry | 1 |
-| D-002 | Static voice list | No API rate limit concerns | 2 |
+| D-001 | Use TypeScript over JavaScript | Type safety, better IDE support | 1 |
+| D-002 | Use Zod for validation | Runtime validation + type inference | 1 |
 ```
 
-### 2. [DECIDE] Items
+### 3. [DECIDE] Items
 
 Pending decisions requiring user input.
 
@@ -105,10 +137,10 @@ Pending decisions requiring user input.
 | ID | Question | Options | Status |
 |----|----------|---------|--------|
 | DECIDE-001 | Error handling strategy? | A: throw, B: return Result | pending |
-| DECIDE-002 | Voice list update frequency? | A: static, B: daily fetch | resolved → D-002 |
+| DECIDE-002 | Config file format? | A: JSON, B: YAML | resolved → D-003 |
 ```
 
-### 3. Codebase Analysis
+### 4. Codebase Analysis
 
 Patterns and locations discovered during analysis.
 
@@ -116,17 +148,41 @@ Patterns and locations discovered during analysis.
 ## Codebase Analysis
 
 ### Existing Patterns
-- Provider pattern: `main/utils/tts/{provider}/index.ts`
-- Client pattern: `lib/tts/{provider}/index.ts`
+- Service pattern: `src/services/{name}/index.ts`
+- Utility pattern: `src/utils/{name}.ts`
 
 ### File Locations
 | Context | Pattern | Example |
 |---------|---------|---------|
-| Server Provider | `main/utils/tts/{name}/` | `main/utils/tts/typecast/index.ts` |
-| Client Utils | `lib/tts/{name}/` | `lib/tts/typecast/index.ts` |
+| Services | `src/services/{name}/` | `src/services/auth/index.ts` |
+| Utils | `src/utils/{name}.ts` | `src/utils/validation.ts` |
 ```
 
-### 4. Generated Artifacts
+### 5. Implementation Plan
+
+Specification structure and implementation order.
+
+```markdown
+## Implementation Plan
+
+### Proposed Specs
+| ID | Type | Purpose | Dependencies |
+|----|------|---------|--------------|
+| LIB-auth/token-validator | lib | JWT token validation | none |
+| FEAT-user-authentication | feature | Full auth flow | LIB-auth/token-validator |
+
+### Implementation Order
+1. LIB-auth/token-validator - Foundation, no dependencies
+2. FEAT-user-authentication - Depends on token-validator
+
+### Affected Files
+| File | Change Type | Notes |
+|------|-------------|-------|
+| src/services/auth/index.ts | create | Auth service |
+| src/middleware/auth.ts | create | Auth middleware |
+```
+
+### 6. Generated Artifacts
 
 Tracking of outputs produced.
 
@@ -136,8 +192,8 @@ Tracking of outputs produced.
 | Type | Path | Status |
 |------|------|--------|
 | Memory | {this file} | active |
-| Lib Spec | blueprint/specs/lib/elevenlabs/schema/spec.yaml | draft |
-| Feature Spec | blueprint/specs/features/elevenlabs-tts/spec.yaml | draft |
+| Lib Spec | blueprint/specs/lib/auth/token-validator/spec.yaml | draft |
+| Feature Spec | blueprint/specs/features/user-auth/spec.yaml | draft |
 ```
 
 ## Status Definitions
@@ -153,9 +209,9 @@ Tracking of outputs produced.
 | Rule | Description |
 |------|-------------|
 | Type | `type` field must be `memory` |
-| Traceability | `source-discussion` must reference valid discussion |
+| Traceability | If `source-discussion` is set, must reference valid discussion |
 | Update | Must be updated after each significant decision |
-| Location | Same directory as source discussion |
+| Location | `blueprint/specs/memory/` directory |
 
 ## Template
 
@@ -167,9 +223,17 @@ forma show memory
 
 ## File Naming
 
-Memory files use the naming pattern: `{discussion-id}-memory.md`
+Memory files use sequential numbering with descriptive suffix:
 
-| Source Discussion | Memory File |
-|-------------------|-------------|
-| `001-elevenlabs-tts.md` | `001-elevenlabs-tts-memory.md` |
-| `002-auth-redesign.md` | `002-auth-redesign-memory.md` |
+| Creation Mode | Pattern | Example |
+|---------------|---------|---------|
+| Interactive | `{NNN}-{brief-topic}.md` | `001-user-authentication.md` |
+| From Discussion | `{discussion-id}-memory.md` | `001-feature-request-memory.md` |
+
+**Interactive Mode** (source-discussion: null):
+- Created through direct conversation with Specifier
+- Named by topic, not by source
+
+**From Discussion** (source-discussion: path):
+- Created by analyzing existing discussion file
+- Named by source discussion ID
