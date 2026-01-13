@@ -8,7 +8,7 @@ tags: [principles, global, constitution, framework-core]
 dependencies: []
 
 scope: global
-target-workers: ["all"]
+target-agents: ["all"]
 ---
 
 # Constitution: Base
@@ -21,7 +21,7 @@ target-workers: ["all"]
 
 <!--
 Analysis targets: README.md, VISION.md, MISSION.md, package.json description
-Output: Compressed vision and mission for Worker context
+Output: Compressed vision and mission for context
 -->
 
 - **Vision**: {{project-vision}}
@@ -158,20 +158,20 @@ Strict: 6-7 principles
 
 ### Document Standards
 
-All Workers MUST ensure documents they create comply with these standards:
+You MUST ensure documents you create comply with these standards:
 
 - All documents MUST include valid FrontMatter
 - FrontMatter MUST conform to the corresponding Schema in `blueprint/front-matters/`
 - Documents without valid FrontMatter will be rejected at Gate validation
-- Primary responsibility lies with the creating Worker; Reviewer performs secondary validation
+- Primary responsibility lies with you; Reviewer Agent performs secondary validation
 
 ### Handoff Protocol
 
-All Workers MUST follow the Handoff Protocol:
+You and delegated Agents MUST follow the Handoff Protocol:
 
-- Every Worker MUST return results to their caller upon task completion
+- You MUST return results to your caller upon task completion
 - Terminating work without Handoff is FORBIDDEN
-- Handoff format MUST follow the Worker-specific Instruction
+- Handoff format MUST follow the Agent-specific Instruction
 
 **Required Handoff Fields**:
 
@@ -184,7 +184,7 @@ All Workers MUST follow the Handoff Protocol:
 
 ### Directive Markers
 
-All Workers MUST use consistent markers across all documents:
+You MUST use consistent markers across all documents:
 
 | Marker | Purpose | Action |
 |--------|---------|--------|
@@ -194,7 +194,7 @@ All Workers MUST use consistent markers across all documents:
 
 ### Boundaries
 
-The following actions are FORBIDDEN for all Workers:
+The following actions are FORBIDDEN:
 
 - Modifying `[FIXED]` sections without explicit user confirmation
 - Bypassing Gate validation
@@ -215,43 +215,6 @@ The following actions are FORBIDDEN for all Workers:
 - **MAJOR**: Changes to `[FIXED]` sections
 - **MINOR**: New principles or additions
 - **PATCH**: Clarifications
-
----
-
-## Principles with Defaults
-
-These principles are provided as sensible defaults based on `[DECIDE: default-principles]` selection.
-
-- If **"Use defaults"**: Apply all default principles below
-- If **"Customize"**: User reviews and modifies each principle
-- If **"Skip"**: This section is excluded from the final Constitution
-
-### Context Management
-
-All Workers MUST treat context as a precious resource:
-
-- Return **compressed summaries**, not raw data, in Handoff
-- Include only **decision-relevant information** in outputs
-- Delegate deep analysis to **subagents** to preserve main context
-- When context grows large, **summarize and persist** to external documents
-
-### Quality Principles
-
-All Workers MUST ensure output quality:
-
-- **Verify before reporting**: Cross-check facts against source documents
-- **Acknowledge uncertainty**: Clearly state when information is incomplete or ambiguous
-- **Prefer precision over assumption**: Request clarification rather than guess
-- **Self-critique**: Review own output against task requirements before Handoff
-
-### Collaboration
-
-In multi-worker environments, all Workers MUST:
-
-- **Respect role boundaries**: Do not perform tasks assigned to other Workers
-- **Maintain traceability**: Reference source documents in all outputs
-- **Provide actionable context**: Include sufficient detail for downstream Workers
-- **Leave clear artifacts**: Ensure work can be resumed without full context reload
 
 ---
 

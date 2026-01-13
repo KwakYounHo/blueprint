@@ -7,9 +7,9 @@
 #   aegis     Gate validation and aspects
 #   forma     Document templates
 #   frontis   FrontMatter search and schemas
-#   hermes    Worker handoff forms
+#   hermes    Agent handoff forms
 #   lexis     Constitution viewer
-#   polis     Worker registry
+#   polis     Agent registry
 
 set -e
 
@@ -27,9 +27,9 @@ Submodules:
   aegis     Gate validation and aspects
   forma     Document templates
   frontis   FrontMatter search and schemas
-  hermes    Worker handoff forms
+  hermes    Agent handoff forms
   lexis     Constitution viewer
-  polis     Worker registry
+  polis     Agent registry
 
 Options:
   --help, -h    Show this help
@@ -54,9 +54,9 @@ list_submodules() {
   printf "  %-12s %s\n" "aegis" "Gate validation and aspects"
   printf "  %-12s %s\n" "forma" "Document templates"
   printf "  %-12s %s\n" "frontis" "FrontMatter search and schemas"
-  printf "  %-12s %s\n" "hermes" "Worker handoff forms"
+  printf "  %-12s %s\n" "hermes" "Agent handoff forms"
   printf "  %-12s %s\n" "lexis" "Constitution viewer"
-  printf "  %-12s %s\n" "polis" "Worker registry"
+  printf "  %-12s %s\n" "polis" "Agent registry"
 }
 
 # Main dispatch

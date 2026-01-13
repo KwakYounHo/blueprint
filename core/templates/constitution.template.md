@@ -4,22 +4,22 @@ status: draft
 version: 1.0.0
 created: {{date}}
 updated: {{date}}
-tags: [constitution, worker, {worker-name}]
+tags: [constitution, agent, {agent-name}]
 dependencies: [../base.md]
 
-scope: worker-specific
-target-workers: [{worker-name}]
+scope: agent-specific
+target-agents: [{agent-name}]
 ---
 
-# Constitution: {Worker Name}
+# Constitution: {Agent Name}
 
 ---
 
-## Worker-Specific Principles
+## Agent-Specific Principles
 
 ### I. {Principle Name}
 
-{Principle description - what this worker MUST do.}
+{Principle description - what this agent MUST do.}
 
 - {Specific rule 1}
 - {Specific rule 2}
@@ -36,7 +36,7 @@ target-workers: [{worker-name}]
 
 ## Quality Standards
 
-{Worker name}'s work quality is measured by the following criteria:
+{Agent name}'s work quality is measured by the following criteria:
 
 | Criteria | Standard |
 |----------|----------|
@@ -47,7 +47,7 @@ target-workers: [{worker-name}]
 
 ## Boundaries
 
-In addition to `../base.md#boundaries`, the {Worker Name} MUST NOT:
+In addition to `../base.md#boundaries`, the {Agent Name} MUST NOT:
 
 - {Boundary 1}
 - {Boundary 2}

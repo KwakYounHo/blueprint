@@ -1,10 +1,10 @@
 #!/bin/bash
-# Polis - Worker Registry Viewer
-# View available Workers and their descriptions
+# Polis - Agent Registry Viewer
+# View available Agents and their descriptions
 #
 # Usage:
-#   polis --list                     List all workers with descriptions
-#   polis <worker>                   Show worker instruction
+#   polis --list                     List all agents with descriptions
+#   polis <agent>                    Show agent instruction
 
 set -e
 
@@ -19,10 +19,10 @@ if [ ! -d "$AGENTS_DIR" ]; then
   exit 1
 fi
 
-# --list: Show all workers with descriptions
+# --list: Show all agents with descriptions
 if [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
   found=0
-  echo "Available Workers:"
+  echo "Available Agents:"
   echo ""
   for file in "$AGENTS_DIR"/*.md; do
     if [ -f "$file" ]; then
@@ -36,34 +36,33 @@ if [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
   done
 
   if [ "$found" -eq 0 ]; then
-    echo "  (no workers found)"
+    echo "  (no agents found)"
   fi
   exit 0
 fi
 
 # No argument: show usage
 if [ -z "$1" ]; then
-  echo "Polis - Worker Registry Viewer"
+  echo "Polis - Agent Registry Viewer"
   echo ""
   echo "Usage:"
-  echo "  polis --list               List all workers with descriptions"
-  echo "  polis <worker>             Show worker instruction"
+  echo "  polis --list               List all agents with descriptions"
+  echo "  polis <agent>              Show agent instruction"
   echo ""
   echo "Examples:"
   echo "  blueprint.sh polis --list"
-  echo "  blueprint.sh polis orchestrator"
-  echo "  blueprint.sh polis specifier"
+  echo "  blueprint.sh polis reviewer"
   exit 1
 fi
 
-WORKER="$1"
-WORKER_FILE="$AGENTS_DIR/$WORKER.md"
+AGENT="$1"
+AGENT_FILE="$AGENTS_DIR/$AGENT.md"
 
-# Check if worker exists
-if [ ! -f "$WORKER_FILE" ]; then
-  error "Worker not found: $WORKER"
+# Check if agent exists
+if [ ! -f "$AGENT_FILE" ]; then
+  error "Agent not found: $AGENT"
   echo ""
-  echo "Available workers:"
+  echo "Available agents:"
   for file in "$AGENTS_DIR"/*.md; do
     if [ -f "$file" ]; then
       name=$(basename "$file" .md)
@@ -75,5 +74,5 @@ if [ ! -f "$WORKER_FILE" ]; then
   exit 1
 fi
 
-# Show worker instruction
-cat "$WORKER_FILE"
+# Show agent instruction
+cat "$AGENT_FILE"

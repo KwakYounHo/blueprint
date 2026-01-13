@@ -90,4 +90,4 @@ Gate (gate.schema.md)
 - Each Gate has multiple Aspects
 - Each Aspect belongs to one Gate (referenced via `gate` field)
 - Criteria are defined in the Aspect document body, not FrontMatter
-- Reviewer Worker loads Gate + Aspect to perform validation
+- Reviewer Agent loads Gate + Aspect to perform validation

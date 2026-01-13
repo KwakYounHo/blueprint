@@ -23,7 +23,7 @@ Used primarily by `/load` command to verify handoff integrity before resuming wo
 
 - Ensure seamless session handoffs between context windows
 - Detect discrepancies between documented state and actual state
-- Preserve Main Session context by delegating verification to Reviewer Worker
+- Preserve your context by delegating verification to Reviewer Agent
 
 ## Aspects
 
@@ -40,7 +40,7 @@ Used primarily by `/load` command to verify handoff integrity before resuming wo
 ```
 Phase 3: State Verification
     ├── [Direct] Main Session performs verification
-    └── [Delegated] Spawn Reviewer Worker
+    └── [Delegated] Spawn Reviewer Agent
         └── aegis session --aspects git-state,file-integrity,plan-progress
 ```
 
@@ -51,14 +51,14 @@ Step 1: Verify Phase Completion
     └── aegis session --aspects plan-progress
 ```
 
-## Reviewer Worker Integration
+## Reviewer Agent Integration
 
 When delegating to Reviewer:
 
-1. Spawn Reviewer Worker with session Gate
+1. Spawn Reviewer Agent with session Gate
 2. Reviewer validates specified Aspects
 3. Reviewer returns Handoff with validation results
-4. Main Session processes results and presents to user
+4. You process results and present to user
 
 **Handoff Format:**
 ```yaml

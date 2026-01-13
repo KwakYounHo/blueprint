@@ -23,7 +23,7 @@ All fields from `base.schema.md`:
 | Field | Type | Description |
 |-------|------|-------------|
 | `scope` | enum | Constitution applicability scope |
-| `target-workers` | string[] | Workers that must follow this constitution |
+| `target-agents` | string[] | Agents that must follow this constitution |
 
 ## Field Definitions
 
@@ -31,37 +31,36 @@ All fields from `base.schema.md`:
 
 - **Type**: enum
 - **Required**: Yes
-- **Values**: `global` | `worker-specific`
-- **Description**: Defines whether this constitution applies globally or to specific workers.
+- **Values**: `global` | `agent-specific`
+- **Description**: Defines whether this constitution applies globally or to specific agents.
 
 | Value | Description |
 |-------|-------------|
-| `global` | Applies to all workers (e.g., base.md) |
-| `worker-specific` | Applies only to workers listed in `target-workers` |
+| `global` | Applies to all (base.md) |
+| `agent-specific` | Applies only to agents listed in `target-agents` |
 
-### target-workers
+### target-agents
 
 - **Type**: string[]
 - **Required**: Yes
-- **Valid Values**: `orchestrator`, `specifier`, `implementer`, `reviewer`, `all`
-- **Description**: List of workers that must follow this constitution.
+- **Valid Values**: `reviewer`, `all`
+- **Description**: List of agents that must follow this constitution.
 
 **Rules**:
 - `"all"` cannot be combined with other values
-- Multiple workers allowed: `["specifier", "implementer"]`
+- Multiple agents allowed: `["reviewer", "planner"]`
 
 | Example | Meaning |
 |---------|---------|
-| `["all"]` | All workers must follow |
-| `["specifier"]` | Only Specifier |
-| `["specifier", "implementer"]` | Specifier and Implementer |
+| `["all"]` | All agents must follow |
+| `["reviewer"]` | Only Reviewer agent |
 
 ## Constraints
 
 | Rule | Description |
 |------|-------------|
-| Scope-Target | `scope: global` requires `target-workers: ["all"]` |
-| Scope-Target | `scope: worker-specific` forbids `target-workers: ["all"]` |
+| Scope-Target | `scope: global` requires `target-agents: ["all"]` |
+| Scope-Target | `scope: agent-specific` forbids `target-agents: ["all"]` |
 | Type | `type` field must be `constitution` |
 | Status | Must be one of: `draft`, `active`, `deprecated`, `archived` |
 
@@ -70,11 +69,11 @@ All fields from `base.schema.md`:
 ### tags (recommended)
 
 - Global constitution: `[principles, global, constitution]`
-- Worker-specific: `[worker, {worker-name}, constitution]`
+- Agent-specific: `[agent, {agent-name}, constitution]`
 
 ### dependencies (recommended)
 
-- Worker-specific constitutions SHOULD include path to base.md
+- Agent-specific constitutions SHOULD include path to base.md
 - Example: `["../base.md"]`
 
 ## Template

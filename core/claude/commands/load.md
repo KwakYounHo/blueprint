@@ -76,7 +76,7 @@ Read and understand before verification:
 
 ### Phase 3: State Verification (Reviewer Delegation)
 
-Delegate to Reviewer SubAgent to preserve Main Session context.
+Delegate to Reviewer SubAgent to preserve your context.
 
 **Handoff:**
 ```

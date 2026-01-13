@@ -345,7 +345,7 @@ The following actions are FORBIDDEN when creating Master Plans:
 
 ## Gate Validation Acceptance
 
-When Reviewer Worker validates Master Plan documents:
+When Reviewer Agent validates Master Plan documents:
 
 ### Accepting Feedback
 

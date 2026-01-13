@@ -4,11 +4,11 @@ status: draft
 version: 0.1.0
 created: {{date}}
 updated: {{date}}
-tags: [constitution, worker, reviewer]
+tags: [constitution, agent, reviewer]
 dependencies: [../base.md]
 
-scope: worker-specific
-target-workers: [reviewer]
+scope: agent-specific
+target-agents: [reviewer]
 ---
 
 # Constitution: Reviewer
@@ -21,7 +21,7 @@ After completion, remove this guide comment.
 
 ---
 
-## Worker-Specific Principles
+## Agent-Specific Principles
 
 <!--
 [FIXED] - Framework Core Rule

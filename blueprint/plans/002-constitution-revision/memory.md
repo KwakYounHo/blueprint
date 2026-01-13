@@ -1,15 +1,15 @@
 ---
 type: memory
 status: active
-version: 1.0.0
+version: 1.1.0
 created: 2026-01-13
 updated: 2026-01-13
-tags: [memory, constitution, refactor, terminology]
+tags: [memory, constitution, refactor, terminology, agent]
 dependencies: []
 
 plan-id: "PLAN-002"
 source-discussion: null
-session-count: 1
+session-count: 2
 last-session: 2026-01-13
 ---
 
@@ -40,7 +40,7 @@ Blueprint Framework의 방향성이 **Agent 중심 워크플로우**에서 **Sla
 
 | ID | Decision | Rationale | Session |
 |----|----------|-----------|---------|
-| D-001 | 용어를 Session/Agent 혼용으로 변경 | Main Session과 Subagent를 명확히 구분 | 1 |
+| D-001 | ~~용어를 Session/Agent 혼용으로 변경~~ → **Worker → Agent 통합, Main Session은 "You"로 명시** | Worker를 Agent(Subagent 전용)로 확립, Main Session은 2인칭 "You"로 직접 지시 | 1→2 |
 | D-002 | Default Principles 섹션 전체 제거 | Slash Command 중심에서 multi-worker 환경 아님 | 1 |
 | D-003 | Project-Level Rules 도입은 이번 Scope 제외 | 별도 Plan으로 분리 가능 | 1 |
 | D-004 | Handoff 개념 재정의: Session Handoff + Agent Handoff | 현재 사용 패턴이 두 가지 목적으로 구분됨 | 1 |
@@ -109,31 +109,41 @@ Handoff Protocol
 | `core/forms/handoff.schema.md` | "Worker handoff" 표현 | 용어 정리 |
 | `core/claude/skills/blueprint/` | 일부 "Worker" 표현 | 용어 일관성 |
 
-### Terminology Mapping
+### Terminology Mapping (Revised in Session 2)
 
-| Current (Agent-centric) | Proposed (Session/Agent) |
-|------------------------|-------------------------|
-| Worker | Main Session / Subagent |
-| multi-worker environment | delegated agent context |
-| target-workers | target-agents |
-| All Workers MUST | Main Session and Subagents MUST |
+| Current | Proposed | Notes |
+|---------|----------|-------|
+| Worker | Agent | Subagent 전용 (Task tool로 위임된 에이전트) |
+| (implicit) | Main Session / You | 사용자와 직접 대화하는 주 세션 |
+| All Workers MUST | You and delegated Agents MUST | 2인칭 직접 지시 |
+| multi-worker environment | when delegating to Agents | 또는 제거 |
+| target-workers | target-agents | FrontMatter 필드 |
+| workers/ | agents/ | 디렉토리 리네임 |
 
 ---
 
-## Scope Summary
+## Scope Summary (Revised in Session 2)
 
 ### Affected Files
 
-| File | Change Type | Notes |
-|------|-------------|-------|
-| `core/constitutions/base.md` | modify | 용어 변경, Default Principles 제거 |
-| `core/forms/handoff.schema.md` | modify | 용어 정리 (optional) |
-| `blueprint/constitutions/base.md` | no change | 프로젝트 Dogfooding용, 별도 유지 |
+| File/Directory | Change Type | Notes |
+|----------------|-------------|-------|
+| `core/constitutions/base.md` | modify | Worker→Agent, "You" 도입, Default Principles 제거 |
+| `core/constitutions/workers/` | rename | → `core/constitutions/agents/` |
+| `core/constitutions/workers/reviewer.md` | modify | FrontMatter: target-workers → target-agents |
+| `core/claude/skills/blueprint/polis/polis.sh` | modify | Worker → Agent |
+| `core/claude/skills/blueprint/lexis/lexis.sh` | modify | Worker → Agent |
+| `core/claude/skills/blueprint/blueprint.sh` | modify | Worker → Agent |
+| `core/claude/skills/blueprint/SKILL.md` | modify | Worker → Agent |
+| `core/forms/handoff.schema.md` | modify | Worker → Agent (if applicable) |
 
 ### Out of Scope
 - Project-Level Rules 계층 도입 (별도 Plan)
-- `blueprint/constitutions/base.md` 수정 (프로젝트 특화)
-- Worker Instruction 파일 수정 (Reviewer만 존재, 현행 유지)
+- `blueprint/constitutions/base.md` 수정 (프로젝트 Dogfooding용, 별도 유지)
+
+### Symlink Considerations
+- `blueprint/constitutions/workers/` → `core/constitutions/workers/` (symlink)
+- 리네임 시 symlink도 함께 업데이트 필요: `agents/` → `core/constitutions/agents/`
 
 ---
 

@@ -1,10 +1,10 @@
 #!/bin/bash
 # Lexis - Constitution Viewer
-# View worker-specific constitutions (base loaded via SessionStart hook)
+# View agent-specific constitutions (base loaded via SessionStart hook)
 #
 # Usage:
-#   lexis --list                     List all workers
-#   lexis <worker>                   Show worker constitution
+#   lexis --list                     List all agents
+#   lexis <agent>                    Show agent constitution
 #   lexis --base                     Show base constitution only
 
 set -e
@@ -14,7 +14,7 @@ source "$(dirname "$0")/../_common.sh"
 
 CONST_DIR="$PROJECT_ROOT/blueprint/constitutions"
 BASE_FILE="$CONST_DIR/base.md"
-WORKERS_DIR="$CONST_DIR/workers"
+AGENTS_DIR="$CONST_DIR/agents"
 
 # Check if constitutions exist
 if [ ! -f "$BASE_FILE" ]; then
@@ -22,17 +22,17 @@ if [ ! -f "$BASE_FILE" ]; then
   exit 1
 fi
 
-# --list: Show all workers
+# --list: Show all agents
 if [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
-  if [ ! -d "$WORKERS_DIR" ]; then
-    error "Workers directory not found: $WORKERS_DIR"
+  if [ ! -d "$AGENTS_DIR" ]; then
+    error "Agents directory not found: $AGENTS_DIR"
     exit 1
   fi
 
   found=0
-  echo "Available workers:"
+  echo "Available agents:"
   echo ""
-  for file in "$WORKERS_DIR"/*.md; do
+  for file in "$AGENTS_DIR"/*.md; do
     if [ -f "$file" ]; then
       name=$(basename "$file" .md)
       if [ "$name" != "README" ]; then
@@ -43,7 +43,7 @@ if [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
   done
 
   if [ "$found" -eq 0 ]; then
-    echo "  (no workers found)"
+    echo "  (no agents found)"
   fi
   exit 0
 fi
@@ -59,26 +59,25 @@ if [ -z "$1" ]; then
   echo "Lexis - Constitution Viewer"
   echo ""
   echo "Usage:"
-  echo "  lexis --list               List all workers"
-  echo "  lexis <worker>             Show worker constitution"
+  echo "  lexis --list               List all agents"
+  echo "  lexis <agent>              Show agent constitution"
   echo "  lexis --base               Show base constitution only"
   echo ""
   echo "Examples:"
   echo "  blueprint.sh lexis --list"
-  echo "  blueprint.sh lexis orchestrator"
-  echo "  blueprint.sh lexis specifier"
+  echo "  blueprint.sh lexis reviewer"
   exit 1
 fi
 
-WORKER="$1"
-WORKER_FILE="$WORKERS_DIR/$WORKER.md"
+AGENT="$1"
+AGENT_FILE="$AGENTS_DIR/$AGENT.md"
 
-# Check if worker exists
-if [ ! -f "$WORKER_FILE" ]; then
-  error "Worker constitution not found: $WORKER"
+# Check if agent exists
+if [ ! -f "$AGENT_FILE" ]; then
+  error "Agent constitution not found: $AGENT"
   echo ""
-  echo "Available workers:"
-  for file in "$WORKERS_DIR"/*.md; do
+  echo "Available agents:"
+  for file in "$AGENTS_DIR"/*.md; do
     if [ -f "$file" ]; then
       name=$(basename "$file" .md)
       if [ "$name" != "README" ]; then
@@ -89,6 +88,6 @@ if [ ! -f "$WORKER_FILE" ]; then
   exit 1
 fi
 
-# Show worker constitution only
+# Show agent constitution only
 # Note: Base constitution is loaded via SessionStart hook (session-init.sh)
-cat "$WORKER_FILE"
+cat "$AGENT_FILE"

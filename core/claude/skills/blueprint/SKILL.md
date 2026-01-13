@@ -1,6 +1,6 @@
 ---
 name: blueprint
-description: Provides unified CLI access for Blueprint framework - gate validation, document templates, FrontMatter schemas, worker handoffs, constitutions, and worker registry.
+description: Provides unified CLI access for Blueprint framework - gate validation, document templates, FrontMatter schemas, agent handoffs, constitutions, and agent registry.
 allowed-tools: Bash, Read
 ---
 
@@ -17,7 +17,7 @@ Unified CLI for the Blueprint orchestration framework.
 | `frontis` | FrontMatter search & schemas | `blueprint/front-matters/` |
 | `hermes` | Handoff forms | `blueprint/forms/` |
 | `lexis` | Constitution viewer | `blueprint/constitutions/` |
-| `polis` | Worker registry | `.claude/agents/` |
+| `polis` | Agent registry | `.claude/agents/` |
 
 ## Commands
 
@@ -50,13 +50,13 @@ blueprint hermes --list               # List all Handoff forms
 blueprint hermes <form>               # Show Handoff form (after-*, request:*, response:*)
 
 # Lexis - Constitutions
-blueprint lexis --list                # List all workers
-blueprint lexis <worker>              # Show base + worker constitution
+blueprint lexis --list                # List all agents
+blueprint lexis <agent>               # Show agent constitution
 blueprint lexis --base                # Show base constitution only
 
-# Polis - Workers
-blueprint polis --list                # List all workers with descriptions
-blueprint polis <worker>              # Show worker instruction
+# Polis - Agents
+blueprint polis --list                # List all agents with descriptions
+blueprint polis <agent>               # Show agent instruction
 ```
 
 ## Examples
@@ -74,10 +74,10 @@ blueprint aegis documentation --aspects
 # View Handoff form
 blueprint hermes after-load:standard
 
-# Check worker constitution
-blueprint lexis specifier
+# Check agent constitution
+blueprint lexis reviewer
 
-# List available workers
+# List available agents
 blueprint polis --list
 ```
 
@@ -87,8 +87,8 @@ Use this skill when working with Blueprint Framework:
 
 - **Creating documents**: Use `forma` for templates, `frontis` for schemas
 - **Validating work**: Use `aegis` for gate criteria and aspects
-- **Worker communication**: Use `hermes` for handoff formats
-- **Understanding roles**: Use `lexis` for constitutions, `polis` for worker info
+- **Agent communication**: Use `hermes` for handoff formats
+- **Understanding roles**: Use `lexis` for constitutions, `polis` for agent info
 
 ## Template Usage Guidelines
 

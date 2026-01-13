@@ -18,8 +18,8 @@ source-plan: "master-plan.md"
 ## Progress
 
 - [x] Phase 1: Analysis & Memory ← Completed
-- [ ] Phase 2: Master Plan Creation ← Current
-- [ ] Phase 3: Implementation
+- [x] Phase 2: Master Plan Creation ← Completed
+- [ ] Phase 3: Implementation ← Current
 
 ## Phase Details
 
@@ -35,18 +35,28 @@ source-plan: "master-plan.md"
 ### Phase 2: Master Plan Creation
 
 **Objective:** Create master-plan.md with implementation phases
-**Status:** Pending
-**Started:** -
-**Completed:** -
+**Status:** Completed
+**Started:** 2026-01-13
+**Completed:** 2026-01-13
+
+**Deliverables:**
+- [x] master-plan.md 생성
+- [x] 사용자 승인
 
 ---
 
 ### Phase 3: Implementation
 
-**Objective:** Update core/constitutions/base.md based on approved plan
+**Objective:** Update constitution, rename directories, update skills based on approved plan
 **Status:** Pending
 **Started:** -
 **Completed:** -
+
+**Sub-phases:**
+- 3.1 Constitution Update (base.md)
+- 3.2 Directory Rename (workers/ → agents/)
+- 3.3 Skills Update (polis, lexis, blueprint.sh, SKILL.md)
+- 3.4 Forms Update (optional)
 
 ---
 
