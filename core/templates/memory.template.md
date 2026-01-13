@@ -7,10 +7,10 @@ updated: {{date}}
 tags: [memory]
 dependencies: []
 
+plan-id: "PLAN-{NNN}"
 source-discussion: null
 session-count: 1
 last-session: {{date}}
-generated-specs: []
 ---
 
 # Memory: {Feature Name}
@@ -24,19 +24,13 @@ generated-specs: []
 
 ---
 
-## Session Log
+## Background
 
-### {{date}} Session 1
+{Brief description of the feature/task and its purpose}
 
-User: "{verbatim quote - initial requirement or context}"
-
-Me: {brief acknowledgment or clarification asked}
-
-User: "{response or elaboration}"
-
-Me: {analysis or decision made}
-
-> **D-001**: {decision summary} - {rationale}
+### Goals
+- {Goal 1}
+- {Goal 2}
 
 ---
 
@@ -48,11 +42,11 @@ Me: {analysis or decision made}
 
 ---
 
-## [DECIDE] Items (Pending)
+## [DECIDE] Items
 
-| ID | Question | Options | Status |
-|----|----------|---------|--------|
-| DECIDE-001 | {question} | A, B, C | pending |
+| ID | Question | Options | Decision | Status |
+|----|----------|---------|----------|--------|
+| DECIDE-001 | {question} | A: {opt1}, B: {opt2} | - | pending |
 
 ---
 
@@ -68,9 +62,9 @@ Me: {analysis or decision made}
 
 ---
 
-## Implementation Plan
+## Scope Summary
 
-### Proposed Specs
+### Proposed Structure
 | ID | Type | Purpose | Dependencies |
 |----|------|---------|--------------|
 | LIB-{namespace}/{name} | lib | {purpose} | none |
@@ -91,6 +85,7 @@ Me: {analysis or decision made}
 
 | Type | Path | Status |
 |------|------|--------|
-| Memory | {this file} | active |
-| Lib Spec | blueprint/specs/lib/{namespace}/{name}/spec.yaml | draft |
-| Feature Spec | blueprint/specs/features/{name}/spec.yaml | draft |
+| Memory | blueprint/plans/{plan-id}/memory.md | active |
+| Master Plan | blueprint/plans/{plan-id}/master-plan.md | draft |
+| Lib Spec | blueprint/plans/{plan-id}/lib/{namespace}/{name}.md | draft |
+| Feature Spec | blueprint/plans/{plan-id}/feature/{name}.md | draft |
