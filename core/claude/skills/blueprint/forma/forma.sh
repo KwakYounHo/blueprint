@@ -1,9 +1,10 @@
 #!/bin/bash
-# Forma - Template Viewer
+# Forma - Template Viewer & Copier
 #
 # Usage:
 #   forma list                    List available templates
 #   forma show <name>             Show template content
+#   forma copy <name> <target>    Copy template to target (Context-saving)
 #
 # Templates are stored in blueprint/templates/*.template.md
 
@@ -47,9 +48,9 @@ do_show() {
     echo "Usage: forma show <name>"
     echo ""
     echo "Examples:"
-    echo "  blueprint.sh forma show spec-lib"
+    echo "  blueprint.sh forma show master-plan"
     echo "  blueprint.sh forma show memory"
-    echo "  blueprint.sh forma show discussion"
+    echo "  blueprint.sh forma show lib-spec"
     echo ""
     echo "Run 'blueprint.sh forma list' to see available templates."
     exit 1
@@ -73,6 +74,55 @@ do_show() {
   cat "$template_file"
 }
 
+# === COPY ===
+do_copy() {
+  local name="$1"
+  local target="$2"
+
+  if [ -z "$name" ] || [ -z "$target" ]; then
+    echo "Usage: forma copy <template> <target>"
+    echo ""
+    echo "Examples:"
+    echo "  blueprint.sh forma copy master-plan blueprint/plans/001-feature/"
+    echo "  blueprint.sh forma copy memory blueprint/plans/001-feature/my-memory.md"
+    echo ""
+    echo "If target is a directory (ends with / or exists), file is named after template."
+    echo "If target is a file path, that exact path is used."
+    exit 1
+  fi
+
+  local template_file="$TEMPLATE_DIR/${name}.template.md"
+
+  if [ ! -f "$template_file" ]; then
+    error "Template not found: $name"
+    echo ""
+    echo "Available templates:"
+    for file in "$TEMPLATE_DIR"/*.template.md; do
+      if [ -f "$file" ]; then
+        n=$(basename "$file" .template.md)
+        echo "  - $n"
+      fi
+    done
+    exit 1
+  fi
+
+  # Determine output path
+  local output_file
+  if [[ "$target" == */ ]] || [ -d "$target" ]; then
+    # Target is directory → use template name
+    mkdir -p "$target"
+    output_file="${target%/}/${name}.md"
+  else
+    # Target is file path
+    mkdir -p "$(dirname "$target")"
+    output_file="$target"
+  fi
+
+  # Copy template
+  cp "$template_file" "$output_file"
+  echo "Created: $output_file"
+}
+
 # === MAIN ===
 case "$COMMAND" in
   list)
@@ -82,17 +132,22 @@ case "$COMMAND" in
     shift
     do_show "$@"
     ;;
+  copy)
+    shift
+    do_copy "$@"
+    ;;
   *)
-    echo "Forma - Template Viewer"
+    echo "Forma - Template Viewer & Copier"
     echo ""
     echo "Usage:"
-    echo "  forma list              List available templates"
-    echo "  forma show <name>       Show template content"
+    echo "  forma list                    List available templates"
+    echo "  forma show <name>             Show template content"
+    echo "  forma copy <name> <target>    Copy template to target"
     echo ""
     echo "Examples:"
     echo "  blueprint.sh forma list"
-    echo "  blueprint.sh forma show spec-lib"
-    echo "  blueprint.sh forma show memory"
+    echo "  blueprint.sh forma show master-plan"
+    echo "  blueprint.sh forma copy master-plan blueprint/plans/001-feature/"
     exit 1
     ;;
 esac
