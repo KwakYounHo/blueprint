@@ -100,7 +100,7 @@ Then edit ROADMAP.md:
 **Step 2: Create session-context Directory**
 
 ```
-Use blueprint skill: forma copy current blueprint/plans/{nnn}-{topic}/session-context/
+Use blueprint skill: forma copy current-standard blueprint/plans/{nnn}-{topic}/session-context/
 Use blueprint skill: forma copy todo blueprint/plans/{nnn}-{topic}/session-context/
 Use blueprint skill: forma copy history blueprint/plans/{nnn}-{topic}/session-context/
 ```
@@ -203,7 +203,7 @@ blueprint forma list                     # List available templates
 blueprint forma copy master-plan ./dir/  # Copy template (RECOMMENDED)
 blueprint forma copy memory ./dir/       # Creates memory.md
 blueprint forma copy roadmap ./dir/      # Creates ROADMAP.md
-blueprint forma copy current ./dir/session-context/   # Session state
+blueprint forma copy current-standard ./dir/session-context/   # Session state
 blueprint forma copy todo ./dir/session-context/      # Task list
 blueprint forma copy history ./dir/session-context/   # Session history
 
