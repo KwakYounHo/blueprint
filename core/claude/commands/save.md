@@ -102,14 +102,7 @@ Select appropriate template
 
 ### Step 4: Write Files
 
-**If first save (no CURRENT.md exists):**
-```
-blueprint forma copy {mode-template} {SESSION_PATH}
-blueprint forma copy todo {SESSION_PATH}
-blueprint forma copy history {SESSION_PATH}
-```
-
-**All modes - Update CURRENT.md:**
+**Update CURRENT.md:**
 - Include Master Plan Context section
 - Update `session-id` in frontmatter (increment)
 - Update `current-phase` in frontmatter
@@ -192,22 +185,6 @@ Options:
 
 Which option?
 ```
-
-### First Save for Plan
-
-```
-📋 First save for PLAN-{NNN} - {Plan Name}
-
-Initializing session context...
-
-blueprint forma copy {mode-template} {plan}/session-context/
-blueprint forma copy todo {plan}/session-context/
-blueprint forma copy history {plan}/session-context/
-
-Session context initialized. Proceeding with save...
-```
-
----
 
 ## Compressed Mode Details
 
