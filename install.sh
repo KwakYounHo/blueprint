@@ -30,6 +30,10 @@ CORE_DIR="${SCRIPT_DIR}/core"
 # Flags
 DRY_RUN=false
 
+# Tracking arrays for summary
+MODIFIED_FILES=()
+ADDED_FILES=()
+
 # -----------------------------------------------------------------------------
 # Functions
 # -----------------------------------------------------------------------------
@@ -94,6 +98,17 @@ copy_directory() {
         mkdir -p "$dest"
     fi
 
+    # Track modified and added files
+    while IFS= read -r -d '' file; do
+        local rel_path="${file#$src/}"
+        local dest_file="$dest/$rel_path"
+        if [[ -f "$dest_file" ]]; then
+            MODIFIED_FILES+=("$dest_file")
+        else
+            ADDED_FILES+=("$dest_file")
+        fi
+    done < <(find "$src" -type f -print0)
+
     # Use rsync for intelligent copying
     # -a: archive mode (preserves permissions, timestamps, etc.)
     # -v: verbose
@@ -109,6 +124,41 @@ copy_directory() {
             [[ -n "$line" ]] && echo "  $line"
         done
     fi
+}
+
+# Print summary table of changes
+print_summary() {
+    local target_dir="$1"
+
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo -e "${BLUE}SUMMARY${NC}"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+    # Modified files (will be overwritten)
+    echo ""
+    echo -e "${YELLOW}Modified (overwritten):${NC} ${#MODIFIED_FILES[@]} files"
+    if [[ ${#MODIFIED_FILES[@]} -gt 0 ]]; then
+        echo "┌──────────────────────────────────────────────────────────────────────────────"
+        for file in "${MODIFIED_FILES[@]}"; do
+            # Show path relative to target directory
+            local rel_path="${file#$target_dir/}"
+            echo "│ $rel_path"
+        done
+        echo "└──────────────────────────────────────────────────────────────────────────────"
+    fi
+
+    # Deleted files (none in current logic)
+    echo ""
+    echo -e "${RED}Deleted:${NC} 0 files"
+    echo "  (This installer does not delete existing files)"
+
+    # Added files count
+    echo ""
+    echo -e "${GREEN}Added (new):${NC} ${#ADDED_FILES[@]} files"
+
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 }
 
 # Validate that core directory exists and has expected structure
@@ -170,7 +220,9 @@ install_framework() {
         fi
     done
 
-    echo ""
+    # Print summary
+    print_summary "$target_dir"
+
     if [[ "$DRY_RUN" == "true" ]]; then
         log_warn "DRY-RUN complete. No files were copied."
         log_info "Run without --dry-run to perform actual installation."
