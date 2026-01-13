@@ -86,10 +86,11 @@ blueprint/plans/{nnn}-{topic}/
 
 After Master Plan is approved, initialize session tracking:
 
-**Step 1: Generate ROADMAP.md**
+**Step 1: Generate Plan-level Files**
 
 ```
 Use blueprint skill: forma copy roadmap blueprint/plans/{nnn}-{topic}/
+Use blueprint skill: forma copy implementation-notes blueprint/plans/{nnn}-{topic}/
 ```
 
 Then edit ROADMAP.md:
@@ -203,6 +204,7 @@ blueprint forma list                     # List available templates
 blueprint forma copy master-plan ./dir/  # Copy template (RECOMMENDED)
 blueprint forma copy memory ./dir/       # Creates memory.md
 blueprint forma copy roadmap ./dir/      # Creates ROADMAP.md
+blueprint forma copy implementation-notes ./dir/  # Creates implementation-notes.md
 blueprint forma copy current-standard ./dir/session-context/   # Session state
 blueprint forma copy todo ./dir/session-context/      # Task list
 blueprint forma copy history ./dir/session-context/   # Session history
@@ -249,6 +251,7 @@ For document validation (Token-saving purpose):
 
 ### Phase 3: Session Context Initialization
 - [ ] ROADMAP.md created from phases
+- [ ] implementation-notes.md created
 - [ ] session-context/ directory created
 - [ ] CURRENT.md initialized with Plan context
 - [ ] TODO.md ready for task tracking
