@@ -287,3 +287,241 @@ Used for:
 - ❌ Assume docs are correct if git says otherwise
 - ❌ Present multi-page briefings (keep it tight)
 - ❌ Start work before user confirmation
+
+---
+
+## Reviewer Worker Delegation (Context Saving)
+
+For complex projects, delegate State Verification to Reviewer Worker to preserve Main Session context.
+
+### When to Delegate
+
+| Condition | Action |
+|-----------|--------|
+| HISTORY.md > 200 lines | Consider delegation |
+| Multiple phases completed | Consider delegation |
+| Complex verification needed | Delegate |
+| Quick task (< 3 sessions) | Direct verification |
+
+### Delegation Flow
+
+```
+Phase 3: State Verification
+    ↓
+[Spawn Reviewer Worker]
+    └── Task: aegis session --aspects git-state,file-integrity,plan-progress
+    ↓
+[Reviewer Returns Handoff]
+    ├── status: completed
+    ├── summary: Validation results
+    └── issues: List of problems found
+    ↓
+[Process Results in Main Session]
+    └── Present to user in Handoff Briefing
+```
+
+### Reviewer Invocation
+
+```
+Use Task tool with subagent_type: reviewer
+
+Prompt:
+"Validate session continuity for PLAN-{NNN}.
+
+Context files:
+- {PLAN_PATH}/session-context/CURRENT.md
+- {PLAN_PATH}/ROADMAP.md
+
+Run: aegis session --aspects git-state,file-integrity,plan-progress
+
+Return Handoff with validation results."
+```
+
+### Processing Reviewer Results
+
+**If all pass:**
+```
+Status Check:
+✅ Git state verified (Reviewer)
+✅ File integrity verified (Reviewer)
+✅ Plan progress consistent (Reviewer)
+```
+
+**If issues found:**
+```
+Status Check:
+⚠️ Issues detected by Reviewer:
+
+[git-state] Branch mismatch
+  - Expected: feature/001-auth
+  - Actual: main
+  - Suggestion: Switch to expected branch
+
+[file-integrity] File not found
+  - Path: src/auth/login.ts
+  - Suggestion: Check if file was moved
+
+Options:
+1. Address issues before proceeding
+2. Continue anyway (acknowledge issues)
+```
+
+---
+
+## Adaptive Behavior by Mode
+
+Adjust briefing style based on project scale.
+
+### Mode Detection
+
+```
+IF no HISTORY.md OR HISTORY.md < 10 lines:
+    mode = Quick
+ELSE IF HISTORY.md 10-500 lines:
+    mode = Standard
+ELSE IF HISTORY.md > 500 lines OR archive/ exists:
+    mode = Compressed
+```
+
+### Quick Mode Briefing
+
+For simple tasks (1-2 sessions expected):
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HANDOFF RECEIVED (Quick)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Previous: {One sentence summary}
+Goal: {One sentence goal}
+Status: {clean/issues}
+
+Next Steps:
+1. {Action 1}
+2. {Action 2}
+3. {Action 3}
+
+Ready? (yes/no)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Standard Mode Briefing
+
+For multi-session tasks (3-10 sessions):
+
+Use the full briefing template from Phase 4 above, including:
+- Phase overview
+- Decision rationale
+- Blockers
+- Detailed next steps
+
+### Compressed Mode Briefing
+
+For epic projects (10+ sessions):
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HANDOFF RECEIVED (Epic Project)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Master Plan:** PLAN-{NNN} - {Plan Name}
+**Phase:** {N} of {Total} - {Phase Name}
+**Sessions:** {Total sessions so far}
+
+**Long-term Goal:** {From master-plan.md}
+
+**Previous Phase Summary:**
+- Phase {N-1}: {Completed, archived}
+- Archive: `session-context/archive/{DATE}/`
+
+**Current Phase Progress:**
+- Started: {date}
+- Sessions: {N}
+- Status: {percentage or milestone}
+
+**Previous Session:** {Date}
+- {Key accomplishment}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Status Check:** {pass/issues}
+
+**Next Step:** {First action}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Should I proceed? (yes/no/explain {topic})
+```
+
+---
+
+## Verification Checklist
+
+Before presenting briefing, verify:
+
+- [ ] CURRENT.md exists and is readable
+- [ ] Git status checked
+- [ ] Docs vs git comparison done
+- [ ] Key files verified (2-3 files minimum)
+- [ ] No critical errors or blockers
+- [ ] Next steps are clear and actionable
+- [ ] Briefing message is concise (< 30 lines for Quick, < 50 for others)
+
+---
+
+## Integration with /save
+
+This load protocol expects files created by `/save`:
+
+| File | Required | Purpose |
+|------|----------|---------|
+| CURRENT.md | Yes | Core session state |
+| TODO.md | No | Task tracking (Standard/Compressed) |
+| HISTORY.md | No | Session log (Standard/Compressed) |
+| ROADMAP.md | Yes | Phase progress |
+
+### Graceful Adaptation
+
+If structure doesn't match expected:
+
+| Situation | Adaptation |
+|-----------|------------|
+| Missing TODO.md | Check CURRENT.md "Next Steps" for tasks |
+| No HISTORY.md | Assume Quick task mode |
+| Missing ROADMAP.md | Read phases from master-plan.md |
+| Unconventional format | Parse what's available, clarify with user |
+
+---
+
+## Additional Error Scenarios
+
+### CURRENT.md Line Limit Exceeded
+
+```
+⚠️ CURRENT.md is {X} lines (recommended: {Y} lines)
+
+Large context files may slow down loading and consume context window.
+
+Recommended limits:
+- Quick mode: 100 lines
+- Standard mode: 200 lines
+- Compressed mode: 150 lines
+
+Options:
+1. Continue anyway (will read full file)
+2. Compress to HISTORY.md first
+3. Ask user to summarize key points
+
+Which option? (1/2/3)
+```
+
+### Archive Reference Needed
+
+```
+Note: Previous phases archived.
+
+For context on Phase {N-1} decisions:
+- See: session-context/archive/{DATE}/CHECKPOINT-SUMMARY.md
+
+Should I read the archive for additional context? (yes/no)
+```
