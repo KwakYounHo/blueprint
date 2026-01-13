@@ -113,7 +113,18 @@ Shift to next phase:
 - Add next phase milestones
 - Reset "In Progress" section
 
-### Step 8: Check Master Plan Status
+### Step 8: Review Implementation Notes
+
+Check `{PLAN_PATH}/implementation-notes.md` for Phase completion:
+
+- Any unresolved issues from this phase?
+- Deviations properly documented?
+- Learnings captured for future reference?
+- Timeline updated with phase completion date?
+
+If missing, ask user to provide details before finalizing checkpoint.
+
+### Step 9: Check Master Plan Status
 
 ```
 IF all phases completed in ROADMAP.md:
@@ -121,7 +132,7 @@ IF all phases completed in ROADMAP.md:
     - status: in-progress → completed
 ```
 
-### Step 9: Confirm
+### Step 10: Confirm
 
 Use confirmation format: `blueprint hermes after-checkpoint`
 
