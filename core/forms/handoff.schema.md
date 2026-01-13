@@ -1,134 +1,194 @@
 ---
 type: schema
-status: draft
-version: 1.0.0
+status: active
+version: 3.0.0
 created: "{{date}}"
 updated: "{{date}}"
-tags: [schema, handoff, worker, communication]
+tags: [schema, handoff, objective, communication]
 dependencies: []
 ---
 
 # Handoff Forms
 
-Defines communication forms between Workers.
+Defines Handoff forms for commands and review requests.
 
-Use **Hermes** skill to view specific forms: `hermes orchestrator implementer`
+Use **Hermes** skill to view specific forms:
+- `hermes after-save` - Command completion output
+- `hermes after-load:quick` - Quick mode briefing
+- `hermes request:review:session-state` - Review request format
+- `hermes --list` - List all forms
 
 ---
 
-[F]Orchestrator&[T]Implementer
+## Session Commands
+
+OBJECTIVE[after-save]
 ---s
-```yaml
-task:
-  action: implement
-  workflow-id: "{NNN-description}"
-  task-file: "blueprint/workflows/{workflow-id}/task-SS-TT-name.md"
+```
+✅ Session saved as {mode} mode.
+
+📋 Plan: PLAN-{NNN} - {Name}
+📍 Phase: {N} - {Phase Name}
+🔢 Session: {session-id}
+
+Saved:
+- {SESSION_PATH}/CURRENT.md ({X} lines)
+[- {SESSION_PATH}/TODO.md]
+[- {SESSION_PATH}/HISTORY.md (appended)]
+- {PLAN_PATH}/ROADMAP.md (updated)
+
+Ready for next session: `/load {nnn}`
 ```
 ---e
 
-[F]Implementer&[T]Orchestrator
+OBJECTIVE[after-load:quick]
 ---s
-```yaml
-handoff:
-  status: completed | blocked
-  summary: "{what was implemented}"
-  artifacts:
-    - "{path/to/created/file}"
-  decide-markers:
-    - location: "{file:line}"
-      question: "{question requiring user decision}"
-  tests:
-    status: pass | fail | skipped
-    details: "{test results summary}"
+```
+Previous: {one sentence summary}
+Goal: {one sentence goal}
+Status: {pass/issues}
+
+Next:
+1. {action 1}
+2. {action 2}
+3. {action 3}
+
+Ready? (yes/no)
 ```
 ---e
 
-[F]Orchestrator&[T]Reviewer
+OBJECTIVE[after-load:standard]
+---s
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  📥 HANDOFF RECEIVED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Plan:** PLAN-{NNN} - {Plan Name}
+**Phase:** {N} of {Total} - {Phase Name}
+**Previous:** {Date} (Session {N})
+
+**Completed:** {summary}
+**Goal:** {current goal}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Status Check:**
+✅ Git branch: {branch}
+✅ Files verified: {N} files
+[⚠️ {warning if any}]
+
+**Next:** {first action}
+
+Proceed? (yes/no/explain {topic})
+```
+---e
+
+OBJECTIVE[after-load:compressed]
+---s
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  📥 HANDOFF RECEIVED (Epic)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Plan:** PLAN-{NNN} - {Plan Name}
+**Phase:** {N} of {Total} - {Phase Name}
+**Sessions:** {total count}
+
+**Long-term Goal:** {from master-plan}
+**Previous Phase:** {archived summary}
+**Archive:** `session-context/archive/{DATE}/`
+
+**Current Phase Progress:**
+- Started: {date}
+- Sessions: {N}
+- Status: {progress}
+
+**Previous Session:** {Date}
+- {key accomplishment}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Status:** {pass/issues}
+**Next:** {first action}
+
+Proceed? (yes/no/explain {topic})
+```
+---e
+
+OBJECTIVE[after-checkpoint]
+---s
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🏁 CHECKPOINT COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Phase Archived:** Phase {N} - {Name}
+**Duration:** {start} to {end}
+**Sessions:** {X} sessions archived
+
+**Created:**
+✅ archive/{DATE}/CHECKPOINT-SUMMARY.md
+✅ archive/{DATE}/CURRENT.md (snapshot)
+✅ archive/{DATE}/TODO.md (snapshot)
+✅ archive/{DATE}/HISTORY.md (snapshot)
+
+**Updated:**
+✅ CURRENT.md (reset for Phase {N+1})
+✅ TODO.md (next phase milestones)
+✅ HISTORY.md (compressed to {X} lines)
+✅ ROADMAP.md (Phase {N} marked complete)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ready to start Phase {N+1}: {Phase Name}
+
+Next step: {First task of new phase}
+
+Use `/load {nnn}` to begin next session.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+---e
+
+---
+
+## Review Objectives
+
+OBJECTIVE[request:review:session-state]
 ---s
 ```yaml
 task:
   action: review
-  document: "{path/to/artifact}"
-  gate: "{gate-name}"
-  aspect: "{aspect-name}"
+  context: session-state
+  files:
+    - "{PLAN_PATH}/session-context/CURRENT.md"
+    - "{PLAN_PATH}/ROADMAP.md"
+  gate: session
+  aspects:
+    - git-state
+    - file-integrity
+    - plan-progress
 ```
 ---e
 
-[F]Reviewer&[T]Orchestrator
+OBJECTIVE[response:review:session-state]
 ---s
 ```yaml
 handoff:
-  status: pass | fail
-  gate: "{gate-name}"
-  aspect: "{aspect-name}"
-  document: "{path/to/validated/document}"
-  criteria:
-    required:
-      - criterion: "{criterion-name}"
-        status: pass | fail
-        violations:
-          - location: "{file:line or section}"
-            expected: "{what was expected}"
-            actual: "{what was found}"
-            suggestion: "{how to fix}"
-    recommended:
-      - criterion: "{criterion-name}"
-        status: pass | fail
-        violations:
-          - location: "{file:line or section}"
-            expected: "{what was expected}"
-            actual: "{what was found}"
-            suggestion: "{how to fix}"
+  status: pass | fail | warning
+  gate: session
   summary: "{human-readable summary}"
-```
----e
-
-[F]Specifier&[T]Lexer
----s
-```yaml
-task:
-  action: tokenize
-  source: "{path/to/file.md}"  # discussion or memory
-```
----e
-
-[F]Lexer&[T]Specifier
----s
-```yaml
-handoff:
-  status: completed | blocked
-  summary: "{what was tokenized}"
-  artifacts:
-    - "{path/to/discussion.tokens.yaml}"
-  token-summary:
-    decisions: {count}
-    constraints: {count}
-    questions: {count}
-    alternatives: {count}
-    problems: {count}
-    reasoning: {count}
-```
----e
-
-[F]Specifier&[T]Parser
----s
-```yaml
-task:
-  action: parse
-  tokens: "{path/to/discussion.tokens.yaml}"
-```
----e
-
-[F]Parser&[T]Specifier
----s
-```yaml
-handoff:
-  status: completed | blocked
-  summary: "{what was parsed}"
-  artifacts:
-    - "{path/to/discussion.ast.yaml}"
-  node-summary:
-    total: {count}
-    relationships: {count}
+  checks:
+    git-state:
+      status: pass | fail
+      issues: [...]
+    file-integrity:
+      status: pass | fail
+      issues: [...]
+    plan-progress:
+      status: pass | fail
+      issues: [...]
+  suggestions:
+    - "{how to resolve issue}"
 ```
 ---e
