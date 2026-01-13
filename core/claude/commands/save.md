@@ -116,15 +116,28 @@ Select appropriate template
 - Move "← Current" marker to current phase
 - Update phase status if changed
 
-### Step 5: Self-check
+### Step 5: Check Implementation Notes
+
+Ask user:
+- "Any deviations from the plan this session?"
+- "Issues encountered worth documenting?"
+- "Learnings to record?"
+
+If yes, update `{PLAN_PATH}/implementation-notes.md`:
+- Add to Deviations table if plan changed
+- Add ISSUE-NNN if problems occurred
+- Add LEARN-NNN if insights gained
+
+### Step 6: Self-check
 
 - [ ] Plan context correctly recorded?
 - [ ] Current Phase accurately reflected?
 - [ ] Next agent can start with these files only?
 - [ ] Under line limits? (Quick: 100, Standard: 200, Compressed: 150)
 - [ ] Git status matches documentation?
+- [ ] Implementation notes updated if needed?
 
-### Step 6: Confirm
+### Step 7: Confirm
 
 Use confirmation format: `blueprint hermes after-save`
 
