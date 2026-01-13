@@ -19,31 +19,13 @@ current-phase: 1
 
 ## In Progress (Current Session)
 
-- [ ] Session Context initialization
+(None - all phases complete)
 
-## This Phase Tasks
+## Pending Decision
 
-- [ ] Update `_common.sh` with new path resolution
-  - [ ] Add `path_to_dirname()` function
-  - [ ] Add `get_blueprint_data_dir()` function
-  - [ ] Add `check_project_initialized()` function
-  - [ ] Preserve `get_project_root()` for compatibility
-- [ ] Test path conversion logic
-
-## Backlog (Future Phases)
-
-### Phase 2: Global Installer
-- [ ] Create `install-global.sh` script
-
-### Phase 3: Project Initializer
-- [ ] Create `init-project.sh` script
-
-### Phase 4: Submodule Script Updates
-- [ ] Update lexis.sh, forma.sh, aegis.sh, frontis.sh, hermes.sh, polis.sh
-
-### Phase 5: Cleanup and Documentation
-- [ ] Deprecate/remove old `install.sh`
-- [ ] Update documentation
+- [ ] Cross-machine sync approach
+  - Option B: Explicit project ID via `.blueprint-id`
+  - Waiting for user decision
 
 ---
 
@@ -52,6 +34,12 @@ current-phase: 1
 - [x] Create memory.md (Session 1)
 - [x] Create master-plan.md (Session 1)
 - [x] Initialize session-context/ (Session 1)
+- [x] Phase 1: Path Resolution Foundation (Session 2)
+- [x] Phase 2: Global Installer (Session 2)
+- [x] Phase 3: Project Initializer (Session 2)
+- [x] Phase 4: Submodule Script Updates (Session 2)
+- [x] Phase 5: Cleanup and Documentation (Session 2)
+- [x] Commit: 3eae072 (Session 2)
 
 ---
 
