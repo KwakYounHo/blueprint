@@ -35,7 +35,7 @@ dependencies: []
 
 - **Type**: enum
 - **Required**: Yes
-- **Values**: `schema` | `constitution` | `gate` | `aspect` | `memory` | `discussion` | `master-plan` | `implementation-notes` | `lib-spec` | `feature-spec`
+- **Values**: `schema` | `constitution` | `gate` | `aspect` | `memory` | `discussion` | `master-plan` | `implementation-notes` | `lib-spec` | `feature-spec` | `roadmap` | `current` | `todo` | `history` | `checkpoint-summary`
 - **Description**: Identifies the document category for routing and validation.
 
 ### status
@@ -86,6 +86,18 @@ dependencies: []
 |-------|-------------|
 | `recording` | Discussion in progress, sessions can be added |
 | `archived` | Discussion complete, no more sessions |
+
+**Session Tracking Documents** (`roadmap`, `current`, `todo`, `history`):
+| Value | Description |
+|-------|-------------|
+| `active` | Tracking in progress |
+| `completed` | All tracking done |
+| `archived` | Historical reference |
+
+**Checkpoint Documents** (`checkpoint-summary`):
+| Value | Description |
+|-------|-------------|
+| `completed` | Checkpoint finalized |
 
 ### version
 
@@ -171,3 +183,8 @@ base.schema.md modified
 | `lib-spec` | Specification | `draft`, `ready` |
 | `feature-spec` | Specification | `draft`, `ready` |
 | `discussion` | Discussion | `recording`, `archived` |
+| `roadmap` | Session | `active`, `completed`, `archived` |
+| `current` | Session | `active`, `archived` |
+| `todo` | Session | `active`, `completed` |
+| `history` | Session | `active`, `archived` |
+| `checkpoint-summary` | Session | `completed` |
