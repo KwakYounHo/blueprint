@@ -35,7 +35,7 @@ dependencies: []
 
 - **Type**: enum
 - **Required**: Yes
-- **Values**: `schema` | `constitution` | `gate` | `aspect` | `memory` | `discussion` | `master-plan` | `implementation-notes` | `lib-spec` | `feature-spec` | `roadmap` | `current` | `todo` | `history` | `checkpoint-summary`
+- **Values**: `schema` | `constitution` | `gate` | `aspect` | `memory` | `discussion` | `master-plan` | `implementation-notes` | `lib-spec` | `feature-spec` | `roadmap` | `current` | `todo` | `history` | `checkpoint-summary` | `weekly-review`
 - **Description**: Identifies the document category for routing and validation.
 
 ### status
@@ -98,6 +98,11 @@ dependencies: []
 | Value | Description |
 |-------|-------------|
 | `completed` | Checkpoint finalized |
+
+**Weekly Review Documents** (`weekly-review`):
+| Value | Description |
+|-------|-------------|
+| `completed` | Weekly review finalized |
 
 ### version
 
@@ -188,3 +193,4 @@ base.schema.md modified
 | `todo` | Session | `active`, `completed` |
 | `history` | Session | `active`, `archived` |
 | `checkpoint-summary` | Session | `completed` |
+| `weekly-review` | Session | `completed` |
