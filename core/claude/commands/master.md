@@ -268,3 +268,122 @@ For document validation (Token-saving purpose):
 - [ ] `/checkpoint` executed to archive phase
 - [ ] ROADMAP.md updated (phase marked complete)
 - [ ] Ready for next phase
+
+---
+
+## Quality Standards
+
+A Master Plan must meet these criteria before user approval:
+
+| Criteria | Standard | Verification |
+|----------|----------|--------------|
+| **Deterministic** | Any implementer produces identical code | No ambiguous expressions |
+| **Complete** | All phases have deliverables defined | No placeholder text |
+| **Unambiguous** | Single interpretation only | Review each [DECIDE] resolved |
+| **User-Confirmed** | All [DECIDE] resolved with user input | Status column shows ✅ |
+| **Phase-Compliant** | All 3 workflow phases completed in order | Checklist verified |
+| **Traceable** | Decisions linked to rationale | D-NNN IDs with reasoning |
+
+**Self-Check Question:**
+> "Can another agent implement this plan without asking clarifying questions?"
+
+---
+
+## Boundaries
+
+The following actions are FORBIDDEN when creating Master Plans:
+
+### MUST NOT
+
+- Generate Master Plan without completing Phase 1 (Analysis & Memory)
+- Skip user confirmation between phases
+- Resolve [DECIDE] markers without explicit user input
+- Use placeholder text ("TBD", "TODO", "as needed", "appropriate")
+- Claim plan is complete before user approval
+- Add speculative phases not discussed with user
+- Modify `[FIXED]` sections without user confirmation
+- Jump directly to implementation without Plan Mode for non-trivial phases
+
+### MUST
+
+- Create memory.md before master-plan.md
+- Record all decisions with rationale (D-NNN format)
+- Wait for user confirmation at each phase transition
+- Use Directive Markers for uncertain items
+- Initialize session-context after plan approval
+
+---
+
+## DO / DO NOT
+
+### DO
+
+- Complete Phase 1 before creating any plan document
+- Create and maintain memory.md with decision history
+- Report analysis and wait for user confirmation
+- Mark all uncertain items with [DECIDE: topic]
+- Resolve each [DECIDE] through user interaction
+- Explore codebase for existing patterns before planning
+- Use `forma copy` over `forma show` to save context
+- Enter Plan Mode before implementing each phase
+
+### DO NOT
+
+- Create Master Plan without completing Phase 1
+- Skip user confirmation between phases
+- Resolve [DECIDE] markers without user input
+- Use ambiguous language ("appropriate", "as needed", "etc.")
+- Assume requirements without explicit discussion
+- Claim "done" without user approval
+- Write implementation code (use Plan Mode for that)
+- Add phases for hypothetical future requirements
+
+---
+
+## Gate Validation Acceptance
+
+When Reviewer Worker validates Master Plan documents:
+
+### Accepting Feedback
+
+- Reviewer feedback on plans MUST be addressed constructively
+- Gate failure MUST result in plan revision, not bypass
+- Validation criteria are objective; personal interpretation is FORBIDDEN
+
+### Validation Flow
+
+```
+Master Plan Draft
+       ↓
+[Reviewer validates against Gate criteria]
+       ↓
+├── PASS → Proceed to user approval
+└── FAIL → Revise and resubmit
+       ↓
+[Address each issue]
+       ↓
+[Revalidate]
+```
+
+### Common Gate Failures
+
+| Issue | Resolution |
+|-------|------------|
+| Missing deliverables | Add specific deliverables to each phase |
+| Unresolved [DECIDE] | Engage user to resolve pending decisions |
+| Ambiguous language | Replace with specific, measurable terms |
+| Missing phase dependencies | Add dependency relationships |
+
+### Invoking Reviewer
+
+```
+Use Task tool with subagent_type: reviewer
+
+Prompt:
+"Validate Master Plan for PLAN-{NNN}.
+
+Document: blueprint/plans/{nnn}-{topic}/master-plan.md
+
+Check against documentation gate criteria.
+Return Handoff with validation results."
+```
