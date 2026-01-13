@@ -11,28 +11,32 @@ Validates against ONE assigned Aspect's Criteria. Reports pass/fail with actiona
 
 ## Constitution (MUST READ FIRST)
 
-```bash
-blueprint.sh lexis reviewer
+```
+Use blueprint skill: lexis reviewer
 ```
 
 ## Skills
 
-Uses: `aegis`, `frontis`, `hermes` (via `blueprint.sh`)
+**IMPORTANT**: Use `blueprint` skill for all framework operations.
+
+**Execution:** `{project-root}/.claude/skills/blueprint/blueprint.sh <submodule> [args]`
 
 **Key commands:**
-```bash
-blueprint.sh aegis --list                       # List gates
-blueprint.sh aegis <gate> <aspect>              # Check aspect criteria
-blueprint.sh frontis schema spec                # Check schema
-blueprint.sh hermes reviewer orchestrator       # Handoff format
+```
+blueprint aegis --list                # List gates
+blueprint aegis <gate> <aspect>       # Check aspect criteria
+blueprint frontis schema spec         # Check schema
+blueprint hermes --list               # List all Handoff forms
+blueprint hermes <form>               # View specific Handoff format
 ```
 
 ## DO
 
-- Load assigned Aspect's Criteria (`aegis {gate} {aspect}`)
+- Load assigned Aspect's Criteria (`blueprint aegis {gate} {aspect}`)
 - Validate ONLY the assigned Aspect
 - Provide specific, actionable feedback with location
 - Report pass/fail based on Criteria
+- Use `blueprint hermes --list` to find appropriate response format
 
 ## DO NOT
 
@@ -44,11 +48,13 @@ blueprint.sh hermes reviewer orchestrator       # Handoff format
 ## Workflow
 
 1. **Receive** Aspect review request from Orchestrator
-2. **Load** Aspect definition (`aegis {gate} {aspect}`)
+2. **Load** Aspect definition (`blueprint aegis {gate} {aspect}`)
 3. **Validate** each Criterion:
    - Required Criteria violation → `fail`
    - Recommended Criteria violation → `pass` with warnings
-4. **Handoff** to Orchestrator (`hermes reviewer orchestrator`)
+4. **Handoff** to Orchestrator:
+   - Run `blueprint hermes --list` to find matching `response:*` form
+   - Use that Handoff format for your response
 
 ## Violation Format
 
@@ -68,3 +74,4 @@ violation:
 - [ ] All Required Criteria checked
 - [ ] All violations include location + expected + actual + suggestion
 - [ ] Judgments based only on defined Criteria
+- [ ] Response format matches Handoff form from `hermes --list`

@@ -15,67 +15,70 @@ Unified CLI for the Blueprint orchestration framework.
 | `aegis` | Gate validation & aspects | `blueprint/gates/` |
 | `forma` | Document templates | `blueprint/templates/` |
 | `frontis` | FrontMatter search & schemas | `blueprint/front-matters/` |
-| `hermes` | Worker handoff forms | `blueprint/forms/` |
+| `hermes` | Handoff forms | `blueprint/forms/` |
 | `lexis` | Constitution viewer | `blueprint/constitutions/` |
 | `polis` | Worker registry | `.claude/agents/` |
 
 ## Commands
 
+**Execution:** `{project-root}/.claude/skills/blueprint/blueprint.sh <submodule> [args]`
+
 ```bash
 # General
-blueprint.sh --help
-blueprint.sh --list
+blueprint --help
+blueprint --list
 
 # Aegis - Gates
-blueprint.sh aegis --list                # List all gates
-blueprint.sh aegis <gate>                # Show gate definition
-blueprint.sh aegis <gate> --aspects      # List aspects for gate
-blueprint.sh aegis <gate> <aspect>       # Show specific aspect
+blueprint aegis --list                # List all gates
+blueprint aegis <gate>                # Show gate definition
+blueprint aegis <gate> --aspects      # List aspects for gate
+blueprint aegis <gate> <aspect>       # Show specific aspect
 
 # Forma - Templates
-blueprint.sh forma list                  # List available templates
-blueprint.sh forma show <name>           # Show template content
+blueprint forma list                  # List available templates
+blueprint forma show <name>           # Show template content
+blueprint forma copy <name> <dir>     # Copy template to directory (RECOMMENDED)
 
 # Frontis - FrontMatter
-blueprint.sh frontis search <field> <value> [path]  # Search by FrontMatter
-blueprint.sh frontis show <file> [file...]          # Show frontmatter
-blueprint.sh frontis schema <type>                  # View schema
-blueprint.sh frontis schema --list                  # List schemas
+blueprint frontis search <field> <value> [path]  # Search by FrontMatter
+blueprint frontis show <file> [file...]          # Show frontmatter
+blueprint frontis schema <type>                  # View schema
+blueprint frontis schema --list                  # List schemas
 
-# Hermes - Handoffs
-blueprint.sh hermes --list               # List all handoff forms
-blueprint.sh hermes <from> <to>          # Show specific handoff
+# Hermes - Handoff Forms
+blueprint hermes --list               # List all Handoff forms
+blueprint hermes <form>               # Show Handoff form (after-*, request:*, response:*)
 
 # Lexis - Constitutions
-blueprint.sh lexis --list                # List all workers
-blueprint.sh lexis <worker>              # Show base + worker constitution
-blueprint.sh lexis --base                # Show base constitution only
+blueprint lexis --list                # List all workers
+blueprint lexis <worker>              # Show base + worker constitution
+blueprint lexis --base                # Show base constitution only
 
 # Polis - Workers
-blueprint.sh polis --list                # List all workers with descriptions
-blueprint.sh polis <worker>              # Show worker instruction
+blueprint polis --list                # List all workers with descriptions
+blueprint polis <worker>              # Show worker instruction
 ```
 
 ## Examples
 
 ```bash
 # Find all spec documents
-blueprint.sh frontis search type spec
+blueprint frontis search type spec
 
 # View spec-lib template
-blueprint.sh forma show spec-lib
+blueprint forma show spec-lib
 
 # Check gate aspects
-blueprint.sh aegis documentation --aspects
+blueprint aegis documentation --aspects
 
-# View handoff format between workers
-blueprint.sh hermes orchestrator specifier
+# View Handoff form
+blueprint hermes after-load:standard
 
 # Check worker constitution
-blueprint.sh lexis specifier
+blueprint lexis specifier
 
 # List available workers
-blueprint.sh polis --list
+blueprint polis --list
 ```
 
 ## When to Use
@@ -86,3 +89,13 @@ Use this skill when working with Blueprint Framework:
 - **Validating work**: Use `aegis` for gate criteria and aspects
 - **Worker communication**: Use `hermes` for handoff formats
 - **Understanding roles**: Use `lexis` for constitutions, `polis` for worker info
+
+## Template Usage Guidelines
+
+| Action | Command | Context Impact |
+|--------|---------|----------------|
+| Create file from template | `forma copy` | **None** (recommended) |
+| View template structure | `forma show` | ~500 tokens |
+| Validate FrontMatter | `frontis schema` | Necessary |
+
+**IMPORTANT**: Use `forma copy` to create files. Avoid `forma show` unless you need to understand template structure without creating a file.
