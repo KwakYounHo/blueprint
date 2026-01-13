@@ -74,15 +74,22 @@ Read and understand before verification:
    - My task: {next steps from CURRENT.md}
    - Expected mode: {Quick/Standard/Compressed}
 
-### Phase 3: State Verification
+### Phase 3: State Verification (Reviewer Delegation)
 
-**Option A: Direct Verification** (Simple projects)
-- Run basic git status check
-- Verify 2-3 key files exist
+Delegate to Reviewer SubAgent to preserve Main Session context.
 
-**Option B: Reviewer Delegation** (Complex projects, HISTORY.md > 200 lines)
+**Handoff:**
+```
+Use Task tool with subagent_type: reviewer
 
-See: `blueprint hermes request:review:session-state`
+Construct prompt using: `blueprint hermes request:review:session-state`
+- Replace {PLAN_PATH} with resolved plan path (e.g., blueprint/plans/001-auth)
+```
+
+**Process response:** `blueprint hermes response:review:session-state`
+- `pass` → Proceed to Phase 4
+- `warning` → Present warnings, proceed with user confirmation
+- `fail` → Present issues, go to Error Recovery
 
 ### Phase 4: Handoff Briefing
 
@@ -220,30 +227,6 @@ Options:
 3. Ask user to summarize key points
 
 Which option? (1/2/3)
-```
-
----
-
-## Reviewer Delegation
-
-For complex projects, delegate State Verification to preserve Main Session context.
-
-### When to Delegate
-
-| Condition | Action |
-|-----------|--------|
-| HISTORY.md > 200 lines | Consider delegation |
-| Multiple phases completed | Consider delegation |
-| Quick task (< 3 sessions) | Direct verification |
-
-### Delegation Flow
-
-```
-Use Task tool with subagent_type: reviewer
-
-See format: blueprint hermes request:review:session-state
-
-Process response: blueprint hermes response:review:session-state
 ```
 
 ---

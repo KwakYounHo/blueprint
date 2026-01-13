@@ -36,17 +36,22 @@ Same as `/save`:
 
 ## Checkpoint Process
 
-### Step 1: Verify Phase Completion
+### Step 1: Verify Phase Completion (Reviewer Delegation)
 
-```
-Before checkpoint, confirm:
-- [ ] All phase deliverables complete?
-- [ ] Tests passing?
-- [ ] Documentation updated?
+Delegate to Reviewer SubAgent to validate phase is ready for checkpoint.
 
-If not complete:
-  "Phase {N} appears incomplete. Checkpoint anyway? (yes/no)"
+**Handoff:**
 ```
+Use Task tool with subagent_type: reviewer
+
+Construct prompt using: `blueprint hermes request:review:phase-completion`
+- Replace {PLAN_PATH} with resolved plan path (e.g., blueprint/plans/001-auth)
+```
+
+**Process response:** `blueprint hermes response:review:phase-completion`
+- `pass` → Proceed to Step 2
+- `warning` → Present warnings, ask user: "Phase {N} has warnings. Checkpoint anyway? (yes/no)"
+- `fail` → Present issues, go to Error Handling: Phase Not Complete
 
 ### Step 2: Archive Current Session Context
 
@@ -226,49 +231,6 @@ blueprint forma copy weekly-review {PLAN_PATH}/session-context/
 ```
 
 Rename to: `WEEKLY-REVIEW-{YYYY-MM-DD}.md`
-
----
-
-## Reviewer Integration
-
-For `/checkpoint`, use Reviewer to validate phase completion.
-
-### Pre-Checkpoint Validation
-
-```
-Use Task tool with subagent_type: reviewer
-
-See format: blueprint hermes request:review:session-state
-
-Verify:
-- [ ] All phase deliverables complete
-- [ ] TODO.md shows phase tasks done
-- [ ] No blockers preventing phase closure
-```
-
-### Validation Results
-
-**If pass:**
-```
-Phase {N} validation: PASSED
-Ready to checkpoint.
-```
-
-**If fail:**
-```
-Phase {N} validation: INCOMPLETE
-
-Issues:
-- TODO.md: 2 tasks still pending
-- Blocker: Authentication bug unresolved
-
-Options:
-1. Complete remaining tasks first
-2. Move tasks to next phase and checkpoint anyway
-3. Cancel checkpoint
-
-Which option? (1/2/3)
-```
 
 ---
 

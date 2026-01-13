@@ -192,3 +192,43 @@ handoff:
     - "{how to resolve issue}"
 ```
 ---e
+
+OBJECTIVE[request:review:phase-completion]
+---s
+```yaml
+task:
+  action: review
+  context: phase-completion
+  files:
+    - "{PLAN_PATH}/session-context/CURRENT.md"
+    - "{PLAN_PATH}/session-context/TODO.md"
+    - "{PLAN_PATH}/ROADMAP.md"
+  gate: session
+  aspects:
+    - phase-completion
+```
+---e
+
+OBJECTIVE[response:review:phase-completion]
+---s
+```yaml
+handoff:
+  status: pass | fail | warning
+  gate: session
+  context: phase-completion
+  phase_checked: {N}
+  summary: "{human-readable summary}"
+  checks:
+    phase-completion:
+      status: pass | fail | warning
+      tasks:
+        total: {N}
+        completed: {N}
+        incomplete: {N}
+      git_clean: true | false
+      blockers_resolved: true | false
+      issues: [...]
+  suggestions:
+    - "{how to resolve issue}"
+```
+---e
