@@ -31,6 +31,9 @@ phase-count: 0
 
 ## Phases
 
+> **IMPORTANT**: Before implementing each phase, enter Claude Code's **Plan Mode** for detailed planning.
+> Master Plan defines WHAT to build. Plan Mode defines HOW to build it.
+
 ### Phase 1: {Phase Name}
 
 **Objective**: {What this phase achieves}
@@ -39,7 +42,20 @@ phase-count: 0
 - [ ] {deliverable-1}
 - [ ] {deliverable-2}
 
+**Spec References**:
+| Type | Spec ID | Path |
+|------|---------|------|
+| lib | LIB-{namespace}/{module} | `lib/{namespace}/{module}.md` |
+
 **Dependencies**: None
+
+**Implementation**:
+```
+1. Enter Plan Mode
+2. Reference specs above for detailed planning
+3. Execute with user approval
+4. Update implementation-notes.md if deviations occur
+```
 
 ---
 
@@ -50,7 +66,20 @@ phase-count: 0
 **Deliverables**:
 - [ ] {deliverable-1}
 
+**Spec References**:
+| Type | Spec ID | Path |
+|------|---------|------|
+| lib | LIB-{namespace}/{module} | `lib/{namespace}/{module}.md` |
+
 **Dependencies**: Phase 1
+
+**Implementation**:
+```
+1. Enter Plan Mode
+2. Reference specs above for detailed planning
+3. Execute with user approval
+4. Update implementation-notes.md if deviations occur
+```
 
 ---
 
@@ -61,7 +90,22 @@ phase-count: 0
 **Deliverables**:
 - [ ] FEAT-{feature-name}
 
+**Spec References**:
+| Type | Spec ID | Path |
+|------|---------|------|
+| feature | FEAT-{name} | `feature/{name}.md` |
+| lib | LIB-{namespace}/{module-a} | `lib/{namespace}/{module-a}.md` |
+| lib | LIB-{namespace}/{module-b} | `lib/{namespace}/{module-b}.md` |
+
 **Dependencies**: Phase 1, Phase 2
+
+**Implementation**:
+```
+1. Enter Plan Mode
+2. Reference feature spec and all lib specs
+3. Execute with user approval
+4. Update implementation-notes.md if deviations occur
+```
 
 ---
 
@@ -127,7 +171,19 @@ Phase 3: Integration
 
 ## Next Steps
 
+### Planning Phase
 1. [ ] Resolve all [DECIDE] markers
 2. [ ] Create lib specs in `lib/` directory
 3. [ ] Create feature specs in `feature/` directory
-4. [ ] Use Claude Code Plan Mode for detailed implementation
+
+### Implementation Phase
+> For each Master Plan phase, follow this protocol:
+
+4. [ ] **Phase 1**: Enter Plan Mode → Reference specs → Execute → Update notes
+5. [ ] **Phase 2**: Enter Plan Mode → Reference specs → Execute → Update notes
+6. [ ] **Phase 3**: Enter Plan Mode → Reference specs → Execute → Update notes
+
+### Completion
+7. [ ] All phases implemented
+8. [ ] implementation-notes.md updated with any deviations
+9. [ ] Final review and status update to `completed`

@@ -89,6 +89,52 @@ blueprint/plans/{nnn}-{topic}/
 3. Resolve `[DECIDE]` through conversation
 4. Update Memory with decisions
 
+---
+
+## Implementation: Plan Mode Integration
+
+Master Plan defines **what** to build. Claude Code's **Plan Mode** defines **how** to build each phase.
+
+### Workflow
+
+```
+Master Plan (High-level)
+├── Phase 1: {deliverables, lib/feature refs}
+│   └── [Enter Plan Mode] → Detailed implementation plan → Execute
+├── Phase 2: {deliverables, lib/feature refs}
+│   └── [Enter Plan Mode] → Detailed implementation plan → Execute
+└── Phase N: ...
+    └── [Enter Plan Mode] → Detailed implementation plan → Execute
+```
+
+### Before Each Phase Implementation
+
+1. **Review Master Plan Phase** - Check deliverables and lib/feature references
+2. **Enter Plan Mode** - Use Claude Code's Plan Mode for detailed planning
+3. **Reference Specs** - Plan Mode should reference `lib/` and `feature/` specs
+4. **Execute** - Implement according to Plan Mode's detailed plan
+5. **Update Notes** - Record deviations in `implementation-notes.md`
+
+### Phase Entry Protocol
+
+When starting a Master Plan phase implementation:
+
+```
+User: "Let's implement Phase N"
+Assistant:
+1. Read master-plan.md Phase N section
+2. Identify referenced lib/feature specs
+3. Enter Plan Mode (EnterPlanMode tool)
+4. Create detailed implementation plan referencing specs
+5. Exit Plan Mode with user approval
+6. Execute implementation
+```
+
+**IMPORTANT**: Do NOT skip Plan Mode for non-trivial phases. Plan Mode ensures:
+- Detailed file-level planning
+- User approval before changes
+- Alignment with Master Plan specs
+
 ## Decision Documentation
 
 ### Decisions Made Table
@@ -159,3 +205,12 @@ For document validation (Token-saving purpose):
 - [ ] All [DECIDE] resolved through conversation
 - [ ] Memory updated with final decisions
 - [ ] User approved final specs
+
+### Phase N Implementation (per Master Plan phase)
+- [ ] Master Plan phase reviewed
+- [ ] Spec references identified
+- [ ] **Plan Mode entered** (EnterPlanMode)
+- [ ] Detailed implementation plan created
+- [ ] Plan Mode exited with user approval
+- [ ] Implementation executed
+- [ ] Deviations recorded in implementation-notes.md
