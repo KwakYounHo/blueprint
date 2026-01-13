@@ -164,17 +164,28 @@ Assistant:
 Use `blueprint.sh` for templates and schemas:
 
 ```bash
-# Templates
-blueprint.sh forma list                    # List templates
-blueprint.sh forma show master-plan        # View template
-blueprint.sh forma copy master-plan ./dir/ # Copy template (Context-saving)
+# Templates - PREFER copy over show to save Context
+blueprint.sh forma list                    # List available templates
+blueprint.sh forma copy master-plan ./dir/ # Copy template (RECOMMENDED)
+blueprint.sh forma copy memory ./dir/      # Creates memory.md
+blueprint.sh forma copy lib-spec ./dir/lib/auth/  # Creates lib spec
 
-# Schemas
-blueprint.sh frontis schema master-plan    # View schema
+# Schemas - Use show for validation reference
+blueprint.sh frontis schema master-plan    # View schema for validation
 
 # Constitution
 blueprint.sh lexis --base                  # Project base principles
 ```
+
+### Template Usage Guidelines
+
+| Action | Command | Context Impact |
+|--------|---------|----------------|
+| Create file from template | `forma copy` | **None** (recommended) |
+| View template structure | `forma show` | ~500 tokens |
+| Validate FrontMatter | `frontis schema` | Necessary |
+
+**IMPORTANT**: Use `forma copy` to create files. Avoid `forma show` unless you need to understand template structure without creating a file.
 
 ## Supporter Agent
 
