@@ -13,7 +13,10 @@ set -e
 # Source common functions
 source "$(dirname "$0")/../_common.sh"
 
-GATES_DIR="$PROJECT_ROOT/blueprint/gates"
+# Check project initialization
+check_project_initialized
+
+GATES_DIR="$BLUEPRINT_DATA_DIR/gates"
 
 # Helper: list all gates with descriptions
 list_gates() {

@@ -18,20 +18,34 @@
 - We are **creating** a framework, NOT **using** one.
 - The goal: Provide minimal constraints and guidelines for target projects to customize.
 
+### Installation (User-Level)
+
+Blueprint uses a **two-step user-level installation**:
+
+```bash
+# Step 1: One-time global install (shared across all projects)
+./install-global.sh    # → ~/.claude/{agents,skills,commands}/
+
+# Step 2: Per-project initialization
+cd /path/to/your/project
+./init-project.sh      # → ~/.claude/blueprint/{project-path}/
+```
+
 ### What Gets Copied vs What Stays
-| Item | Copied to Target? | Purpose |
-|------|-------------------|---------|
-| `core/claude/*` | ✅ Yes → `.claude/` | Claude Code config (agents, commands, skills) |
-| `core/constitutions/*` | ✅ Yes → `blueprint/constitutions/` | Principle definitions |
-| `core/forms/*` | ✅ Yes → `blueprint/forms/` | Handoff formats |
-| `core/front-matters/*` | ✅ Yes → `blueprint/front-matters/` | FrontMatter schemas |
-| `core/gates/*` | ✅ Yes → `blueprint/gates/` | Validation checkpoints |
-| `core/templates/*` | ✅ Yes → `blueprint/templates/` | Document templates |
-| `core/specs/*` | ✅ Yes → `blueprint/specs/` | Specification templates |
-| `core/initializers/*` | ✅ Yes | Setup scripts |
-| `README.md` files | ❌ No | Written at 0.1.0 release |
-| `blueprint/*` | ❌ No | Dogfooding - this project's own config |
-| `docs/adr/*` | ❌ No | Framework design decisions |
+
+| Item | install-global.sh | init-project.sh | Purpose |
+|------|-------------------|-----------------|---------|
+| `core/claude/*` | → `~/.claude/` | - | Claude Code config (shared) |
+| `core/constitutions/*` | - | → `~/.claude/blueprint/{project}/` | Principle definitions |
+| `core/forms/*` | - | → `~/.claude/blueprint/{project}/` | Handoff formats |
+| `core/front-matters/*` | - | → `~/.claude/blueprint/{project}/` | FrontMatter schemas |
+| `core/gates/*` | - | → `~/.claude/blueprint/{project}/` | Validation checkpoints |
+| `core/templates/*` | - | → `~/.claude/blueprint/{project}/` | Document templates |
+| `README.md` files | ❌ No | ❌ No | Written at 0.1.0 release |
+| `blueprint/*` | ❌ No | ❌ No | Dogfooding - this project's own config |
+| `docs/adr/*` | ❌ No | ❌ No | Framework design decisions |
+
+**Note**: `{project-path}` is derived from the absolute path where you run init-project.sh (e.g., `/Users/me/projects/myapp` → `Users-me-projects-myapp`).
 
 ### Template Rules
 - Use **placeholders** (`{{project-name}}`, `{{date}}`) for values that vary per project.

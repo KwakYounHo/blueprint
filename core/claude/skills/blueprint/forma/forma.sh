@@ -13,8 +13,11 @@ set -e
 # Source common functions
 source "$(dirname "$0")/../_common.sh"
 
+# Check project initialization
+check_project_initialized
+
 COMMAND="$1"
-TEMPLATE_DIR="$PROJECT_ROOT/blueprint/templates"
+TEMPLATE_DIR="$BLUEPRINT_DATA_DIR/templates"
 
 # === LIST ===
 do_list() {

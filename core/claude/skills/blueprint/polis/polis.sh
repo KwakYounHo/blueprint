@@ -11,7 +11,8 @@ set -e
 # Source common functions
 source "$(dirname "$0")/../_common.sh"
 
-AGENTS_DIR="$PROJECT_ROOT/.claude/agents"
+# Note: Agents are global (not per-project), no initialization check needed
+AGENTS_DIR="$HOME/.claude/agents"
 
 # Check if agents directory exists
 if [ ! -d "$AGENTS_DIR" ]; then

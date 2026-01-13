@@ -11,7 +11,10 @@ set -e
 # Source common functions
 source "$(dirname "$0")/../_common.sh"
 
-FORMS_FILE="$PROJECT_ROOT/blueprint/forms/handoff.schema.md"
+# Check project initialization
+check_project_initialized
+
+FORMS_FILE="$BLUEPRINT_DATA_DIR/forms/handoff.schema.md"
 
 # Check if forms file exists
 if [ ! -f "$FORMS_FILE" ]; then

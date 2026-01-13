@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 #
-# Blueprint Framework Installer
+# [DEPRECATED] Blueprint Framework Installer (Project-Level)
+#
+# This script is DEPRECATED. Use the new user-level installation instead:
+#
+#   1. ./install-global.sh    # One-time: Install to ~/.claude/
+#   2. ./init-project.sh      # Per-project: Initialize blueprint data
+#
+# The new approach stores:
+#   - Claude config (agents, skills, commands) in ~/.claude/
+#   - Project data (constitutions, templates, etc.) in ~/.claude/blueprint/{project}/
+#
+# ============================================================================
+#
+# [LEGACY] Original Description:
 # Copies core framework files to target project directory.
 #
 # Usage:

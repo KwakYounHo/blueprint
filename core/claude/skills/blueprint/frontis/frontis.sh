@@ -14,8 +14,11 @@ set -e
 # Source common functions
 source "$(dirname "$0")/../_common.sh"
 
+# Check project initialization
+check_project_initialized
+
 COMMAND="$1"
-SCHEMA_DIR="$PROJECT_ROOT/blueprint/front-matters"
+SCHEMA_DIR="$BLUEPRINT_DATA_DIR/front-matters"
 
 # === SEARCH ===
 do_search() {

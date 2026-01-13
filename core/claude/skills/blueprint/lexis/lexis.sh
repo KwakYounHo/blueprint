@@ -12,7 +12,10 @@ set -e
 # Source common functions
 source "$(dirname "$0")/../_common.sh"
 
-CONST_DIR="$PROJECT_ROOT/blueprint/constitutions"
+# Check project initialization
+check_project_initialized
+
+CONST_DIR="$BLUEPRINT_DATA_DIR/constitutions"
 BASE_FILE="$CONST_DIR/base.md"
 AGENTS_DIR="$CONST_DIR/agents"
 
