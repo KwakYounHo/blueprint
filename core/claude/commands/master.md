@@ -4,7 +4,7 @@ description: Apply Master Plan workflow for creating structured implementation p
 
 ## First: Load Project Constitution
 
-Run `blueprint.sh lexis --base` to understand the project's base principles.
+Run `blueprint lexis --base` to understand the project's base principles.
 These principles are project-specific and MUST be followed.
 
 ## Your Role
@@ -30,7 +30,7 @@ plans that enable deterministic code generation.
 ### Progressive Planning
 - **Phase 1**: Analysis & Memory Creation (plan creation FORBIDDEN)
 - **Phase 2**: Master Plan Writing ([DECIDE] markers for uncertainties)
-- **Phase 3**: Spec Writing (all [DECIDE] resolved)
+- **Phase 3**: Session Context Initialization
 - Phase transitions REQUIRE user confirmation
 
 ### User Confirmation
@@ -38,19 +38,21 @@ plans that enable deterministic code generation.
 - Each [DECIDE] resolution REQUIRES user input
 - Assumption-based planning is FORBIDDEN
 
-### Hierarchical Specification (Lib/Feature)
-- **Lib**: Reusable units (3+ uses OR standalone value)
-- **Feature**: Composition of Libs, business flow
-
 ## Directory Structure
 
 ```
 blueprint/plans/{nnn}-{topic}/
-├── memory.md           # Discussion, background, decisions
-├── master-plan.md      # High-level phases + Directive Markers
-├── lib/{ns}/{mod}.md   # Lib specifications
-├── feature/{name}.md   # Feature specifications
-└── implementation-notes.md  # Issues during implementation
+├── memory.md                   # Discussion, background, decisions
+├── master-plan.md              # High-level phases + Directive Markers
+├── ROADMAP.md                  # Phase progress tracking (dynamic)
+├── session-context/            # Session management
+│   ├── CURRENT.md              # Current session state
+│   ├── TODO.md                 # Task checklist
+│   ├── HISTORY.md              # Session history (append-only)
+│   └── archive/                # Checkpoint archives
+│       └── {YYYY-MM-DD}/
+│           └── CHECKPOINT-SUMMARY.md
+└── implementation-notes.md     # Issues during implementation
 ```
 
 ## ID Formats
@@ -58,8 +60,6 @@ blueprint/plans/{nnn}-{topic}/
 | Type | Format | Example |
 |------|--------|---------|
 | Plan | `PLAN-{NNN}` | `PLAN-001` |
-| Lib | `LIB-{namespace}/{module}` | `LIB-auth/jwt-validator` |
-| Feature | `FEAT-{name}` | `FEAT-user-authentication` |
 | Decision | `D-{NNN}` | `D-001` |
 | Pending Decision | `DECIDE-{NNN}` | `DECIDE-001` |
 
@@ -78,16 +78,40 @@ blueprint/plans/{nnn}-{topic}/
 
 1. Create `master-plan.md` with phases
 2. Add `[DECIDE]` markers for uncertain items
-3. Define Lib/Feature classification (Rule of Three)
+3. Define deliverables for each phase
 4. Present to user
 5. WAIT for user confirmation
 
-### Phase 3: Spec Writing
+### Phase 3: Session Context Initialization
 
-1. For each Lib → create `lib/{ns}/{mod}.md`
-2. For each Feature → create `feature/{name}.md`
-3. Resolve `[DECIDE]` through conversation
-4. Update Memory with decisions
+After Master Plan is approved, initialize session tracking:
+
+**Step 1: Generate ROADMAP.md**
+
+```
+Use blueprint skill: forma copy roadmap blueprint/plans/{nnn}-{topic}/
+```
+
+Then edit ROADMAP.md:
+- Extract Phase names from master-plan.md
+- Create checkbox list for each Phase
+- Mark Phase 1 as current (`← Current`)
+
+**Step 2: Create session-context Directory**
+
+```
+Use blueprint skill: forma copy current blueprint/plans/{nnn}-{topic}/session-context/
+Use blueprint skill: forma copy todo blueprint/plans/{nnn}-{topic}/session-context/
+Use blueprint skill: forma copy history blueprint/plans/{nnn}-{topic}/session-context/
+```
+
+**Step 3: Initialize CURRENT.md**
+
+Edit the copied CURRENT.md:
+- Set `plan-id` in frontmatter
+- Set Plan Name and Path
+- Set Current Phase to Phase 1
+- Set Phase Objective from Master Plan
 
 ---
 
@@ -99,9 +123,9 @@ Master Plan defines **what** to build. Claude Code's **Plan Mode** defines **how
 
 ```
 Master Plan (High-level)
-├── Phase 1: {deliverables, lib/feature refs}
+├── Phase 1: {deliverables}
 │   └── [Enter Plan Mode] → Detailed implementation plan → Execute
-├── Phase 2: {deliverables, lib/feature refs}
+├── Phase 2: {deliverables}
 │   └── [Enter Plan Mode] → Detailed implementation plan → Execute
 └── Phase N: ...
     └── [Enter Plan Mode] → Detailed implementation plan → Execute
@@ -109,10 +133,10 @@ Master Plan (High-level)
 
 ### Before Each Phase Implementation
 
-1. **Review Master Plan Phase** - Check deliverables and lib/feature references
+1. **Review Master Plan Phase** - Check deliverables
 2. **Enter Plan Mode** - Use Claude Code's Plan Mode for detailed planning
-3. **Reference Specs** - Plan Mode should reference `lib/` and `feature/` specs
-4. **Execute** - Implement according to Plan Mode's detailed plan
+3. **Execute** - Implement according to Plan Mode's detailed plan
+4. **Save Session** - Use `/save` to record progress
 5. **Update Notes** - Record deviations in `implementation-notes.md`
 
 ### Phase Entry Protocol
@@ -123,17 +147,27 @@ When starting a Master Plan phase implementation:
 User: "Let's implement Phase N"
 Assistant:
 1. Read master-plan.md Phase N section
-2. Identify referenced lib/feature specs
-3. Enter Plan Mode (EnterPlanMode tool)
-4. Create detailed implementation plan referencing specs
-5. Exit Plan Mode with user approval
-6. Execute implementation
+2. Enter Plan Mode (EnterPlanMode tool)
+3. Create detailed implementation plan
+4. Exit Plan Mode with user approval
+5. Execute implementation
+6. Use /save when session ends
 ```
 
 **IMPORTANT**: Do NOT skip Plan Mode for non-trivial phases. Plan Mode ensures:
 - Detailed file-level planning
 - User approval before changes
-- Alignment with Master Plan specs
+- Alignment with Master Plan
+
+## Session Management Commands
+
+After Master Plan creation, use these commands for session continuity:
+
+| Command | Purpose |
+|---------|---------|
+| `/save` | Save session state for handoff |
+| `/load` | Load previous session state |
+| `/checkpoint` | Archive completed phase |
 
 ## Decision Documentation
 
@@ -161,20 +195,23 @@ Assistant:
 
 ## Skills
 
-Use `blueprint.sh` for templates and schemas:
+Use `blueprint` skill for templates and schemas:
 
 ```bash
 # Templates - PREFER copy over show to save Context
-blueprint.sh forma list                    # List available templates
-blueprint.sh forma copy master-plan ./dir/ # Copy template (RECOMMENDED)
-blueprint.sh forma copy memory ./dir/      # Creates memory.md
-blueprint.sh forma copy lib-spec ./dir/lib/auth/  # Creates lib spec
+blueprint forma list                     # List available templates
+blueprint forma copy master-plan ./dir/  # Copy template (RECOMMENDED)
+blueprint forma copy memory ./dir/       # Creates memory.md
+blueprint forma copy roadmap ./dir/      # Creates ROADMAP.md
+blueprint forma copy current ./dir/session-context/   # Session state
+blueprint forma copy todo ./dir/session-context/      # Task list
+blueprint forma copy history ./dir/session-context/   # Session history
 
 # Schemas - Use show for validation reference
-blueprint.sh frontis schema master-plan    # View schema for validation
+blueprint frontis schema master-plan     # View schema for validation
 
 # Constitution
-blueprint.sh lexis --base                  # Project base principles
+blueprint lexis --base                   # Project base principles
 ```
 
 ### Template Usage Guidelines
@@ -205,23 +242,29 @@ For document validation (Token-saving purpose):
 
 ### Phase 2: Master Plan
 - [ ] Master Plan created with phases
-- [ ] Lib/Feature classification done (Rule of Three)
+- [ ] Deliverables defined for each phase
 - [ ] [DECIDE] markers added for uncertainties
 - [ ] [FIXED] constraints documented
 - [ ] User approved the plan
 
-### Phase 3: Spec Writing
-- [ ] All Lib specs created in `lib/` directory
-- [ ] All Feature specs created in `feature/` directory
-- [ ] All [DECIDE] resolved through conversation
-- [ ] Memory updated with final decisions
-- [ ] User approved final specs
+### Phase 3: Session Context Initialization
+- [ ] ROADMAP.md created from phases
+- [ ] session-context/ directory created
+- [ ] CURRENT.md initialized with Plan context
+- [ ] TODO.md ready for task tracking
+- [ ] HISTORY.md ready for session logs
 
 ### Phase N Implementation (per Master Plan phase)
 - [ ] Master Plan phase reviewed
-- [ ] Spec references identified
 - [ ] **Plan Mode entered** (EnterPlanMode)
 - [ ] Detailed implementation plan created
 - [ ] Plan Mode exited with user approval
 - [ ] Implementation executed
+- [ ] Session saved with `/save`
 - [ ] Deviations recorded in implementation-notes.md
+
+### Phase Completion
+- [ ] All deliverables complete
+- [ ] `/checkpoint` executed to archive phase
+- [ ] ROADMAP.md updated (phase marked complete)
+- [ ] Ready for next phase
