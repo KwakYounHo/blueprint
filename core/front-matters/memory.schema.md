@@ -22,6 +22,7 @@ All fields from `base.schema.md`:
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `plan-id` | string | Parent plan identifier (PLAN-NNN) |
 | `session-count` | number | Total interaction sessions count |
 | `last-session` | date | Date of last interaction session |
 
@@ -31,9 +32,16 @@ All fields from `base.schema.md`:
 |-------|------|---------|-------------|
 | `source-discussion` | string | `null` | Path to originating discussion file (if created from discussion) |
 | `source-memory` | string | `null` | Path to parent memory (for continuation) |
-| `generated-specs` | array | `[]` | List of specs generated from this memory |
 
 ## Field Definitions
+
+### plan-id
+
+- **Type**: string
+- **Required**: Yes
+- **Format**: `PLAN-{NNN}`
+- **Examples**: `"PLAN-001"`, `"PLAN-042"`
+- **Description**: Reference to the parent Master Plan. Memory files are located within the plan directory.
 
 ### source-discussion
 
@@ -64,22 +72,6 @@ All fields from `base.schema.md`:
 - **Required**: No
 - **Default**: `null`
 - **Description**: Reference to parent memory for continued sessions.
-
-### generated-specs
-
-- **Type**: array
-- **Required**: No
-- **Default**: `[]`
-- **Description**: List of specification IDs generated from this memory.
-
-**Structure**:
-```yaml
-generated-specs:
-  - spec-id: "LIB-auth/token-validator"
-    status: ready
-  - spec-id: "FEAT-user-authentication"
-    status: draft
-```
 
 ## Memory Body Sections (6 Required)
 
@@ -211,7 +203,7 @@ Tracking of outputs produced.
 | Type | `type` field must be `memory` |
 | Traceability | If `source-discussion` is set, must reference valid discussion |
 | Update | Must be updated after each significant decision |
-| Location | `blueprint/specs/memory/` directory |
+| Location | `blueprint/plans/{plan-id}/memory.md` |
 
 ## Template
 
