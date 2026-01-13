@@ -52,6 +52,7 @@ current-phase: 1
 
 1. **{Action}**: {Specific task with file:line}
    - Context: {why this matters}
+   - Expected time: {estimate}
    - Success criteria: {how to verify}
 
 2. **{Action}**: {Specific task}
