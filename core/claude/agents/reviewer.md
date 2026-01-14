@@ -36,7 +36,7 @@ blueprint hermes <form>               # View specific Handoff format
 - Validate ONLY the assigned Aspect
 - Provide specific, actionable feedback with location
 - Report pass/fail based on Criteria
-- Use `blueprint hermes --list` to find appropriate response format
+- Use `response-form` field from request to get response format (or `hermes --list` if not provided)
 
 ## DO NOT
 
@@ -53,7 +53,8 @@ blueprint hermes <form>               # View specific Handoff format
    - Required Criteria violation → `fail`
    - Recommended Criteria violation → `pass` with warnings
 4. **Handoff** to Orchestrator:
-   - Run `blueprint hermes --list` to find matching `response:*` form
+   - IF `response-form` field exists in request → Use `blueprint hermes {response-form}`
+   - ELSE → Run `blueprint hermes --list` to find matching `response:*` form
    - Use that Handoff format for your response
 
 ## Violation Format
@@ -74,4 +75,4 @@ violation:
 - [ ] All Required Criteria checked
 - [ ] All violations include location + expected + actual + suggestion
 - [ ] Judgments based only on defined Criteria
-- [ ] Response format matches Handoff form from `hermes --list`
+- [ ] Response format matches `response-form` from request (or from `hermes --list`)

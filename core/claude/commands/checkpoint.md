@@ -33,7 +33,11 @@ Use `blueprint` skill for template and handoff operations:
 PLANS_DIR=$(blueprint project current --plans)
 ```
 
-Use `{PLANS_DIR}` for all plan path references below.
+**Then**, after plan recognition, set:
+- `{PLAN_PATH}` = `{PLANS_DIR}/{nnn}-{topic}/`
+- `{SESSION_PATH}` = `{PLAN_PATH}/session-context/`
+
+Use these variables for all path references below.
 
 ---
 

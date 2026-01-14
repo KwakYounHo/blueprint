@@ -160,6 +160,7 @@ OBJECTIVE[request:review:session-state]
 task:
   action: review
   context: session-state
+  response-form: "response:review:session-state"
   files:
     - "{PLAN_PATH}/session-context/CURRENT.md"
     - "{PLAN_PATH}/ROADMAP.md"
@@ -199,6 +200,7 @@ OBJECTIVE[request:review:phase-completion]
 task:
   action: review
   context: phase-completion
+  response-form: "response:review:phase-completion"
   files:
     - "{PLAN_PATH}/session-context/CURRENT.md"
     - "{PLAN_PATH}/session-context/TODO.md"
