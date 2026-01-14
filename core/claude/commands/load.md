@@ -16,6 +16,18 @@ Use `blueprint` skill for plan discovery and handoff operations:
 
 ---
 
+## Plan Path Resolution
+
+**First**, resolve the current project's plans directory:
+
+```bash
+PLANS_DIR=$(blueprint project current --plans)
+```
+
+Use `{PLANS_DIR}` for all plan path references below.
+
+---
+
 ## Plan Selection
 
 ### With Argument
@@ -26,9 +38,9 @@ Use `blueprint` skill for plan discovery and handoff operations:
 
 | Format | Example | Matches |
 |--------|---------|---------|
-| Number only | `001` | `blueprint/plans/001-*/` |
-| Text only | `auth` | `blueprint/plans/*-*auth*/` |
-| Full format | `001-auth` | `blueprint/plans/001-auth/` |
+| Number only | `001` | `{PLANS_DIR}/001-*/` |
+| Text only | `auth` | `{PLANS_DIR}/*-*auth*/` |
+| Full format | `001-auth` | `{PLANS_DIR}/001-auth/` |
 
 ### Without Argument
 
@@ -36,7 +48,7 @@ Use `blueprint` skill for plan discovery and handoff operations:
 /load
 ```
 
-1. Find active plans: `blueprint frontis search status in-progress blueprint/plans/`
+1. Find active plans: `blueprint frontis search status in-progress {PLANS_DIR}/`
 2. Present list to user
 3. User selects → Load session-context/
 
@@ -50,7 +62,7 @@ Use `blueprint` skill for plan discovery and handoff operations:
 IF argument provided:
     Resolve plan from identifier
 ELSE:
-    Use blueprint skill: frontis search status in-progress blueprint/plans/
+    Use blueprint skill: frontis search status in-progress {PLANS_DIR}/
     Present list to user
     Wait for selection
 ```
@@ -83,7 +95,7 @@ Delegate to Reviewer SubAgent to preserve your context.
 Use Task tool with subagent_type: reviewer
 
 Construct prompt using: `blueprint hermes request:review:session-state`
-- Replace {PLAN_PATH} with resolved plan path (e.g., blueprint/plans/001-auth)
+- Replace {PLAN_PATH} with resolved plan path (e.g., {PLANS_DIR}/001-auth)
 ```
 
 **Process response:** `blueprint hermes response:review:session-state`

@@ -25,6 +25,18 @@ Use `blueprint` skill for template and handoff operations:
 
 ---
 
+## Plan Path Resolution
+
+**First**, resolve the current project's plans directory:
+
+```bash
+PLANS_DIR=$(blueprint project current --plans)
+```
+
+Use `{PLANS_DIR}` for all plan path references below.
+
+---
+
 ## Plan Recognition
 
 Same as `/save`:
@@ -45,7 +57,7 @@ Delegate to Reviewer SubAgent to validate phase is ready for checkpoint.
 Use Task tool with subagent_type: reviewer
 
 Construct prompt using: `blueprint hermes request:review:phase-completion`
-- Replace {PLAN_PATH} with resolved plan path (e.g., blueprint/plans/001-auth)
+- Replace {PLAN_PATH} with resolved plan path (e.g., {PLANS_DIR}/001-auth)
 ```
 
 **Process response:** `blueprint hermes response:review:phase-completion`

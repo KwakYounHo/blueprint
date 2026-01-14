@@ -27,6 +27,7 @@ Usage:
   blueprint project unlink <alias> [path]           Unlink path from project
   blueprint project rename <new-alias>              Rename project alias
   blueprint project manage                          Scan and manage projects
+  blueprint project current [--plans|--data]        Show current project info
 
 Options:
   -h, --help    Show this help message
@@ -40,6 +41,9 @@ Examples:
   blueprint project unlink myproject /old/path
   blueprint project rename my-new-alias
   blueprint project manage
+  blueprint project current
+  blueprint project current --plans
+  blueprint project current --data
 EOF
 }
 
@@ -466,6 +470,62 @@ do_rename() {
   echo "  Data: $new_dir"
 }
 
+do_current() {
+  local show_plans=false
+  local show_data=false
+
+  # Parse flags
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --plans)
+        show_plans=true
+        shift
+        ;;
+      --data)
+        show_data=true
+        shift
+        ;;
+      -*)
+        error "Unknown option: $1"
+        exit 1
+        ;;
+      *)
+        shift
+        ;;
+    esac
+  done
+
+  local current_path="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+  local data_dir
+  data_dir=$(get_blueprint_data_dir "$current_path")
+
+  # Check if project exists
+  if [ ! -d "$data_dir" ]; then
+    error "No project data found for current path."
+    echo "Run 'blueprint project init <alias>' to initialize."
+    exit 1
+  fi
+
+  local alias_name
+  alias_name=$(resolve_project_alias "$current_path")
+  if [ -z "$alias_name" ]; then
+    alias_name=$(basename "$data_dir")
+  fi
+
+  local plans_dir="$data_dir/plans"
+
+  # Output based on flags
+  if [ "$show_plans" = true ]; then
+    echo "$plans_dir"
+  elif [ "$show_data" = true ]; then
+    echo "$data_dir"
+  else
+    echo "Alias: $alias_name"
+    echo "Data: $data_dir"
+    echo "Plans: $plans_dir"
+  fi
+}
+
 do_manage() {
   require_jq
   init_registry
@@ -605,6 +665,10 @@ case "$COMMAND" in
     ;;
   manage)
     do_manage
+    ;;
+  current)
+    shift
+    do_current "$@"
     ;;
   -h|--help|"")
     show_help

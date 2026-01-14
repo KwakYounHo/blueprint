@@ -68,6 +68,9 @@ blueprint project link <alias>                    # Link current path to project
 blueprint project unlink <alias> [path]           # Unlink path from project
 blueprint project rename <new-alias>              # Rename project alias
 blueprint project manage                          # Scan and manage projects
+blueprint project current                         # Show current project info
+blueprint project current --plans                 # Get plans directory path (for Commands)
+blueprint project current --data                  # Get data directory path
 ```
 
 ## Examples
@@ -94,6 +97,9 @@ blueprint polis --list
 # Manage project aliases
 blueprint project list
 blueprint project init myproject --notes "My project"
+
+# Get current project's plans directory (used in Commands)
+PLANS_DIR=$(blueprint project current --plans)
 ```
 
 ## When to Use

@@ -2,6 +2,18 @@
 description: Apply Master Plan workflow for creating structured implementation plans
 ---
 
+## Plan Path Resolution
+
+**First**, resolve the current project's plans directory:
+
+```bash
+PLANS_DIR=$(blueprint project current --plans)
+```
+
+Use `{PLANS_DIR}` for all plan path references below.
+
+---
+
 ## First: Load Project Constitution
 
 Run `blueprint lexis --base` to understand the project's base principles.
@@ -41,7 +53,7 @@ plans that enable deterministic code generation.
 ## Directory Structure
 
 ```
-blueprint/plans/{nnn}-{topic}/
+{PLANS_DIR}/{nnn}-{topic}/
 ├── memory.md                   # Discussion, background, decisions
 ├── master-plan.md              # High-level phases + Directive Markers
 ├── ROADMAP.md                  # Phase progress tracking (dynamic)
@@ -69,7 +81,7 @@ blueprint/plans/{nnn}-{topic}/
 
 1. Understand user requirements
 2. Explore codebase for existing patterns
-3. Create `blueprint/plans/{nnn}-{topic}/memory.md`
+3. Create `{PLANS_DIR}/{nnn}-{topic}/memory.md`
 4. Record decisions in **Decisions Made** table
 5. Identify uncertainties as `[DECIDE]` items
 6. WAIT for user confirmation
@@ -89,8 +101,8 @@ After Master Plan is approved, initialize session tracking:
 **Step 1: Generate Plan-level Files**
 
 ```
-Use blueprint skill: forma copy roadmap blueprint/plans/{nnn}-{topic}/
-Use blueprint skill: forma copy implementation-notes blueprint/plans/{nnn}-{topic}/
+Use blueprint skill: forma copy roadmap {PLANS_DIR}/{nnn}-{topic}/
+Use blueprint skill: forma copy implementation-notes {PLANS_DIR}/{nnn}-{topic}/
 ```
 
 Then edit ROADMAP.md:
@@ -101,9 +113,9 @@ Then edit ROADMAP.md:
 **Step 2: Create session-context Directory**
 
 ```
-Use blueprint skill: forma copy current-standard blueprint/plans/{nnn}-{topic}/session-context/
-Use blueprint skill: forma copy todo blueprint/plans/{nnn}-{topic}/session-context/
-Use blueprint skill: forma copy history blueprint/plans/{nnn}-{topic}/session-context/
+Use blueprint skill: forma copy current-standard {PLANS_DIR}/{nnn}-{topic}/session-context/
+Use blueprint skill: forma copy todo {PLANS_DIR}/{nnn}-{topic}/session-context/
+Use blueprint skill: forma copy history {PLANS_DIR}/{nnn}-{topic}/session-context/
 ```
 
 **Step 3: Initialize CURRENT.md**
@@ -237,7 +249,7 @@ For document validation (Token-saving purpose):
 ### Phase 1: Analysis & Memory
 - [ ] User requirements understood
 - [ ] Codebase explored for existing patterns
-- [ ] Memory file created at `blueprint/plans/{nnn}-{topic}/memory.md`
+- [ ] Memory file created at `{PLANS_DIR}/{nnn}-{topic}/memory.md`
 - [ ] Decisions recorded in Decisions Made table
 - [ ] [DECIDE] items identified
 - [ ] User confirmed to proceed
@@ -385,7 +397,7 @@ Use Task tool with subagent_type: reviewer
 Prompt:
 "Validate Master Plan for PLAN-{NNN}.
 
-Document: blueprint/plans/{nnn}-{topic}/master-plan.md
+Document: {PLANS_DIR}/{nnn}-{topic}/master-plan.md
 
 Check against documentation gate criteria.
 Return Handoff with validation results."

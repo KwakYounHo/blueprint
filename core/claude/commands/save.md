@@ -16,6 +16,18 @@ Use `blueprint` skill for template and handoff operations:
 
 ---
 
+## Plan Path Resolution
+
+**First**, resolve the current project's plans directory:
+
+```bash
+PLANS_DIR=$(blueprint project current --plans)
+```
+
+Use `{PLANS_DIR}` for all plan path references below.
+
+---
+
 ## Plan Recognition
 
 ### Priority Order
@@ -28,11 +40,11 @@ Use `blueprint` skill for template and handoff operations:
 2. **From Git Branch** (Secondary)
    - Get current branch: `git branch --show-current`
    - Pattern match: `<convention>/<nnn>-<brief-summary>`
-   - Extract `{nnn}` → Look for `blueprint/plans/{nnn}-*/`
+   - Extract `{nnn}` → Look for `{PLANS_DIR}/{nnn}-*/`
 
 3. **From Argument** (Override)
    - `/save 001` → Force save to PLAN-001
-   - `/save auth` → Match `blueprint/plans/*-*auth*/`
+   - `/save auth` → Match `{PLANS_DIR}/*-*auth*/`
 
 ### Resolution Logic
 
@@ -70,7 +82,7 @@ Check `session-context/` in resolved plan:
 
 ```
 Determine target plan (see Plan Recognition above)
-Set: PLAN_PATH = blueprint/plans/{nnn}-{topic}/
+Set: PLAN_PATH = {PLANS_DIR}/{nnn}-{topic}/
 Set: SESSION_PATH = {PLAN_PATH}/session-context/
 ```
 
