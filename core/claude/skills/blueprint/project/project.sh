@@ -366,7 +366,7 @@ do_unlink() {
     echo "Warning: This is the last path for '$alias_name'."
     read -p "Remove project entirely? [y/N] " confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
-      do_remove "$alias_name"
+      do_remove "$alias_name" --registry
       return
     else
       echo "Cancelled."
