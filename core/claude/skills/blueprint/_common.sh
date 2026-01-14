@@ -33,13 +33,80 @@ path_to_dirname() {
   echo "${path//\//-}"    # Replace / with -
 }
 
+# =============================================================================
+# Alias Resolution (Cross-Machine Project Identity)
+# =============================================================================
+
+# Registry file location
+BLUEPRINT_REGISTRY="$HOME/.claude/blueprint/.blueprint"
+
+# Check if jq is available (cached per session)
+_check_jq() {
+  if [ -n "${_JQ_AVAILABLE+x}" ]; then
+    return "$_JQ_AVAILABLE"
+  fi
+
+  if command -v jq &> /dev/null; then
+    _JQ_AVAILABLE=0
+  else
+    _JQ_AVAILABLE=1
+    if [ -z "${_JQ_WARNING_SHOWN:-}" ]; then
+      echo "[WARNING] jq not found. Project alias resolution disabled." >&2
+      export _JQ_WARNING_SHOWN=1
+    fi
+  fi
+  return "$_JQ_AVAILABLE"
+}
+
+# Resolve project alias from registry
+# Returns: alias string if found, empty string otherwise
+resolve_project_alias() {
+  local current_path="${1:-$(pwd)}"
+
+  # Registry must exist
+  [ -f "$BLUEPRINT_REGISTRY" ] || return 0
+
+  # jq must be available
+  _check_jq || return 0
+
+  # Search for matching path in registry
+  local alias_name
+  alias_name=$(jq -r --arg path "$current_path" \
+    '.projects[] | select(.paths[] == $path) | .alias' \
+    "$BLUEPRINT_REGISTRY" 2>/dev/null | head -n1)
+
+  echo "$alias_name"
+}
+
+# Initialize registry file if not exists
+init_registry() {
+  local registry_dir="$HOME/.claude/blueprint"
+
+  [ -d "$registry_dir" ] || mkdir -p "$registry_dir"
+
+  if [ ! -f "$BLUEPRINT_REGISTRY" ]; then
+    echo '{"version":"1.0.0","projects":[]}' > "$BLUEPRINT_REGISTRY"
+  fi
+}
+
 # Get blueprint data directory for current project
-# Returns: ~/.claude/blueprint/{project-path}/
+# Priority: alias-based → path-based (fallback)
+# Returns: ~/.claude/blueprint/{alias}/ or ~/.claude/blueprint/{path-based}/
 get_blueprint_data_dir() {
   local project_path="${CLAUDE_PROJECT_DIR:-$(pwd)}"
-  local dirname
-  dirname=$(path_to_dirname "$project_path")
-  echo "$HOME/.claude/blueprint/$dirname"
+
+  # Try alias resolution first
+  local alias_name
+  alias_name=$(resolve_project_alias "$project_path")
+
+  if [ -n "$alias_name" ]; then
+    echo "$HOME/.claude/blueprint/$alias_name"
+  else
+    # Fallback to path-based directory
+    local dirname
+    dirname=$(path_to_dirname "$project_path")
+    echo "$HOME/.claude/blueprint/$dirname"
+  fi
 }
 
 # Check if project is initialized for Blueprint
