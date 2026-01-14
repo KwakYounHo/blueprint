@@ -63,7 +63,7 @@ blueprint polis <agent>               # Show agent instruction
 blueprint project init <alias> [--notes "text"]  # Initialize new project
 blueprint project list                            # List all projects
 blueprint project show <alias>                    # Show project details
-blueprint project remove <alias>                  # Remove project
+blueprint project remove <alias> --registry [--data-dir]  # Remove project
 blueprint project link <alias>                    # Link current path to project
 blueprint project unlink <alias> [path]           # Unlink path from project
 blueprint project rename <new-alias>              # Rename project alias
@@ -168,3 +168,14 @@ Consider: `blueprint project rename <alias>`
 1. Run `blueprint project manage` to scan
 2. Use **AskUserQuestion** to gather alias preferences
 3. Execute appropriate commands (`rename`, `init`, or cleanup)
+
+**Before `blueprint project remove`:**
+Use **AskUserQuestion** to confirm with user:
+1. Confirm removal of the project
+2. Ask whether to also delete data directory
+
+Then execute with appropriate flags:
+```bash
+blueprint project remove <alias> --registry             # Registry only
+blueprint project remove <alias> --registry --data-dir  # Registry + data
+```

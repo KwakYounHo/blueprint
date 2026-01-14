@@ -228,10 +228,34 @@ do_show() {
 }
 
 do_remove() {
-  local alias_name="$1"
+  local alias_name=""
+  local remove_registry=false
+  local remove_data_dir=false
+
+  # Parse arguments
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --registry)
+        remove_registry=true
+        shift
+        ;;
+      --data-dir)
+        remove_data_dir=true
+        shift
+        ;;
+      -*)
+        error "Unknown option: $1"
+        exit 1
+        ;;
+      *)
+        alias_name="$1"
+        shift
+        ;;
+    esac
+  done
 
   if [ -z "$alias_name" ]; then
-    echo "Usage: blueprint project remove <alias>"
+    echo "Usage: blueprint project remove <alias> --registry [--data-dir]"
     exit 1
   fi
 
@@ -244,21 +268,18 @@ do_remove() {
     exit 1
   fi
 
-  # Confirm
-  read -p "Remove project '$alias_name'? [y/N] " confirm
-  if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
-    echo "Cancelled."
-    exit 0
+  if [ "$remove_registry" = false ]; then
+    error "Specify what to remove:"
+    echo "  blueprint project remove $alias_name --registry             # Registry only"
+    echo "  blueprint project remove $alias_name --registry --data-dir  # Registry + data"
+    exit 1
   fi
 
-  # Ask about data directory
+  # Delete data directory if requested
   local data_dir="$HOME/.claude/blueprint/projects/$alias_name"
-  if [ -d "$data_dir" ]; then
-    read -p "Also delete data directory ($data_dir)? [y/N] " delete_data
-    if [[ "$delete_data" =~ ^[Yy]$ ]]; then
-      rm -rf "$data_dir"
-      info "Data directory deleted."
-    fi
+  if [ "$remove_data_dir" = true ] && [ -d "$data_dir" ]; then
+    rm -rf "$data_dir"
+    info "Data directory deleted."
   fi
 
   # Remove from registry
@@ -266,7 +287,7 @@ do_remove() {
   tmp_file=$(mktemp)
   jq --arg a "$alias_name" 'del(.projects[] | select(.alias == $a))' "$BLUEPRINT_REGISTRY" > "$tmp_file" && mv "$tmp_file" "$BLUEPRINT_REGISTRY"
 
-  info "Project '$alias_name' removed."
+  info "Project '$alias_name' removed from registry."
 }
 
 do_link() {
