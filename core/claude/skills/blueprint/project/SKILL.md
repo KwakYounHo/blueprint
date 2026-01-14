@@ -11,6 +11,8 @@ blueprint project show <alias>                    # Show project details
 blueprint project remove <alias>                  # Remove project
 blueprint project link <alias>                    # Link current path to project
 blueprint project unlink <alias> [path]           # Unlink path from project
+blueprint project rename <new-alias>              # Rename project alias
+blueprint project manage                          # Scan and manage projects
 ```
 
 ## Usage Instructions
@@ -55,3 +57,31 @@ blueprint project init <alias>
 Projects are stored in: `~/.claude/blueprint/.blueprint`
 
 Data directories are stored in: `~/.claude/blueprint/<alias>/`
+
+## Session Guidelines
+
+### path-based Project Notifications
+
+When detecting path-based projects (via `blueprint project manage` or automatic detection):
+
+1. **Once per session per project**: Only mention rename suggestion once
+2. **Track mentioned projects**: Don't repeat for the same project in the same Claude Code session
+3. **Be concise**: Brief suggestion, not a lecture
+
+Example (first mention):
+```
+Project 'Users-duyo-Desktop-test' uses path-based identification.
+Consider: `blueprint project rename <alias>`
+```
+
+Example (subsequent): Skip or acknowledge briefly if user asks.
+
+### Using `blueprint project manage`
+
+When user runs `manage` or when you detect unregistered/path-based projects:
+
+1. Run `blueprint project manage` to scan
+2. Review output and use **AskUserQuestion** to gather:
+   - Alias preferences for each project
+   - Whether to clean up invalid projects
+3. Execute appropriate commands (`rename`, `init`, or cleanup)

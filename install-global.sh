@@ -7,7 +7,7 @@
 #   ./install-global.sh [--dry-run]
 #
 # This is a ONE-TIME installation for the user.
-# For per-project setup, use init-project.sh after this.
+# For per-project setup, run 'blueprint project init <alias>' in your project.
 #
 
 set -euo pipefail
@@ -41,7 +41,7 @@ Options:
   --dry-run    Show what would be copied without actually copying
   -h, --help   Show this help message
 
-After running this, use init-project.sh in each project directory.
+After running this, use 'blueprint project init <alias>' in each project.
 EOF
 }
 
@@ -116,7 +116,9 @@ install_global() {
     else
         log_success "Global installation complete!"
         echo ""
-        log_info "Next step: Run 'init-project.sh' in your project directory."
+        log_info "Next steps:"
+        log_info "  1. cd /path/to/your/project"
+        log_info "  2. blueprint project init <alias>"
     fi
 }
 
