@@ -10,6 +10,7 @@
 #   hermes    Agent handoff forms
 #   lexis     Constitution viewer
 #   polis     Agent registry
+#   project   Project alias management
 
 set -e
 
@@ -30,6 +31,7 @@ Submodules:
   hermes    Agent handoff forms
   lexis     Constitution viewer
   polis     Agent registry
+  project   Project alias management
 
 Options:
   --help, -h    Show this help
@@ -57,11 +59,12 @@ list_submodules() {
   printf "  %-12s %s\n" "hermes" "Agent handoff forms"
   printf "  %-12s %s\n" "lexis" "Constitution viewer"
   printf "  %-12s %s\n" "polis" "Agent registry"
+  printf "  %-12s %s\n" "project" "Project alias management"
 }
 
 # Main dispatch
 case "$SUBMODULE" in
-  aegis|forma|frontis|hermes|lexis|polis)
+  aegis|forma|frontis|hermes|lexis|polis|project)
     shift
     exec "$SCRIPT_DIR/$SUBMODULE/$SUBMODULE.sh" "$@"
     ;;
