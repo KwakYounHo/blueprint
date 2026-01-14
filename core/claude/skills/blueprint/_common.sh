@@ -38,7 +38,7 @@ path_to_dirname() {
 # =============================================================================
 
 # Registry file location
-BLUEPRINT_REGISTRY="$HOME/.claude/blueprint/.blueprint"
+BLUEPRINT_REGISTRY="$HOME/.claude/blueprint/projects/.projects"
 
 # Check if jq is available (cached per session)
 _check_jq() {
@@ -80,7 +80,7 @@ resolve_project_alias() {
 
 # Initialize registry file if not exists
 init_registry() {
-  local registry_dir="$HOME/.claude/blueprint"
+  local registry_dir="$HOME/.claude/blueprint/projects"
 
   [ -d "$registry_dir" ] || mkdir -p "$registry_dir"
 
@@ -91,7 +91,7 @@ init_registry() {
 
 # Get blueprint data directory for current project
 # Priority: alias-based → path-based (fallback)
-# Returns: ~/.claude/blueprint/{alias}/ or ~/.claude/blueprint/{path-based}/
+# Returns: ~/.claude/blueprint/projects/{alias}/ or ~/.claude/blueprint/projects/{path-based}/
 get_blueprint_data_dir() {
   local project_path="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 
@@ -100,12 +100,12 @@ get_blueprint_data_dir() {
   alias_name=$(resolve_project_alias "$project_path")
 
   if [ -n "$alias_name" ]; then
-    echo "$HOME/.claude/blueprint/$alias_name"
+    echo "$HOME/.claude/blueprint/projects/$alias_name"
   else
     # Fallback to path-based directory
     local dirname
     dirname=$(path_to_dirname "$project_path")
-    echo "$HOME/.claude/blueprint/$dirname"
+    echo "$HOME/.claude/blueprint/projects/$dirname"
   fi
 }
 
@@ -121,7 +121,7 @@ check_project_initialized() {
     echo "Project: ${CLAUDE_PROJECT_DIR:-$(pwd)}" >&2
     echo "Expected: $data_dir" >&2
     echo "" >&2
-    echo "Run 'init-project.sh' to initialize Blueprint for this project." >&2
+    echo "Run 'blueprint project init <alias>' to initialize Blueprint for this project." >&2
     exit 1
   fi
 }

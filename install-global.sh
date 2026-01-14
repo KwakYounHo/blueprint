@@ -21,8 +21,11 @@ readonly NC='\033[0m' # No Color
 
 # Script directory (where install-global.sh lives)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CORE_CLAUDE_DIR="${SCRIPT_DIR}/core/claude"
+CORE_DIR="${SCRIPT_DIR}/core"
+CORE_CLAUDE_DIR="${CORE_DIR}/claude"
 TARGET_DIR="$HOME/.claude"
+BLUEPRINT_DIR="$HOME/.claude/blueprint"
+BLUEPRINT_BASE_DIR="$BLUEPRINT_DIR/base"
 
 # Flags
 DRY_RUN=false
@@ -104,10 +107,29 @@ install_global() {
     [[ "$DRY_RUN" == "true" ]] && log_warn "DRY-RUN MODE - No files will be copied"
     echo ""
 
-    # Copy each directory
+    # Copy Claude Code configuration
+    log_info "Step 1/2: Installing Claude Code configuration..."
     copy_directory "$CORE_CLAUDE_DIR/agents" "$TARGET_DIR/agents" "agents"
     copy_directory "$CORE_CLAUDE_DIR/skills" "$TARGET_DIR/skills" "skills"
     copy_directory "$CORE_CLAUDE_DIR/commands" "$TARGET_DIR/commands" "commands"
+
+    echo ""
+
+    # Copy Blueprint base files
+    log_info "Step 2/2: Installing Blueprint base files..."
+    copy_directory "$CORE_DIR/constitutions" "$BLUEPRINT_BASE_DIR/constitutions" "base/constitutions"
+    copy_directory "$CORE_DIR/forms" "$BLUEPRINT_BASE_DIR/forms" "base/forms"
+    copy_directory "$CORE_DIR/front-matters" "$BLUEPRINT_BASE_DIR/front-matters" "base/front-matters"
+    copy_directory "$CORE_DIR/gates" "$BLUEPRINT_BASE_DIR/gates" "base/gates"
+    copy_directory "$CORE_DIR/templates" "$BLUEPRINT_BASE_DIR/templates" "base/templates"
+
+    # Create projects directory
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_dry "Would create: $BLUEPRINT_DIR/projects/"
+    else
+        mkdir -p "$BLUEPRINT_DIR/projects"
+        log_success "projects/ directory created"
+    fi
 
     echo ""
     if [[ "$DRY_RUN" == "true" ]]; then

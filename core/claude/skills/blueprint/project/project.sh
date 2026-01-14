@@ -113,12 +113,12 @@ do_init() {
     exit 1
   fi
 
-  local data_dir="$HOME/.claude/blueprint/$alias_name"
+  local data_dir="$HOME/.claude/blueprint/projects/$alias_name"
 
   # Check for legacy directory
   local legacy_dirname
   legacy_dirname=$(path_to_dirname "$current_path")
-  local legacy_dir="$HOME/.claude/blueprint/$legacy_dirname"
+  local legacy_dir="$HOME/.claude/blueprint/projects/$legacy_dirname"
 
   if [ -d "$legacy_dir" ] && [ ! -d "$data_dir" ]; then
     info "Found existing data at $legacy_dir"
@@ -135,9 +135,13 @@ do_init() {
 
     # Try to copy framework files from various sources
     local source_dir=""
+    local base_dir="$HOME/.claude/blueprint/base"
 
-    # Check environment variable first
-    if [ -n "${BLUEPRINT_FRAMEWORK_DIR:-}" ] && [ -d "$BLUEPRINT_FRAMEWORK_DIR/core" ]; then
+    # Check user-level base files first (from install-global.sh)
+    if [ -d "$base_dir/constitutions" ]; then
+      source_dir="$base_dir"
+    # Check environment variable
+    elif [ -n "${BLUEPRINT_FRAMEWORK_DIR:-}" ] && [ -d "$BLUEPRINT_FRAMEWORK_DIR/core" ]; then
       source_dir="$BLUEPRINT_FRAMEWORK_DIR/core"
     # Check project root (for development)
     elif [ -d "$PROJECT_ROOT/core" ]; then
@@ -220,7 +224,7 @@ do_show() {
   echo "$project" | jq -r '.paths[]' | while read -r path; do
     echo "  - $path"
   done
-  echo "Data: ~/.claude/blueprint/$alias_name/"
+  echo "Data: ~/.claude/blueprint/projects/$alias_name/"
 }
 
 do_remove() {
@@ -248,7 +252,7 @@ do_remove() {
   fi
 
   # Ask about data directory
-  local data_dir="$HOME/.claude/blueprint/$alias_name"
+  local data_dir="$HOME/.claude/blueprint/projects/$alias_name"
   if [ -d "$data_dir" ]; then
     read -p "Also delete data directory ($data_dir)? [y/N] " delete_data
     if [[ "$delete_data" =~ ^[Yy]$ ]]; then
@@ -390,12 +394,12 @@ do_rename() {
   if [ -n "$current_alias" ]; then
     # Project is registered
     is_registered=true
-    old_dir="$HOME/.claude/blueprint/$current_alias"
+    old_dir="$HOME/.claude/blueprint/projects/$current_alias"
   else
     # Project not registered - check for legacy path-based directory
     local legacy_dirname
     legacy_dirname=$(path_to_dirname "$current_path")
-    local legacy_dir="$HOME/.claude/blueprint/$legacy_dirname"
+    local legacy_dir="$HOME/.claude/blueprint/projects/$legacy_dirname"
 
     if [ -d "$legacy_dir" ]; then
       old_dir="$legacy_dir"
@@ -407,7 +411,7 @@ do_rename() {
     fi
   fi
 
-  local new_dir="$HOME/.claude/blueprint/$new_alias"
+  local new_dir="$HOME/.claude/blueprint/projects/$new_alias"
 
   # Rename data directory
   if [ "$old_dir" != "$new_dir" ]; then
@@ -445,7 +449,7 @@ do_manage() {
   require_jq
   init_registry
 
-  local blueprint_dir="$HOME/.claude/blueprint"
+  local blueprint_dir="$HOME/.claude/blueprint/projects"
   local unregistered_count=0
   local pathbased_count=0
   local unregistered_valid=()

@@ -54,9 +54,11 @@ blueprint project init <alias>
 
 ## Registry Location
 
-Projects are stored in: `~/.claude/blueprint/.blueprint`
+Projects are stored in: `~/.claude/blueprint/projects/.projects`
 
-Data directories are stored in: `~/.claude/blueprint/<alias>/`
+Data directories are stored in: `~/.claude/blueprint/projects/<alias>/`
+
+Base files are stored in: `~/.claude/blueprint/base/`
 
 ## Session Guidelines
 
