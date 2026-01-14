@@ -20,32 +20,22 @@
 
 ### Installation (User-Level)
 
-Blueprint uses a **two-step user-level installation**:
-
 ```bash
-# Step 1: One-time global install (shared across all projects)
-./install-global.sh    # → ~/.claude/{agents,skills,commands}/
-
-# Step 2: Per-project initialization
-cd /path/to/your/project
-./init-project.sh      # → ~/.claude/blueprint/{project-path}/
+# One-time global install (shared across all projects)
+./install-global.sh    # → ~/.claude/{agents,skills,commands}/ + ~/.claude/blueprint/base/
 ```
 
-### What Gets Copied vs What Stays
+### What Gets Copied
 
-| Item | install-global.sh | init-project.sh | Purpose |
-|------|-------------------|-----------------|---------|
-| `core/claude/*` | → `~/.claude/` | - | Claude Code config (shared) |
-| `core/constitutions/*` | - | → `~/.claude/blueprint/{project}/` | Principle definitions |
-| `core/forms/*` | - | → `~/.claude/blueprint/{project}/` | Handoff formats |
-| `core/front-matters/*` | - | → `~/.claude/blueprint/{project}/` | FrontMatter schemas |
-| `core/gates/*` | - | → `~/.claude/blueprint/{project}/` | Validation checkpoints |
-| `core/templates/*` | - | → `~/.claude/blueprint/{project}/` | Document templates |
-| `README.md` files | ❌ No | ❌ No | Written at 0.1.0 release |
-| `blueprint/*` | ❌ No | ❌ No | Dogfooding - this project's own config |
-| `docs/adr/*` | ❌ No | ❌ No | Framework design decisions |
-
-**Note**: `{project-path}` is derived from the absolute path where you run init-project.sh (e.g., `/Users/me/projects/myapp` → `Users-me-projects-myapp`).
+| Item | Target | Purpose |
+|------|--------|---------|
+| `core/claude/*` | `~/.claude/` | Claude Code config (agents, skills, commands) |
+| `core/constitutions/*` | `~/.claude/blueprint/base/` | Principle definitions |
+| `core/forms/*` | `~/.claude/blueprint/base/` | Handoff formats |
+| `core/front-matters/*` | `~/.claude/blueprint/base/` | FrontMatter schemas |
+| `core/gates/*` | `~/.claude/blueprint/base/` | Validation checkpoints |
+| `core/templates/*` | `~/.claude/blueprint/base/` | Document templates |
+| `docs/adr/*` | ❌ Not copied | Framework design decisions |
 
 ### Template Rules
 - Use **placeholders** (`{{project-name}}`, `{{date}}`) for values that vary per project.
@@ -59,25 +49,6 @@ cd /path/to/your/project
 | | Constitution | Instruction |
 |---|-------------|-------------|
 | **Essence** | Law to obey | Responsibility to fulfill |
-| **Location** | `blueprint/constitutions/` | `.claude/agents/` |
+| **Location** | `~/.claude/blueprint/{base,projects}/constitutions/` | `~/.claude/agents/` |
 | **Content** | Principles, Boundaries | Role, Workflow, Handoff format |
 
-### Symlink Structure (Development Only)
-
-This repository uses symlinks to avoid duplicate maintenance:
-
-| Path | Type | Edit Target |
-|------|------|-------------|
-| `.claude/agents/` | symlink | `core/claude/agents/` |
-| `.claude/skills/` | symlink | `core/claude/skills/` |
-| `.claude/commands/` | symlink | `core/claude/commands/` |
-| `blueprint/forms/` | symlink | `core/forms/` |
-| `blueprint/front-matters/` | symlink | `core/front-matters/` |
-| `blueprint/gates/` | symlink | `core/gates/` |
-| `blueprint/templates/` | symlink | `core/templates/` |
-| `blueprint/constitutions/workers/` | symlink | `core/constitutions/workers/` |
-| `blueprint/constitutions/base.md` | **real file** | Edit directly |
-| `blueprint/discussions/` | **real dir** | Project data |
-| `blueprint/specs/` | **real dir** | Project data |
-
-**Rule**: If editing a symlinked path, modify the `core/` source instead.
