@@ -88,6 +88,54 @@ copy_directory() {
     fi
 }
 
+# Configure SessionStart hook in settings.json
+configure_session_hook() {
+    local settings_file="$TARGET_DIR/settings.json"
+    local hook_command="$TARGET_DIR/hooks/session-init.sh"
+    local hook_entry='{"hooks":[{"type":"command","command":"~/.claude/hooks/session-init.sh"}]}'
+
+    # Check if jq is available
+    if ! command -v jq &>/dev/null; then
+        log_warn "jq not found. Please manually add SessionStart hook to $settings_file:"
+        echo ""
+        echo '  "hooks": {'
+        echo '    "SessionStart": ['
+        echo '      {"hooks": [{"type": "command", "command": "~/.claude/hooks/session-init.sh"}]}'
+        echo '    ]'
+        echo '  }'
+        echo ""
+        return 0
+    fi
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_dry "Would configure SessionStart hook in $settings_file"
+        return 0
+    fi
+
+    # Create settings.json if it doesn't exist
+    if [[ ! -f "$settings_file" ]]; then
+        echo '{}' > "$settings_file"
+    fi
+
+    # Check if session-init.sh hook already exists
+    if jq -e '.hooks.SessionStart[]?.hooks[]? | select(.command | contains("session-init.sh"))' "$settings_file" >/dev/null 2>&1; then
+        log_success "SessionStart hook already configured (skipped)"
+        return 0
+    fi
+
+    # Add hook to settings.json
+    local tmp_file
+    tmp_file=$(mktemp)
+
+    jq '
+        .hooks //= {} |
+        .hooks.SessionStart //= [] |
+        .hooks.SessionStart += [{"hooks": [{"type": "command", "command": "~/.claude/hooks/session-init.sh"}]}]
+    ' "$settings_file" > "$tmp_file" && mv "$tmp_file" "$settings_file"
+
+    log_success "SessionStart hook configured in settings.json"
+}
+
 # Validate source directory
 validate_source() {
     if [[ ! -d "$CORE_CLAUDE_DIR" ]]; then
@@ -108,15 +156,16 @@ install_global() {
     echo ""
 
     # Copy Claude Code configuration
-    log_info "Step 1/2: Installing Claude Code configuration..."
+    log_info "Step 1/3: Installing Claude Code configuration..."
     copy_directory "$CORE_CLAUDE_DIR/agents" "$TARGET_DIR/agents" "agents"
     copy_directory "$CORE_CLAUDE_DIR/skills" "$TARGET_DIR/skills" "skills"
     copy_directory "$CORE_CLAUDE_DIR/commands" "$TARGET_DIR/commands" "commands"
+    copy_directory "$CORE_CLAUDE_DIR/hooks" "$TARGET_DIR/hooks" "hooks"
 
     echo ""
 
     # Copy Blueprint base files
-    log_info "Step 2/2: Installing Blueprint base files..."
+    log_info "Step 2/3: Installing Blueprint base files..."
     copy_directory "$CORE_DIR/constitutions" "$BLUEPRINT_BASE_DIR/constitutions" "base/constitutions"
     copy_directory "$CORE_DIR/forms" "$BLUEPRINT_BASE_DIR/forms" "base/forms"
     copy_directory "$CORE_DIR/front-matters" "$BLUEPRINT_BASE_DIR/front-matters" "base/front-matters"
@@ -130,6 +179,12 @@ install_global() {
         mkdir -p "$BLUEPRINT_DIR/projects"
         log_success "projects/ directory created"
     fi
+
+    echo ""
+
+    # Configure SessionStart hook in settings.json
+    log_info "Step 3/3: Configuring SessionStart hook..."
+    configure_session_hook
 
     echo ""
     if [[ "$DRY_RUN" == "true" ]]; then
