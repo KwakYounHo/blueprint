@@ -64,16 +64,6 @@ last-session: {{date}}
 
 ## Scope Summary
 
-### Proposed Structure
-| ID | Type | Purpose | Dependencies |
-|----|------|---------|--------------|
-| LIB-{namespace}/{name} | lib | {purpose} | none |
-| FEAT-{name} | feature | {purpose} | LIB-{namespace}/{name} |
-
-### Implementation Order
-1. LIB-{namespace}/{name} - {reason}
-2. FEAT-{name} - {reason}
-
 ### Affected Files
 | File | Change Type | Notes |
 |------|-------------|-------|
@@ -85,7 +75,5 @@ last-session: {{date}}
 
 | Type | Path | Status |
 |------|------|--------|
-| Memory | blueprint/plans/{plan-id}/memory.md | active |
-| Master Plan | blueprint/plans/{plan-id}/master-plan.md | draft |
-| Lib Spec | blueprint/plans/{plan-id}/lib/{namespace}/{name}.md | draft |
-| Feature Spec | blueprint/plans/{plan-id}/feature/{name}.md | draft |
+| Memory | {PLANS_DIR}/{plan-id}/memory.md | active |
+| Master Plan | {PLANS_DIR}/{plan-id}/master-plan.md | draft |
