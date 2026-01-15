@@ -22,7 +22,7 @@ Unified CLI for the Blueprint orchestration framework.
 
 ## Commands
 
-**Execution:** `{project-root}/.claude/skills/blueprint/blueprint.sh <submodule> [args]`
+**Execution:** `~/.claude/skills/blueprint/blueprint.sh <submodule> [args]`
 
 ```bash
 # General
