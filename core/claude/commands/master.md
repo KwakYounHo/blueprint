@@ -55,8 +55,8 @@ plans that enable deterministic code generation.
 ```
 {PLANS_DIR}/{nnn}-{topic}/
 ├── memory.md                   # Discussion, background, decisions
-├── master-plan.md              # High-level phases + Directive Markers
-├── ROADMAP.md                  # Phase progress tracking (dynamic)
+├── master-plan.md              # Phases → Tasks → Deliverables
+├── ROADMAP.md                  # Phase and Task progress tracking
 ├── session-context/            # Session management
 │   ├── CURRENT.md              # Current session state
 │   ├── TODO.md                 # Task checklist
@@ -72,6 +72,7 @@ plans that enable deterministic code generation.
 | Type | Format | Example |
 |------|--------|---------|
 | Plan | `PLAN-{NNN}` | `PLAN-001` |
+| Task | `T-{phase}.{task}` | `T-1.1`, `T-2.3` |
 | Decision | `D-{NNN}` | `D-001` |
 | Pending Decision | `DECIDE-{NNN}` | `DECIDE-001` |
 
@@ -88,11 +89,14 @@ plans that enable deterministic code generation.
 
 ### Phase 2: Master Plan
 
-1. Create `master-plan.md` with phases
-2. Add `[DECIDE]` markers for uncertain items
-3. Define deliverables for each phase
-4. Present to user
-5. WAIT for user confirmation
+1. Create `master-plan.md` with Phases
+2. For each Phase, define Tasks (T-{phase}.{task})
+3. For each Task, define specific Deliverables
+4. Add `[DECIDE]` markers for uncertain items
+5. Present to user
+6. WAIT for user confirmation
+
+> **Task Structure**: Every Phase MUST have at least one Task. Tasks are the unit of work for Plan Mode entry.
 
 ### Phase 3: Session Context Initialization
 
@@ -128,49 +132,11 @@ Edit the copied CURRENT.md:
 
 ---
 
-## Implementation: Plan Mode Integration
+## Implementation Note
 
-Master Plan defines **what** to build. Claude Code's **Plan Mode** defines **how** to build each phase.
+Master Plan defines **what** to build. Implementation details (Plan Mode strategy, execution flow) are documented in `master-plan.md` itself.
 
-### Workflow
-
-```
-Master Plan (High-level)
-├── Phase 1: {deliverables}
-│   └── [Enter Plan Mode] → Detailed implementation plan → Execute
-├── Phase 2: {deliverables}
-│   └── [Enter Plan Mode] → Detailed implementation plan → Execute
-└── Phase N: ...
-    └── [Enter Plan Mode] → Detailed implementation plan → Execute
-```
-
-### Before Each Phase Implementation
-
-1. **Review Master Plan Phase** - Check deliverables
-2. **Enter Plan Mode** - Use Claude Code's Plan Mode for detailed planning
-3. **Execute** - Implement according to Plan Mode's detailed plan
-4. **Save Session** - Use `/save` to record progress
-5. **Update Notes** - Record deviations in `implementation-notes.md`
-
-### Phase Entry Protocol
-
-When starting a Master Plan phase implementation:
-
-```
-User: "Let's implement Phase N"
-Assistant:
-1. Read master-plan.md Phase N section
-2. Enter Plan Mode (EnterPlanMode tool)
-3. Create detailed implementation plan
-4. Exit Plan Mode with user approval
-5. Execute implementation
-6. Use /save when session ends
-```
-
-**IMPORTANT**: Do NOT skip Plan Mode for non-trivial phases. Plan Mode ensures:
-- Detailed file-level planning
-- User approval before changes
-- Alignment with Master Plan
+After Master Plan creation, refer to the **Plan Mode Strategy** section in `master-plan.md` for Phase implementation guidance.
 
 ## Session Management Commands
 
@@ -253,34 +219,36 @@ For document validation (Token-saving purpose):
 - [ ] User confirmed to proceed
 
 ### Phase 2: Master Plan
-- [ ] Master Plan created with phases
-- [ ] Deliverables defined for each phase
+- [ ] Master Plan created with Phases
+- [ ] Tasks defined for each Phase (T-{phase}.{task})
+- [ ] Deliverables defined for each Task
 - [ ] [DECIDE] markers added for uncertainties
 - [ ] [FIXED] constraints documented
 - [ ] User approved the plan
 
 ### Phase 3: Session Context Initialization
-- [ ] ROADMAP.md created from phases
+- [ ] ROADMAP.md created with Phase and Task checkboxes
 - [ ] implementation-notes.md created
 - [ ] session-context/ directory created
-- [ ] CURRENT.md initialized with Plan context
-- [ ] TODO.md ready for task tracking
+- [ ] CURRENT.md initialized with Plan context and current-task
+- [ ] TODO.md ready with Task structure
 - [ ] HISTORY.md ready for session logs
 
-### Phase N Implementation (per Master Plan phase)
-- [ ] Master Plan phase reviewed
+### Task Implementation (per Task)
+- [ ] Task deliverables reviewed in master-plan.md
 - [ ] **Plan Mode entered** (EnterPlanMode)
 - [ ] Detailed implementation plan created
 - [ ] Plan Mode exited with user approval
 - [ ] Implementation executed
+- [ ] Task marked complete in TODO.md
 - [ ] Session saved with `/save`
 - [ ] Deviations recorded in implementation-notes.md
 
 ### Phase Completion
-- [ ] All deliverables complete
+- [ ] All Tasks in Phase complete
 - [ ] `/checkpoint` executed to archive phase
-- [ ] ROADMAP.md updated (phase marked complete)
-- [ ] Ready for next phase
+- [ ] ROADMAP.md updated (Phase and Tasks marked complete)
+- [ ] Ready for next Phase
 
 ---
 
@@ -315,11 +283,13 @@ The following actions are FORBIDDEN when creating Master Plans:
 - Claim plan is complete before user approval
 - Add speculative phases not discussed with user
 - Modify `[FIXED]` sections without user confirmation
-- Jump directly to implementation without Plan Mode for non-trivial phases
+- Jump directly to implementation without Plan Mode for Tasks
+- Create Phase without defining Tasks
 
 ### MUST
 
 - Create memory.md before master-plan.md
+- Define Tasks for every Phase (Task is mandatory)
 - Record all decisions with rationale (D-NNN format)
 - Wait for user confirmation at each phase transition
 - Use Directive Markers for uncertain items
@@ -334,15 +304,17 @@ The following actions are FORBIDDEN when creating Master Plans:
 - Complete Phase 1 before creating any plan document
 - Create and maintain memory.md with decision history
 - Report analysis and wait for user confirmation
+- Define Tasks for every Phase
 - Mark all uncertain items with [DECIDE: topic]
 - Resolve each [DECIDE] through user interaction
 - Explore codebase for existing patterns before planning
 - Use `forma copy` over `forma show` to save context
-- Enter Plan Mode before implementing each phase
+- Enter Plan Mode before implementing each Task
 
 ### DO NOT
 
 - Create Master Plan without completing Phase 1
+- Create Phase without defining Tasks
 - Skip user confirmation between phases
 - Resolve [DECIDE] markers without user input
 - Use ambiguous language ("appropriate", "as needed", "etc.")

@@ -29,27 +29,28 @@ phase-count: 0
 
 ---
 
-## Phases
+## ID Formats
 
-> **IMPORTANT**: Before implementing each phase, enter Claude Code's **Plan Mode** for detailed planning.
-> Master Plan defines WHAT to build. Plan Mode defines HOW to build it.
+| Type | Format | Example |
+|------|--------|---------|
+| Phase | `Phase {N}` | Phase 1, Phase 2 |
+| Task | `T-{phase}.{task}` | T-1.1, T-2.3 |
+
+---
+
+## Phases
 
 ### Phase 1: {Phase Name}
 
 **Objective**: {What this phase achieves}
 
-**Deliverables**:
-- {deliverable-1}
-- {deliverable-2}
+#### T-1.1: {Task Name}
+**Deliverable**: {Specific deliverable for this task}
+
+#### T-1.2: {Task Name}
+**Deliverable**: {Specific deliverable for this task}
 
 **Dependencies**: None
-
-**Implementation**:
-```
-1. Enter Plan Mode
-2. Execute with user approval
-3. Update implementation-notes.md if deviations occur
-```
 
 ---
 
@@ -57,17 +58,10 @@ phase-count: 0
 
 **Objective**: {What this phase achieves}
 
-**Deliverables**:
-- {deliverable-1}
+#### T-2.1: {Task Name}
+**Deliverable**: {Specific deliverable for this task}
 
 **Dependencies**: Phase 1
-
-**Implementation**:
-```
-1. Enter Plan Mode
-2. Execute with user approval
-3. Update implementation-notes.md if deviations occur
-```
 
 ---
 
@@ -81,26 +75,47 @@ phase-count: 0
 
 ---
 
-## [INFER: technical-approach]
+## Plan Mode Strategy
 
-<!--
-Analysis targets: Codebase patterns, existing implementations
-Output: Recommended technical approach based on analysis
--->
+> **When to use this section**: Before starting each Phase implementation (after `/master` or `/load`).
 
-{Inferred technical approach - fill after codebase analysis}
+### How to Determine Plan Mode Entry Level
 
----
+**Step 1**: Analyze Phase scope (number of Tasks, complexity, dependencies)
 
-## [DECIDE: {topic}]
+**Step 2**: Use `AskUserQuestion` to ask user with analysis summary:
 
-<!--
-Question: {Specific question requiring user judgment}
+```
+"Phase {N} has {X} Tasks (T-N.1 ~ T-N.X).
+
+Analysis:
+- T-N.1: {Simple/Moderate/Complex} ({reason})
+- T-N.2: {Simple/Moderate/Complex} ({reason})
+
+How should we approach Plan Mode?"
+
 Options:
-- Option A: {description}
-- Option B: {description}
-Recommendation: {if any}
--->
+A: Phase level - One Plan Mode for entire Phase
+B: Task level - Plan Mode per Task
+C: No Plan Mode - Direct implementation
+```
+
+**Step 3**: Execute based on user choice
+
+| Choice | Workflow |
+|--------|----------|
+| Phase level | Plan Mode once → Plan all Tasks → Execute all → `/save` |
+| Task level | Per Task: Plan Mode → Execute → Mark complete |
+| No Plan Mode | Execute directly → Mark complete → `/save` |
+
+### Task Execution Flow
+
+For each Task (regardless of Plan Mode choice):
+
+1. Review Task deliverables in this document
+2. Execute the Task
+3. Mark Task complete in TODO.md
+4. Continue to next Task or `/save`
 
 ---
 
