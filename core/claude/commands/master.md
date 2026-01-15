@@ -130,13 +130,26 @@ Edit the copied CURRENT.md:
 - Set Current Phase to Phase 1
 - Set Phase Objective from Master Plan
 
+**Step 4: Ask User to Start Implementation**
+
+After Session Context is initialized, ask user:
+```
+Master Plan creation complete.
+
+Start implementation now?
+- Yes → Follow Plan Mode Strategy
+- No → End session (use /load to resume later)
+```
+
+> **IMPORTANT**: If user responds `yes`, you MUST follow the **Plan Mode Strategy** section
+> in `master-plan.md`. This includes: Codebase exploration, scope analysis, user confirmation
+> of Plan Mode level. Do NOT skip this step.
+
 ---
 
 ## Implementation Note
 
 Master Plan defines **what** to build. Implementation details (Plan Mode strategy, execution flow) are documented in `master-plan.md` itself.
-
-After Master Plan creation, refer to the **Plan Mode Strategy** section in `master-plan.md` for Phase implementation guidance.
 
 ## Session Management Commands
 
@@ -233,6 +246,8 @@ For document validation (Token-saving purpose):
 - [ ] CURRENT.md initialized with Plan context and current-task
 - [ ] TODO.md ready with Task structure
 - [ ] HISTORY.md ready for session logs
+- [ ] User asked "Start implementation now?"
+- [ ] If yes → Plan Mode Strategy in master-plan.md followed
 
 ### Task Implementation (per Task)
 - [ ] Task deliverables reviewed in master-plan.md

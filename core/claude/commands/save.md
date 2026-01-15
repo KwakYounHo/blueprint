@@ -109,9 +109,12 @@ Select appropriate template
 - Read `{PLAN_PATH}/master-plan.md` for Phase info
 - Read `{PLAN_PATH}/ROADMAP.md` for progress status
 - Determine current Phase from CURRENT.md or ask user
+- Determine current Task from TODO.md or ask user
+- Read Task checkboxes from ROADMAP.md for progress
 
 **Ask user if unclear:**
 - "Which phase are you working on?"
+- "Which task are you working on? (T-N.M)"
 - "Key decisions this session?"
 - "Any blockers to document?"
 
@@ -121,27 +124,46 @@ Select appropriate template
 - Include Master Plan Context section
 - Update `session-id` in frontmatter (increment)
 - Update `current-phase` in frontmatter
+- Update `current-task` in frontmatter
 - Fill in session-specific sections
 
 **Standard/Compressed modes additionally:**
-- Update TODO.md with progress
+- Update TODO.md with progress and `current-task`
 - Append session entry to HISTORY.md (use `history-entry` template format)
 
 **Update ROADMAP.md:**
 - Move "← Current" marker to current phase
 - Update phase status if changed
+- Update Task checkboxes for completed Tasks in current Phase
 
-### Step 5: Check Implementation Notes
+### Step 5: Implementation Notes Review
 
-Ask user:
-- "Any deviations from the plan this session?"
-- "Issues encountered worth documenting?"
-- "Learnings to record?"
+**Step 5.1**: Session Content Analysis
 
-If yes, update `{PLAN_PATH}/implementation-notes.md`:
-- Add to Deviations table if plan changed
-- Add ISSUE-NNN if problems occurred
-- Add LEARN-NNN if insights gained
+Review the current session conversation for potential implementation-notes content:
+- **Deviations**: Approach changes from master-plan.md (e.g., "instead of", "changed approach", "decided to")
+- **Issues**: Blockers, bugs, unexpected problems (e.g., "blocked by", "error", "doesn't work")
+- **Learnings**: Insights, discoveries (e.g., "realized", "found out", "turns out")
+
+**Step 5.2**: Present Analysis Summary
+
+Use `AskUserQuestion`:
+
+| Field | Content |
+|-------|---------|
+| Header | "Impl Notes" |
+| Question | "📝 Implementation Notes Review\n\nThis session summary:\n{LLM analysis or 'No notable items detected'}\n\n**Detected Items** (if any):\n{category: summary}\n\nAny additional notes to record?" |
+| Option A | "Record detected + add more" |
+| Option B | "Record detected only" (if items detected) |
+| Option C | "Skip implementation notes" |
+
+**Step 5.3**: If User Confirms
+
+Update `{PLAN_PATH}/implementation-notes.md`:
+- Add to Deviations table if approach changed
+- Add ISSUE-NNN entries for problems
+- Add LEARN-NNN entries for insights
+- Update `updated` date in frontmatter
 
 ### Step 6: Self-check
 

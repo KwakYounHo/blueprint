@@ -67,10 +67,15 @@ Construct prompt using: `blueprint hermes request:review:phase-completion`
 - Replace {PLAN_PATH} with resolved plan path (e.g., {PLANS_DIR}/001-auth)
 ```
 
+**Verification includes:**
+- ALL Tasks in Phase are complete (checked in ROADMAP.md)
+- Task status in TODO.md matches ROADMAP.md
+- No incomplete Task items for this Phase
+
 **Process response:** `blueprint hermes response:review:phase-completion`
 - `pass` → Proceed to Step 2
 - `warning` → Present warnings, ask user: "Phase {N} has warnings. Checkpoint anyway? (yes/no)"
-- `fail` → Present issues, go to Error Handling: Phase Not Complete
+- `fail` → Present issues (including incomplete Tasks), go to Error Handling: Phase Not Complete
 
 ### Step 2: Archive Current Session Context
 
@@ -92,6 +97,7 @@ blueprint forma copy checkpoint-summary {PLAN_PATH}/session-context/archive/{YYY
 
 Then fill in:
 - Phase completed
+- Tasks completed: {N}/{total} (count from ROADMAP.md)
 - Key achievements
 - Sessions in this phase
 - Critical decisions
@@ -132,16 +138,47 @@ Shift to next phase:
 - Add next phase milestones
 - Reset "In Progress" section
 
-### Step 8: Review Implementation Notes
+### Step 8: Implementation Notes Review (Comprehensive)
 
-Check `{PLAN_PATH}/implementation-notes.md` for Phase completion:
+**Step 8.1**: Session Content Analysis
 
-- Any unresolved issues from this phase?
-- Deviations properly documented?
-- Learnings captured for future reference?
-- Timeline updated with phase completion date?
+Review conversation for potential implementation-notes content (same as /save):
+- **Deviations**: Approach changes from master-plan.md
+- **Issues**: Blockers, bugs, unexpected problems
+- **Learnings**: Insights, discoveries
 
-If missing, ask user to provide details before finalizing checkpoint.
+**Step 8.2**: Phase Completion Review
+
+Check `{PLAN_PATH}/implementation-notes.md` status:
+- Any unresolved ISSUE-NNN for this Phase?
+- All deviations properly documented?
+- Key learnings captured for future reference?
+
+**Step 8.3**: Present Comprehensive Summary
+
+Use `AskUserQuestion`:
+
+| Field | Content |
+|-------|---------|
+| Header | "Impl Notes" |
+| Question | "📝 Phase {N} Implementation Notes Review\n\nCurrent status:\n- Deviations: {X} entries\n- Issues: {Y} ({Z} unresolved)\n- Learnings: {W} entries\n\nThis session detected:\n{LLM analysis}\n\nRecord and finalize?" |
+| Option A | "Record + finalize" |
+| Option B | "Add/edit notes first" |
+| Option C | "Skip, proceed to checkpoint" |
+
+**Step 8.4**: Unresolved Issues Warning
+
+If unresolved issues exist:
+```
+⚠️ {N} unresolved issues in implementation-notes.md
+
+ISSUE-{NNN}: {title} (open)
+
+Options:
+1. Mark as resolved with notes
+2. Carry forward to next phase
+3. Continue anyway
+```
 
 ### Step 9: Check Master Plan Status
 

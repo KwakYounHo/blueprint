@@ -77,30 +77,64 @@ phase-count: 0
 
 ## Plan Mode Strategy
 
-> **When to use this section**: Before starting each Phase implementation (after `/master` or `/load`).
+> **IMPORTANT**: This section MUST be followed before starting Phase implementation.
+> Triggered by: `/master` completion OR `/load` with `yes` response.
 
-### How to Determine Plan Mode Entry Level
+### Step 1: Identify Next Work Unit
 
-**Step 1**: Analyze Phase scope (number of Tasks, complexity, dependencies)
+From ROADMAP.md and this document:
+- Find first unchecked Phase/Task
+- Get Phase objective and Task list
 
-**Step 2**: Use `AskUserQuestion` to ask user with analysis summary:
+### Step 2: Codebase Exploration for Scope Analysis
 
+> Purpose: Determine if Phase can be planned at once, or needs Task-level planning.
+
+**Exploration Method** (choose based on complexity):
+- **Simple Phase** (1-3 Tasks, known files): Direct exploration (Glob/Grep/Read)
+- **Complex Phase** (4+ Tasks, unknown scope): Task tool with Explore subagent
+
+| Analysis Target | Method |
+|-----------------|--------|
+| Files to modify | Glob/Grep for files mentioned in Phase deliverables |
+| Change scope | Estimate lines/sections affected per Task |
+| Complexity | Dependencies, cross-file changes, new patterns needed |
+| Risk areas | External APIs, state management, breaking changes |
+
+### Step 3: Synthesize Analysis
+
+Based on exploration, determine:
+- **Phase-level viable?**: Can all Tasks be planned coherently in one Plan Mode session?
+- **Task-level needed?**: Are individual Tasks complex enough to warrant separate planning?
+- **No Plan Mode?**: Are all Tasks straightforward edits?
+
+Produce recommendation:
 ```
-"Phase {N} has {X} Tasks (T-N.1 ~ T-N.X).
+Phase {N}: {Phase Name}
+Tasks: {X} (T-N.1 ~ T-N.X)
 
-Analysis:
-- T-N.1: {Simple/Moderate/Complex} ({reason})
-- T-N.2: {Simple/Moderate/Complex} ({reason})
+Scope Analysis:
+- Files affected: {list or count}
+- Estimated complexity: Simple / Moderate / Complex
+- Key considerations: {brief notes}
 
-How should we approach Plan Mode?"
-
-Options:
-A: Phase level - One Plan Mode for entire Phase
-B: Task level - Plan Mode per Task
-C: No Plan Mode - Direct implementation
+Recommendation: {Phase level / Task level / No Plan Mode}
+Reason: {why this recommendation}
 ```
 
-**Step 3**: Execute based on user choice
+### Step 4: Present to User
+
+Use `AskUserQuestion`:
+
+| Field | Content |
+|-------|---------|
+| Header | "Plan Mode" |
+| Question | "{Analysis summary}\n\nHow should we approach Plan Mode?" |
+| Option A | "{Recommended option} (Recommended)" |
+| Option B | "{Alternative 1}" |
+| Option C | "{Alternative 2}" |
+
+### Step 5: Execute Based on Choice
 
 | Choice | Workflow |
 |--------|----------|
@@ -114,7 +148,7 @@ For each Task (regardless of Plan Mode choice):
 
 1. Review Task deliverables in this document
 2. Execute the Task
-3. Mark Task complete in TODO.md
+3. Mark Task complete in TODO.md and ROADMAP.md
 4. Continue to next Task or `/save`
 
 ---

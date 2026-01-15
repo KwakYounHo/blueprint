@@ -89,6 +89,8 @@ Read and understand before verification:
 3. **Internal Summary:**
    - Plan: {name}
    - Current Phase: {N} - {name}
+   - Current Task: {T-N.M} - {task name}
+   - Task Objective: {deliverable from master-plan.md}
    - Previous work: {summary}
    - My task: {next steps from CURRENT.md}
    - Expected mode: {Quick/Standard/Compressed}
@@ -123,10 +125,14 @@ Present briefing based on detected mode:
 ### Phase 5: User Confirmation
 
 Wait for input:
-- `yes` → Proceed with work
+- `yes` → **IMPORTANT**: Follow Plan Mode Strategy in `master-plan.md` (if plan in-progress)
 - `no` / `wait` → Pause for user review
 - `explain {topic}` → Provide detail on topic
 - `show {file}` → Display file content
+
+> **IMPORTANT**: On `yes`, you MUST follow the **Plan Mode Strategy** section in `{PLAN_PATH}/master-plan.md`.
+> This includes: Codebase exploration, scope analysis, user confirmation of Plan Mode level.
+> Do NOT skip this step - it ensures appropriate planning depth for each Phase.
 
 ---
 
