@@ -11,7 +11,7 @@
 ## Context Window Management Strategy
 - Actively leverage Subagents when summarization or deep analysis is needed.
 - Treat the Main Session's context window as a precious resource.
-- Workers are defined in `.claude/agents/` - use them for delegated tasks.
+- Agents are defined in `.claude/agents/` - use them for delegated tasks.
 
 ### What This Project Is
 - This is a **framework template repository**, NOT a working framework instance.
@@ -37,10 +37,32 @@
 | `core/templates/*` | `~/.claude/blueprint/base/` | Document templates |
 | `docs/adr/*` | ❌ Not copied | Framework design decisions |
 
+### Core Directory Structure
+
+```
+core/
+├── claude/              # Claude Code configuration
+│   ├── agents/          # Subagent definitions (reviewer, etc.)
+│   ├── commands/        # Slash commands (/master, /save, /load, /checkpoint)
+│   ├── hooks/           # Session hooks (session-init.sh)
+│   └── skills/          # Skills (blueprint with submodules)
+│       └── blueprint/   # aegis, forma, frontis, hermes, lexis, polis, project
+├── constitutions/       # Principle definitions
+│   ├── base.md          # Global constitution template
+│   └── agents/          # Agent-specific constitutions
+├── forms/               # Handoff format definitions
+├── front-matters/       # FrontMatter schema definitions (*.schema.md)
+├── gates/               # Validation checkpoints
+│   ├── documentation/   # Document format validation
+│   └── session/         # Session continuity validation
+│       └── aspects/     # Individual validation criteria
+└── templates/           # Document templates (*.template.md)
+```
+
 ### Template Rules
 - Use **placeholders** (`{{project-name}}`, `{{date}}`) for values that vary per project.
 - Provide **minimal required structure** - let project maintainers customize.
-- **Token efficiency** is critical: base.md ~500 tokens, worker constitutions ~300-500 tokens each.
+- **Token efficiency** is critical: base.md ~500 tokens, agent constitutions ~300-500 tokens each.
 
 ## Key Concepts
 
@@ -51,4 +73,19 @@
 | **Essence** | Law to obey | Responsibility to fulfill |
 | **Location** | `~/.claude/blueprint/{base,projects}/constitutions/` | `~/.claude/agents/` |
 | **Content** | Principles, Boundaries | Role, Workflow, Handoff format |
+
+### Core vs Dogfooding
+
+| | Framework Core | Dogfooding |
+|---|----------------|------------|
+| **Location** | `core/*` | Query via `/blueprint` skill |
+| **Purpose** | Template for other projects | This project's own config |
+| **Content** | Placeholders (`{{...}}`) | Actual values filled in |
+
+**Query dogfooding info** (load `/blueprint` skill first, then execute in Bash):
+- Current project info: `project current` (submodule: project, subcommand: current)
+- Project constitution: `lexis --base` (submodule: lexis, flag: --base)
+- FrontMatter validation: `frontis show <file>` (submodule: frontis, subcommand: show)
+
+When modifying files, **clearly distinguish** whether it's a framework core change or a dogfooding change. If uncertain → **ASK the user**.
 
