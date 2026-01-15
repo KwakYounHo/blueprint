@@ -20,11 +20,30 @@ Unified CLI for the Blueprint orchestration framework.
 | `polis` | Agent registry | `.claude/agents/` |
 | `project` | Project alias management | `~/.claude/blueprint/projects/` |
 
+## Command Structure
+
+```
+blueprint <submodule> <subcommand> [flags] [arguments]
+         │            │             │       └─ Positional values (e.g., <file>, <alias>)
+         │            │             └─ Options (e.g., --list, --base, --plans)
+         │            └─ Submodule action (e.g., current, show, search)
+         └─ Functional module (e.g., project, forma, lexis)
+```
+
+**Terminology:**
+- **Submodule**: Independent functional module (`aegis`, `forma`, `frontis`, `hermes`, `lexis`, `polis`, `project`)
+- **Subcommand**: Action within a submodule (`current`, `show`, `search`, `init`, `list`)
+- **Flag**: Boolean switch (`--list`, `--base`, `--aspects`)
+- **Argument**: Positional value (`<file>`, `<alias>`, `<gate>`)
+
 ## Commands
 
-**Execution:** `~/.claude/skills/blueprint/blueprint.sh <submodule> [args]`
+**How to Execute:**
+1. This skill is loaded via `/blueprint` (provides this instruction)
+2. Run commands in Bash using full path: `~/.claude/skills/blueprint/blueprint.sh <submodule> [args]`
 
 ```bash
+# Execute via full path in Bash:
 # General
 blueprint --help
 blueprint --list
@@ -76,6 +95,9 @@ blueprint project current --data                  # Get data directory path
 ## Examples
 
 ```bash
+# All examples below use 'blueprint' as shorthand.
+# Actual execution: ~/.claude/skills/blueprint/blueprint.sh <submodule> [args]
+
 # Find all spec documents
 blueprint frontis search type spec
 
@@ -133,23 +155,13 @@ Use **AskUserQuestion** tool to ask the user:
 ### Workflows
 
 **New Project:**
-```bash
-# 1. Ask user for alias and notes via AskUserQuestion
-# 2. Run init command
-blueprint project init <alias> --notes "<notes>"
-```
+1. Ask user for alias and notes via AskUserQuestion
+2. Execute in Bash: `~/.claude/skills/blueprint/blueprint.sh project init <alias> --notes "<notes>"`
 
 **Existing Project on New Machine:**
-```bash
-# 1. Check if project exists
-blueprint project list
-
-# 2a. If project exists, link current path
-blueprint project link <alias>
-
-# 2b. If not, create new project
-blueprint project init <alias>
-```
+1. Check if project exists: `~/.claude/skills/blueprint/blueprint.sh project list`
+2. If project exists, link current path: `~/.claude/skills/blueprint/blueprint.sh project link <alias>`
+3. If not, create new project: `~/.claude/skills/blueprint/blueprint.sh project init <alias>`
 
 ### Registry Location
 
@@ -180,8 +192,6 @@ Use **AskUserQuestion** to confirm with user:
 1. Confirm removal of the project
 2. Ask whether to also delete data directory
 
-Then execute with appropriate flags:
-```bash
-blueprint project remove <alias> --registry             # Registry only
-blueprint project remove <alias> --registry --data-dir  # Registry + data
-```
+Then execute with appropriate flags in Bash:
+- Registry only: `~/.claude/skills/blueprint/blueprint.sh project remove <alias> --registry`
+- Registry + data: `~/.claude/skills/blueprint/blueprint.sh project remove <alias> --registry --data-dir`
