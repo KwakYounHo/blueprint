@@ -7,7 +7,7 @@ description: Apply Master Plan workflow for creating structured implementation p
 **First**, resolve the current project's plans directory:
 
 ```bash
-PLANS_DIR=$(blueprint project current --plans)
+PLANS_DIR=$(~/.claude/skills/blueprint/blueprint.sh project current --plans)
 ```
 
 Use `{PLANS_DIR}` for all plan path references below.
@@ -16,7 +16,7 @@ Use `{PLANS_DIR}` for all plan path references below.
 
 ## First: Load Project Constitution
 
-Run `blueprint lexis --base` to understand the project's base principles.
+Load `/blueprint` skill, then execute `lexis --base` submodule to understand the project's base principles.
 These principles are project-specific and MUST be followed.
 
 ## Your Role
@@ -208,25 +208,23 @@ After Master Plan creation, use these commands for session continuity:
 
 ## Skills
 
-Use `blueprint` skill for templates and schemas:
+Load `/blueprint` skill for templates and schemas. Execute commands in Bash using full path `~/.claude/skills/blueprint/blueprint.sh`:
 
-```bash
-# Templates - PREFER copy over show to save Context
-blueprint forma list                     # List available templates
-blueprint forma copy master-plan ./dir/  # Copy template (RECOMMENDED)
-blueprint forma copy memory ./dir/       # Creates memory.md
-blueprint forma copy roadmap ./dir/      # Creates ROADMAP.md
-blueprint forma copy implementation-notes ./dir/  # Creates implementation-notes.md
-blueprint forma copy current-standard ./dir/session-context/   # Session state
-blueprint forma copy todo ./dir/session-context/      # Task list
-blueprint forma copy history ./dir/session-context/   # Session history
+**Templates** (PREFER copy over show to save Context):
+- `forma list` - List available templates
+- `forma copy master-plan ./dir/` - Copy template (RECOMMENDED)
+- `forma copy memory ./dir/` - Creates memory.md
+- `forma copy roadmap ./dir/` - Creates ROADMAP.md
+- `forma copy implementation-notes ./dir/` - Creates implementation-notes.md
+- `forma copy current-standard ./dir/session-context/` - Session state
+- `forma copy todo ./dir/session-context/` - Task list
+- `forma copy history ./dir/session-context/` - Session history
 
-# Schemas - Use show for validation reference
-blueprint frontis schema master-plan     # View schema for validation
+**Schemas** (Use for validation reference):
+- `frontis schema master-plan` - View schema for validation
 
-# Constitution
-blueprint lexis --base                   # Project base principles
-```
+**Constitution**:
+- `lexis --base` - Project base principles
 
 ### Template Usage Guidelines
 

@@ -6,13 +6,16 @@ description: Save session state for Master Plan handoff (adaptive)
 
 Save session state with Master Plan context for handoff to next session.
 
-## Skills
+## Blueprint Skill Reference
 
-Use `blueprint` skill for template and handoff operations:
-- `blueprint forma copy` - Copy templates (RECOMMENDED)
-- `blueprint forma show` - View template structure
-- `blueprint frontis show` - Read frontmatter
-- `blueprint hermes after-save` - View confirmation format
+Load `/blueprint` skill for template and handoff operations. Execute commands in Bash using full path:
+
+| Operation | Submodule + Subcommand |
+|-----------|----------------------|
+| Copy templates (RECOMMENDED) | `forma copy` |
+| View template structure | `forma show` |
+| Read frontmatter | `frontis show` |
+| View confirmation format | `hermes after-save` |
 
 ---
 
@@ -21,7 +24,7 @@ Use `blueprint` skill for template and handoff operations:
 **First**, resolve the current project's plans directory:
 
 ```bash
-PLANS_DIR=$(blueprint project current --plans)
+PLANS_DIR=$(~/.claude/skills/blueprint/blueprint.sh project current --plans)
 ```
 
 Use `{PLANS_DIR}` for all plan path references below.

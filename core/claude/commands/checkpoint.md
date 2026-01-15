@@ -16,12 +16,15 @@ Comprehensive checkpoint for completing a Master Plan phase.
 
 **Don't use for:** Regular session saves (use `/save` instead)
 
-## Skills
+## Blueprint Skill Reference
 
-Use `blueprint` skill for template and handoff operations:
-- `blueprint forma copy` - Copy templates
-- `blueprint hermes after-checkpoint` - View confirmation format
-- `blueprint hermes request:review:session-state` - Reviewer delegation
+Load `/blueprint` skill for template and handoff operations. Execute commands in Bash using full path:
+
+| Operation | Submodule + Subcommand |
+|-----------|----------------------|
+| Copy templates | `forma copy` |
+| View confirmation format | `hermes after-checkpoint` |
+| Reviewer delegation | `hermes request:review:session-state` |
 
 ---
 
@@ -30,7 +33,7 @@ Use `blueprint` skill for template and handoff operations:
 **First**, resolve the current project's plans directory:
 
 ```bash
-PLANS_DIR=$(blueprint project current --plans)
+PLANS_DIR=$(~/.claude/skills/blueprint/blueprint.sh project current --plans)
 ```
 
 **Then**, after plan recognition, set:

@@ -11,28 +11,25 @@ Validates against ONE assigned Aspect's Criteria. Reports pass/fail with actiona
 
 ## Constitution (MUST READ FIRST)
 
-```
-Use blueprint skill: lexis reviewer
-```
+Load `/blueprint` skill, then execute `lexis reviewer` to read Reviewer constitution.
 
-## Skills
+## Blueprint Skill Reference
 
-**IMPORTANT**: Use `blueprint` skill for all framework operations.
+Load `/blueprint` skill for all framework operations. Execute commands in Bash using full path:
 
-**Execution:** `{project-root}/.claude/skills/blueprint/blueprint.sh <submodule> [args]`
+`~/.claude/skills/blueprint/blueprint.sh <submodule> [args]`
 
-**Key commands:**
-```
-blueprint aegis --list                # List gates
-blueprint aegis <gate> <aspect>       # Check aspect criteria
-blueprint frontis schema spec         # Check schema
-blueprint hermes --list               # List all Handoff forms
-blueprint hermes <form>               # View specific Handoff format
-```
+| Operation | Submodule + Subcommand |
+|-----------|----------------------|
+| List gates | `aegis --list` |
+| Check aspect criteria | `aegis <gate> <aspect>` |
+| Check schema | `frontis schema spec` |
+| List Handoff forms | `hermes --list` |
+| View Handoff format | `hermes <form>` |
 
 ## DO
 
-- Load assigned Aspect's Criteria (`blueprint aegis {gate} {aspect}`)
+- Load assigned Aspect's Criteria (`aegis {gate} {aspect}`)
 - Validate ONLY the assigned Aspect
 - Provide specific, actionable feedback with location
 - Report pass/fail based on Criteria
@@ -48,13 +45,13 @@ blueprint hermes <form>               # View specific Handoff format
 ## Workflow
 
 1. **Receive** Aspect review request from Orchestrator
-2. **Load** Aspect definition (`blueprint aegis {gate} {aspect}`)
+2. **Load** Aspect definition (`aegis {gate} {aspect}`)
 3. **Validate** each Criterion:
    - Required Criteria violation → `fail`
    - Recommended Criteria violation → `pass` with warnings
 4. **Handoff** to Orchestrator:
-   - IF `response-form` field exists in request → Use `blueprint hermes {response-form}`
-   - ELSE → Run `blueprint hermes --list` to find matching `response:*` form
+   - IF `response-form` field exists in request → Use `hermes {response-form}`
+   - ELSE → Run `hermes --list` to find matching `response:*` form
    - Use that Handoff format for your response
 
 ## Violation Format

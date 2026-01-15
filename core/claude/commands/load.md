@@ -6,13 +6,16 @@ description: Load session state from Master Plan (adaptive)
 
 Load previous session's state with Master Plan context and verification.
 
-## Skills
+## Blueprint Skill Reference
 
-Use `blueprint` skill for plan discovery and handoff operations:
-- `blueprint frontis search` - Find plans by status
-- `blueprint frontis show` - Read plan metadata
-- `blueprint hermes after-load:{mode}` - View briefing format
-- `blueprint hermes request:review:session-state` - Reviewer delegation format
+Load `/blueprint` skill for plan discovery and handoff operations. Execute commands in Bash using full path:
+
+| Operation | Submodule + Subcommand |
+|-----------|----------------------|
+| Find plans by status | `frontis search` |
+| Read plan metadata | `frontis show` |
+| View briefing format | `hermes after-load:{mode}` |
+| Reviewer delegation | `hermes request:review:session-state` |
 
 ---
 
@@ -21,7 +24,7 @@ Use `blueprint` skill for plan discovery and handoff operations:
 **First**, resolve the current project's plans directory:
 
 ```bash
-PLANS_DIR=$(blueprint project current --plans)
+PLANS_DIR=$(~/.claude/skills/blueprint/blueprint.sh project current --plans)
 ```
 
 **Then**, after plan selection (Phase 1), set:
