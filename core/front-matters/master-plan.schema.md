@@ -27,6 +27,12 @@ All fields from `base.schema.md`:
 | `source-memory` | string | Reference to memory file |
 | `phase-count` | number | Number of phases in plan |
 
+## Additional Optional Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `task-count` | number | Total number of Tasks across all Phases |
+
 ## Field Definitions
 
 ### plan-id
@@ -59,6 +65,13 @@ All fields from `base.schema.md`:
 - **Required**: Yes
 - **Minimum**: 1
 - **Description**: Total number of implementation phases defined in the plan.
+
+### task-count
+
+- **Type**: number
+- **Required**: No
+- **Minimum**: 1
+- **Description**: Total number of Tasks across all Phases. Useful for validation and progress tracking.
 
 ## Status Definitions
 

@@ -24,6 +24,7 @@ All fields from `base.schema.md`:
 |-------|------|-------------|
 | `plan-id` | string | Parent plan identifier (PLAN-NNN) |
 | `current-phase` | number | Current phase number |
+| `current-task` | string | Current Task identifier (T-N.M) |
 
 ## Field Definitions
 
@@ -41,6 +42,14 @@ All fields from `base.schema.md`:
 - **Required**: Yes
 - **Minimum**: 1
 - **Description**: Current phase number. Updated when phase changes.
+
+### current-task
+
+- **Type**: string
+- **Required**: Yes
+- **Format**: `T-{N}.{M}` where N is phase number, M is task number
+- **Examples**: `"T-1.1"`, `"T-3.2"`
+- **Description**: Current Task identifier. Must match CURRENT.md.
 
 ## Status Definitions
 

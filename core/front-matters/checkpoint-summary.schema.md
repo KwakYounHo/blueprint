@@ -25,6 +25,7 @@ All fields from `base.schema.md`:
 | `plan-id` | string | Parent plan identifier (PLAN-NNN) |
 | `phase-completed` | number | Phase number that was completed |
 | `sessions-archived` | number | Number of sessions in this checkpoint |
+| `tasks-completed` | number | Number of Tasks completed in this Phase |
 
 ## Field Definitions
 
@@ -49,6 +50,13 @@ All fields from `base.schema.md`:
 - **Required**: Yes
 - **Minimum**: 0
 - **Description**: Number of sessions included in this checkpoint.
+
+### tasks-completed
+
+- **Type**: number
+- **Required**: Yes
+- **Minimum**: 1
+- **Description**: Number of Tasks completed in the archived Phase.
 
 ## Status Definitions
 

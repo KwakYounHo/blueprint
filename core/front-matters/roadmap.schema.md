@@ -57,7 +57,8 @@ All fields from `base.schema.md`:
 |------|-------------|
 | Type | `type` field must be `roadmap` |
 | Location | `blueprint/plans/{plan-id}/ROADMAP.md` |
-| Sync | Phase list must match master-plan.md |
+| Sync | Phase and Task list must match master-plan.md |
+| Task Format | Tasks use `T-{N}.{M}` format under each Phase |
 
 ## Template
 
