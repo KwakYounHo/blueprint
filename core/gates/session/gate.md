@@ -31,7 +31,8 @@ Used primarily by `/load` command to verify handoff integrity before resuming wo
 |--------|-------------|----------|
 | git-state | Validates Git status matches CURRENT.md documentation | `/load` |
 | file-integrity | Validates Key Files exist and match descriptions | `/load` |
-| plan-progress | Validates Phase progress consistency across documents | `/load`, `/checkpoint` |
+| plan-progress | Validates Phase and Task progress consistency across documents | `/load`, `/checkpoint` |
+| phase-completion | Validates all Tasks in Phase are complete before checkpoint | `/checkpoint` |
 
 ## Usage
 

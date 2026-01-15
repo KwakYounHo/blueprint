@@ -28,14 +28,22 @@ Ensures all documents agree on current phase and completion status.
 - [ ] Phase number in TODO.md header matches CURRENT.md
 - [ ] No conflicting phase claims across documents
 
+#### Task Consistency
+- [ ] `current-task` in CURRENT.md matches TODO.md's current task
+- [ ] `current-task` in TODO.md matches CURRENT.md
+- [ ] Current Task belongs to current Phase (T-{N}.x where N = current phase)
+- [ ] No future Phase Tasks in progress
+
 #### ROADMAP Integrity
 - [ ] ROADMAP.md has valid checkbox structure
 - [ ] "Current" marker exists and points to uncompleted phase
 - [ ] Completed phases are properly marked with [x]
+- [ ] Task checkboxes exist under each Phase
 
 #### TODO Alignment
 - [ ] "In Progress" section tasks relate to current phase
 - [ ] No tasks from future phases in "In Progress"
+- [ ] Current Task (T-N.M) is in "In Progress" or next pending
 
 ### Recommended (Should Pass)
 
@@ -52,26 +60,30 @@ Ensures all documents agree on current phase and completion status.
 1. **Read ROADMAP.md**
    ```markdown
    - [x] Phase 1: Foundation
+     - [x] T-1.1: Setup
+     - [x] T-1.2: Config
    - [ ] Phase 2: Core Implementation <- Current
-   - [ ] Phase 3: Integration
+     - [x] T-2.1: Auth module
+     - [ ] T-2.2: Validation <- Current Task
+     - [ ] T-2.3: Tests
    ```
 
-2. **Read CURRENT.md**
-   ```markdown
-   **Current Phase:** Phase 2 - Core Implementation
-   **Phase Objective:** Implement core authentication module
+2. **Read CURRENT.md Frontmatter**
+   ```yaml
+   current-phase: 2
+   current-task: "T-2.2"
    ```
 
-3. **Read TODO.md**
-   ```markdown
-   **Current Phase:** 2
-
-   ## In Progress (Current Session)
-   - [ ] Implement JWT validation
+3. **Read TODO.md Frontmatter**
+   ```yaml
+   current-phase: 2
+   current-task: "T-2.2"
    ```
 
-4. **Cross-validate**
+4. **Cross-validate Phase and Task**
    - Extract current phase from each document
+   - Extract current task from CURRENT.md and TODO.md
+   - Verify Task ID matches current Phase (T-2.x for Phase 2)
    - Compare for consistency
    - Report discrepancies
 
@@ -137,6 +149,36 @@ Suggestion:
   2. Format: "- [ ] Phase N: Name <- Current"
 ```
 
+### Task Mismatch
+
+```
+Issue: current-task mismatch across documents
+  - CURRENT.md: T-2.3
+  - TODO.md: T-2.1
+
+Severity: error
+
+Suggestion:
+  1. Determine actual current task
+  2. Update inconsistent documents
+  3. Run /save to synchronize
+```
+
+### Task Phase Mismatch
+
+```
+Issue: Current task does not belong to current phase
+  - Current Phase: 2
+  - Current Task: T-3.1 (belongs to Phase 3)
+
+Severity: error
+
+Suggestion:
+  1. Complete Phase 2 tasks before starting Phase 3
+  2. Or update current phase to 3
+  3. Run /checkpoint if Phase 2 is complete
+```
+
 ## Output Format
 
 ```yaml
@@ -151,8 +193,13 @@ current_phase:
   current_md: 2
   todo: 2
   consistent: true | false
+current_task:
+  current_md: "T-2.2"
+  todo: "T-2.2"
+  consistent: true | false
+  belongs_to_phase: true | false
 issues:
-  - type: phase_mismatch | stale_roadmap | premature_claim | missing_marker
+  - type: phase_mismatch | stale_roadmap | premature_claim | missing_marker | task_mismatch | task_phase_mismatch
     message: Description
     documents: [list of affected documents]
     suggestion: How to resolve

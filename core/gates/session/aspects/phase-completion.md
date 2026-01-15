@@ -23,10 +23,16 @@ Ensures all deliverables are complete, tasks are done, and no uncommitted change
 
 ### Required (Must Pass)
 
+#### Task Completion
+- [ ] ALL Tasks (T-N.1, T-N.2, ...) in Phase are complete
+- [ ] Task checkboxes in ROADMAP.md are all checked `[x]`
+- [ ] Task status in TODO.md matches ROADMAP.md
+- [ ] No incomplete Tasks for this Phase
+
 #### ROADMAP Readiness
-- [ ] Current phase tasks are substantially complete
-- [ ] ROADMAP.md current marker points to phase being checkpointed
+- [ ] Current phase marker points to phase being checkpointed
 - [ ] No future phase work mixed into current phase
+- [ ] Phase checkbox ready to be marked complete
 
 #### TODO Completion
 - [ ] Current phase tasks in TODO.md are marked complete `[x]`
@@ -49,21 +55,28 @@ Ensures all deliverables are complete, tasks are done, and no uncommitted change
 
 ## Validation Method
 
-1. **Check TODO.md Current Phase**
+1. **Check ROADMAP.md Task Checkboxes**
    ```markdown
-   ## Phase {N} - {Name}
-
-   - [x] Task 1 (completed)
-   - [x] Task 2 (completed)
-   - [ ] Task 3 (incomplete) <- FLAG THIS
+   - [ ] Phase 2: Core Implementation <- Current
+     - [x] T-2.1: Implement auth module
+     - [x] T-2.2: Add validation
+     - [ ] T-2.3: Write tests <- FLAG THIS (incomplete Task)
    ```
 
-2. **Check ROADMAP.md**
+2. **Check TODO.md Current Phase Tasks**
    ```markdown
-   - [x] Phase 1: Foundation
-   - [ ] Phase 2: Core Implementation <- Current (ready to complete)
-   - [ ] Phase 3: Integration
+   ### Phase 2: Core Implementation
+   #### T-2.1: Implement auth module
+   - [x] Subtask A
+   - [x] Subtask B
+
+   #### T-2.3: Write tests
+   - [ ] Unit tests <- FLAG THIS
    ```
+
+3. **Cross-validate ROADMAP.md and TODO.md**
+   - All Tasks in ROADMAP.md must be checked
+   - Task completion status must match between documents
 
 3. **Check Git Status**
    ```bash
@@ -148,6 +161,10 @@ tasks:
   total: 5
   completed: 5
   incomplete: 0
+  incomplete_list: []  # e.g., ["T-2.3", "T-2.4"]
+task_consistency:
+  roadmap_matches_todo: true | false
+  mismatched_tasks: []
 git:
   clean: true | false
   uncommitted_files: []
@@ -156,7 +173,7 @@ blockers:
   resolved: true | false
   items: []
 issues:
-  - type: incomplete_tasks | uncommitted_changes | unresolved_blockers | empty_phase
+  - type: incomplete_tasks | uncommitted_changes | unresolved_blockers | empty_phase | task_mismatch
     message: Description
     severity: error | warning
     suggestion: How to resolve
