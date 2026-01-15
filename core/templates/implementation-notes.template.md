@@ -12,20 +12,31 @@ plan-id: "PLAN-{NNN}"
 
 # Implementation Notes: {Plan Name}
 
+> **Purpose**: Record deviations from plan, issues encountered, and learnings.
+>
+> **DO NOT** use for progress tracking - see ROADMAP.md and HISTORY.md.
+> Only document items that differ from the original plan or require future reference.
+
+---
+
 ## Deviations from Plan
 
-| Date | Phase | Original | Actual | Reason |
-|------|-------|----------|--------|--------|
-| {{date}} | {phase} | {what was planned} | {what was done} | {why changed} |
+> Record when implementation differs from master-plan.md and why.
+
+| Date | Phase/Task | Original Plan | Actual Implementation | Reason |
+|------|------------|---------------|----------------------|--------|
+| - | - | - | - | - |
 
 ---
 
 ## Issues Encountered
 
+> Document blockers, bugs, or problems that affected implementation.
+
 ### ISSUE-001: {Issue Title}
 
 **Discovered**: {{date}}
-**Phase**: {phase number}
+**Phase/Task**: {T-N.M}
 **Status**: open | resolved
 **Severity**: low | medium | high | critical
 
@@ -36,36 +47,30 @@ plan-id: "PLAN-{NNN}"
 {Why it happened}
 
 **Resolution**:
-{How it was fixed}
+{How it was fixed, or current workaround}
 
 ---
 
 ## Learnings
+
+> Capture insights that should inform future plans or implementations.
 
 ### LEARN-001: {Learning Title}
 
 **Context**: {When/where this was learned}
 
 **Insight**:
-{What was learned that should be remembered for future plans}
+{What was learned that should be remembered}
 
 **Application**:
-{How to apply this learning}
+{How to apply this learning in future work}
 
 ---
 
 ## Environment Notes
 
-| Item | Value | Note |
-|------|-------|------|
-| {config/setting} | {value} | {why relevant} |
+> Document non-obvious configuration or setup requirements.
 
----
-
-## Timeline
-
-| Date | Event | Notes |
-|------|-------|-------|
-| {{date}} | Implementation started | - |
-| {{date}} | Phase 1 completed | - |
-| {{date}} | Implementation completed | - |
+| Item | Value | Why Relevant |
+|------|-------|--------------|
+| - | - | - |
