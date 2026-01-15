@@ -10,6 +10,7 @@ dependencies: [../master-plan.md, ../ROADMAP.md]
 plan-id: "PLAN-{NNN}"
 session-id: 1
 current-phase: 1
+current-task: "T-1.1"
 ---
 
 # Session Handoff
@@ -24,7 +25,8 @@ current-phase: 1
 **Plan:** PLAN-{NNN} - {Plan Name}
 **Plan Path:** `../master-plan.md`
 **Current Phase:** Phase {N} - {Phase Name}
-**Phase Objective:** {One sentence from master-plan.md}
+**Current Task:** T-{N}.{M} - {Task Name}
+**Task Objective:** {One sentence from master-plan.md}
 
 ---
 

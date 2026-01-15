@@ -10,13 +10,14 @@ dependencies: [../master-plan.md, ../ROADMAP.md]
 plan-id: "PLAN-{NNN}"
 session-id: 1
 current-phase: 1
+current-task: "T-1.1"
 ---
 
 # Session Handoff - Session {N}
 
 **Date:** {{date}}
 **Branch:** {branch}
-**Phase:** {N} of {Total}
+**Phase:** {N}/{Total} | **Task:** T-{N}.{M}
 
 ---
 

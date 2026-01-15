@@ -13,13 +13,17 @@ source-plan: "master-plan.md"
 
 # Roadmap: {Plan Name}
 
-> Auto-generated from Master Plan. Phase list synced with master-plan.md.
+> Auto-generated from Master Plan. Phase and Task list synced with master-plan.md.
 
 ## Progress
 
 - [ ] Phase 1: {Phase Name}
+  - [ ] T-1.1: {Task Name}
+  - [ ] T-1.2: {Task Name}
 - [ ] Phase 2: {Phase Name}
+  - [ ] T-2.1: {Task Name}
 - [ ] Phase 3: {Phase Name}
+  - [ ] T-3.1: {Task Name}
 
 ## Phase Details
 

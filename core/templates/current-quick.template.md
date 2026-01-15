@@ -10,12 +10,14 @@ dependencies: []
 plan-id: "PLAN-{NNN}"
 session-id: 1
 current-phase: 1
+current-task: "T-1.1"
 ---
 
 # Session Handoff
 
 **Date:** {{date}}
 **Branch:** {branch}
+**Task:** T-{N}.{M} - {Task Name}
 
 ## Goal
 

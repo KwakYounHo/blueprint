@@ -9,6 +9,7 @@ dependencies: [../../master-plan.md]
 
 plan-id: "PLAN-{NNN}"
 phase-completed: {N}
+tasks-completed: 0
 sessions-archived: 0
 ---
 
@@ -17,6 +18,7 @@ sessions-archived: 0
 ## Phase Completed
 
 **Phase {N}:** {Phase Name}
+**Tasks Completed:** T-{N}.1 ~ T-{N}.{M} ({M} tasks)
 **Duration:** {start date} to {end date}
 
 ## Key Achievements

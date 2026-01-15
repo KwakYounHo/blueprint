@@ -3,6 +3,7 @@
 ## Session {ID} - {{date}}
 
 **Phase:** Phase {N} - {Phase Name}
+**Task:** T-{N}.{M} - {Task Name}
 **Goal:** {What we tried to achieve}
 **Outcome:** {What we actually did}
 
