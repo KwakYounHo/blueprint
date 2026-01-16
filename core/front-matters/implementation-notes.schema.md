@@ -60,7 +60,7 @@ All fields from `base.schema.md`:
 |------|-------------|
 | Type | `type` field must be `implementation-notes` |
 | Location | `blueprint/plans/{plan-id}/implementation-notes.md` |
-| Creation | Created during implementation, not planning |
+| Creation | Initialized after master-plan approval; populated during implementation |
 
 ## Template
 

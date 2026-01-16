@@ -81,6 +81,7 @@ Read and understand before verification:
 1. **Read Plan Context:**
    - `{PLAN_PATH}/master-plan.md` - Phase definitions
    - `{PLAN_PATH}/ROADMAP.md` - Progress status
+   - `{PLAN_PATH}/implementation-notes.md` - Deviations and issues
 
 2. **Read Session Context:**
    - `{SESSION_PATH}/CURRENT.md` - Last session state
