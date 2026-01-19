@@ -16,6 +16,8 @@ Use **Hermes** skill to view specific forms:
 - `hermes after-save` - Command completion output
 - `hermes after-load:quick` - Quick mode briefing
 - `hermes request:review:session-state` - Review request format
+- `hermes request:phase-analysis` - Phase analysis request format
+- `hermes response:phase-analysis` - Phase analysis response format
 - `hermes --list` - List all forms
 
 ---
@@ -232,5 +234,75 @@ handoff:
       issues: [...]
   suggestions:
     - "{how to resolve issue}"
+```
+---e
+
+---
+
+## Phase Analysis Objectives
+
+OBJECTIVE[request:phase-analysis]
+---s
+```yaml
+task:
+  action: analyze
+  context: phase-analysis
+  response-form: "response:phase-analysis"
+  master_plan: "{path to master-plan.md}"
+  phase: {N}
+```
+---e
+
+OBJECTIVE[response:phase-analysis]
+---s
+```yaml
+handoff:
+  status: completed | blocked
+  context: phase-analysis
+  phase: {N}
+
+  task_analysis:
+    - task_id: "T-{N}.{M}"
+      deliverable: "{description}"
+      scores:
+        change_volume: {1-4}
+        structural_complexity: {1-4}
+        dependency: {1-4}
+        precedent: {1-4}
+        change_type: {1-4}
+      total: {5-20}
+      grade: Simple | Moderate | Complex | Critical
+      evidence:
+        - dimension: "{dimension name}"
+          observation: "{what was found}"
+          files: ["{file1}", "{file2}"]
+
+  phase_summary:
+    task_count: {N}
+    grade_distribution:
+      simple: {N}
+      moderate: {N}
+      complex: {N}
+      critical: {N}
+    highest_complexity: "T-{N}.{M}"
+    inter_task_dependency: low | medium | high
+
+  recommendation:
+    strategy: "No Plan Mode" | "Phase-level" | "Task-level"
+    rationale: "{reasoning}"
+    alternatives:
+      - strategy: "{alternative}"
+        trade_off: "{consideration}"
+```
+---e
+
+OBJECTIVE[response:phase-analysis:blocked]
+---s
+```yaml
+handoff:
+  status: blocked
+  context: phase-analysis
+  reason: "{specific issue - e.g., Master Plan not found, Phase not found}"
+  suggestion: "{how to resolve - e.g., check file path, verify Phase number}"
 ```
 ---e
