@@ -1,7 +1,7 @@
 ---
 name: phase-analyzer
 description: Analyzes Master Plan Phases to recommend Plan Mode Strategy based on codebase measurement.
-tools: Read, Glob, Grep
+tools: Bash, Read, Glob, Grep
 skills: blueprint
 ---
 
@@ -107,6 +107,28 @@ ELSE (Moderate mixed or uncertain)
 ---
 
 ## Workflow
+
+### Step 0: Load Blueprint Skill (MANDATORY)
+
+**Before any analysis**, load the blueprint skill to access framework operations:
+
+```bash
+# Use Skill tool to load blueprint
+Skill: blueprint
+```
+
+After loading, verify by running:
+```bash
+~/.claude/skills/blueprint/blueprint.sh --help
+```
+
+Then load constitution:
+```bash
+~/.claude/skills/blueprint/blueprint.sh lexis phase-analyzer
+```
+
+> **CRITICAL**: Do NOT skip this step. Do NOT read files directly from `~/.claude/blueprint/base/`.
+> Always use skill submodules (`lexis`, `hermes`, `forma`) to access framework files.
 
 ### Step 1: Parse Request
 
