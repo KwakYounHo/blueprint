@@ -142,8 +142,8 @@ Start implementation now?
 ```
 
 > **IMPORTANT**: If user responds `yes`, you MUST follow the **Plan Mode Strategy** section
-> in `master-plan.md`. This includes: Codebase exploration, scope analysis, user confirmation
-> of Plan Mode level. Do NOT skip this step.
+> in `master-plan.md`. This invokes Phase Analyzer Agent for scope analysis and Plan Mode
+> recommendation. Do NOT skip this step.
 
 ---
 

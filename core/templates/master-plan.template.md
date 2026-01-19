@@ -80,67 +80,42 @@ phase-count: 0
 > **IMPORTANT**: This section MUST be followed before starting Phase implementation.
 > Triggered by: `/master` completion OR `/load` with `yes` response.
 
-### Step 1: Identify Next Work Unit
+### Invocation
 
-From ROADMAP.md and this document:
-- Find first unchecked Phase/Task
-- Get Phase objective and Task list
+At Phase start, invoke Phase Analyzer Agent:
 
-### Step 2: Codebase Exploration for Scope Analysis
-
-> Purpose: Determine if Phase can be planned at once, or needs Task-level planning.
-
-**Exploration Method** (choose based on complexity):
-- **Simple Phase** (1-3 Tasks, known files): Direct exploration (Glob/Grep/Read)
-- **Complex Phase** (4+ Tasks, unknown scope): Task tool with Explore subagent
-
-| Analysis Target | Method |
-|-----------------|--------|
-| Files to modify | Glob/Grep for files mentioned in Phase deliverables |
-| Change scope | Estimate lines/sections affected per Task |
-| Complexity | Dependencies, cross-file changes, new patterns needed |
-| Risk areas | External APIs, state management, breaking changes |
-
-### Step 3: Synthesize Analysis
-
-Based on exploration, determine:
-- **Phase-level viable?**: Can all Tasks be planned coherently in one Plan Mode session?
-- **Task-level needed?**: Are individual Tasks complex enough to warrant separate planning?
-- **No Plan Mode?**: Are all Tasks straightforward edits?
-
-Produce recommendation:
 ```
-Phase {N}: {Phase Name}
-Tasks: {X} (T-N.1 ~ T-N.X)
+Task tool:
+  subagent_type: "phase-analyzer"
+  prompt: |
+    Analyze Phase {N} of Master Plan.
 
-Scope Analysis:
-- Files affected: {list or count}
-- Estimated complexity: Simple / Moderate / Complex
-- Key considerations: {brief notes}
+    Master Plan: {path to master-plan.md}
+    Phase: {N}
 
-Recommendation: {Phase level / Task level / No Plan Mode}
-Reason: {why this recommendation}
+    Perform 5-dimension evaluation for each Task.
+    Return Plan Mode Strategy recommendation.
 ```
 
-### Step 4: Present to User
+### After Receiving Recommendation
 
-Use `AskUserQuestion`:
+1. Review Phase Analyzer's Handoff:
+   - Per-Task scores and evidence
+   - Aggregated Phase complexity
+   - Recommended strategy with rationale
 
-| Field | Content |
-|-------|---------|
-| Header | "Plan Mode" |
-| Question | "{Analysis summary}\n\nHow should we approach Plan Mode?" |
-| Option A | "{Recommended option} (Recommended)" |
-| Option B | "{Alternative 1}" |
-| Option C | "{Alternative 2}" |
+2. Present to user via AskUserQuestion:
+   - Summary of analysis
+   - Recommended strategy (mark as recommended)
+   - Alternative options
 
-### Step 5: Execute Based on Choice
+3. Execute based on user's choice:
 
 | Choice | Workflow |
 |--------|----------|
+| No Plan Mode | Execute directly → Mark complete → `/save` |
 | Phase level | Plan Mode once → Plan all Tasks → Execute all → `/save` |
 | Task level | Per Task: Plan Mode → Execute → Mark complete |
-| No Plan Mode | Execute directly → Mark complete → `/save` |
 
 ### Task Execution Flow
 

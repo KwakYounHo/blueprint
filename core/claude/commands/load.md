@@ -132,7 +132,7 @@ Wait for input:
 - `show {file}` → Display file content
 
 > **IMPORTANT**: On `yes`, you MUST follow the **Plan Mode Strategy** section in `{PLAN_PATH}/master-plan.md`.
-> This includes: Codebase exploration, scope analysis, user confirmation of Plan Mode level.
+> This invokes Phase Analyzer Agent for scope analysis and Plan Mode recommendation.
 > Do NOT skip this step - it ensures appropriate planning depth for each Phase.
 
 ---
