@@ -34,6 +34,23 @@ path_to_dirname() {
 }
 
 # =============================================================================
+# Project Path Resolution (Monorepo Support)
+# =============================================================================
+
+# Get project path with git root detection
+# Priority: CLAUDE_PROJECT_DIR > git root > cwd
+# This enables blueprint commands to work from subdirectories in monorepos
+get_project_path() {
+  if [ -n "$CLAUDE_PROJECT_DIR" ]; then
+    echo "$CLAUDE_PROJECT_DIR"
+  elif git rev-parse --show-toplevel &>/dev/null 2>&1; then
+    git rev-parse --show-toplevel
+  else
+    pwd
+  fi
+}
+
+# =============================================================================
 # Alias Resolution (Cross-Machine Project Identity)
 # =============================================================================
 
@@ -61,7 +78,7 @@ _check_jq() {
 # Resolve project alias from registry
 # Returns: alias string if found, empty string otherwise
 resolve_project_alias() {
-  local current_path="${1:-$(pwd)}"
+  local current_path="${1:-$(get_project_path)}"
 
   # Registry must exist
   [ -f "$BLUEPRINT_REGISTRY" ] || return 0
@@ -93,7 +110,8 @@ init_registry() {
 # Priority: alias-based → path-based (fallback)
 # Returns: ~/.claude/blueprint/projects/{alias}/ or ~/.claude/blueprint/projects/{path-based}/
 get_blueprint_data_dir() {
-  local project_path="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+  local project_path
+  project_path=$(get_project_path)
 
   # Try alias resolution first
   local alias_name
@@ -118,7 +136,7 @@ check_project_initialized() {
   if [ ! -d "$data_dir" ]; then
     error "Blueprint not initialized for this project."
     echo "" >&2
-    echo "Project: ${CLAUDE_PROJECT_DIR:-$(pwd)}" >&2
+    echo "Project: $(get_project_path)" >&2
     echo "Expected: $data_dir" >&2
     echo "" >&2
     echo "Run 'blueprint project init <alias>' to initialize Blueprint for this project." >&2
