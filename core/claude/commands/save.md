@@ -23,13 +23,13 @@ Load `/blueprint` skill for template and handoff operations. Execute commands in
 
 **Get plans directory:**
 ```bash
-blueprint plan dir
+~/.claude/skills/blueprint/blueprint.sh plan dir
 ```
 
 **Resolve specific plan:**
 ```bash
-blueprint plan resolve 001        # → /path/to/plans/001-topic/
-blueprint plan resolve auth       # → /path/to/plans/NNN-auth-feature/
+~/.claude/skills/blueprint/blueprint.sh plan resolve 001   # → /path/to/plans/001-topic/
+~/.claude/skills/blueprint/blueprint.sh plan resolve auth  # → /path/to/plans/NNN-auth-feature/
 ```
 
 > **Note**: Each plan is a **directory** containing master-plan.md, ROADMAP.md, session-context/, etc.
@@ -48,23 +48,23 @@ blueprint plan resolve auth       # → /path/to/plans/NNN-auth-feature/
 2. **From Git Branch** (Secondary)
    - Get current branch: `git branch --show-current`
    - Pattern match: `<convention>/<nnn>-<brief-summary>`
-   - Extract `{nnn}` → Use `blueprint plan resolve {nnn}`
+   - Extract `{nnn}` → Use `~/.claude/skills/blueprint/blueprint.sh plan resolve {nnn}`
 
 3. **From Argument** (Override)
-   - `/save 001` → Use `blueprint plan resolve 001`
-   - `/save auth` → Use `blueprint plan resolve auth`
+   - `/save 001` → Use `~/.claude/skills/blueprint/blueprint.sh plan resolve 001`
+   - `/save auth` → Use `~/.claude/skills/blueprint/blueprint.sh plan resolve auth`
 
 ### Resolution Logic
 
 ```
 IF /save has argument:
-    Resolve plan: blueprint plan resolve <argument>
+    Resolve plan: ~/.claude/skills/blueprint/blueprint.sh plan resolve <argument>
 ELSE IF session-context/CURRENT.md exists in plan directory:
     Use plan-id from frontmatter
 ELSE:
     Get current git branch
     IF matches pattern <convention>/<nnn>-*:
-        Resolve plan: blueprint plan resolve {nnn}
+        Resolve plan: ~/.claude/skills/blueprint/blueprint.sh plan resolve {nnn}
         Confirm with user: "Saving to PLAN-{nnn}. Correct?"
     ELSE:
         Ask user to select plan or specify: /save <plan-id>
@@ -90,7 +90,7 @@ Check `session-context/` in resolved plan:
 
 ```
 Determine target plan (see Plan Recognition above)
-Set: PLAN_PATH = output from `blueprint plan resolve <identifier>`
+Set: PLAN_PATH = output from `~/.claude/skills/blueprint/blueprint.sh plan resolve <identifier>`
 Set: SESSION_PATH = {PLAN_PATH}/session-context/
 ```
 

@@ -23,24 +23,24 @@ Load `/blueprint` skill for plan discovery and handoff operations. Execute comma
 
 **Get plans directory:**
 ```bash
-blueprint plan dir
+~/.claude/skills/blueprint/blueprint.sh plan dir
 ```
 
 **Resolve specific plan:**
 ```bash
-blueprint plan resolve 001        # → /path/to/plans/001-topic/
-blueprint plan resolve auth       # → /path/to/plans/NNN-auth-feature/
+~/.claude/skills/blueprint/blueprint.sh plan resolve 001   # → /path/to/plans/001-topic/
+~/.claude/skills/blueprint/blueprint.sh plan resolve auth  # → /path/to/plans/NNN-auth-feature/
 ```
 
 **List active plans:**
 ```bash
-blueprint plan list --status in-progress
+~/.claude/skills/blueprint/blueprint.sh plan list --status in-progress
 ```
 
 > **Note**: Each plan is a **directory** containing master-plan.md, ROADMAP.md, session-context/, etc.
 
 After plan selection (Phase 1), set:
-- `{PLAN_PATH}` = resolved plan path (e.g., from `blueprint plan resolve 001`)
+- `{PLAN_PATH}` = resolved plan path (e.g., from `~/.claude/skills/blueprint/blueprint.sh plan resolve 001`)
 - `{SESSION_PATH}` = `{PLAN_PATH}/session-context/`
 
 Use these paths for all references below.
@@ -67,9 +67,9 @@ Use these paths for all references below.
 /load
 ```
 
-1. Find active plans: `blueprint plan list --status in-progress`
+1. Find active plans: `~/.claude/skills/blueprint/blueprint.sh plan list --status in-progress`
 2. Present list to user
-3. User selects → Use `blueprint plan resolve <selection>` to get path
+3. User selects → Use `~/.claude/skills/blueprint/blueprint.sh plan resolve <selection>` to get path
 
 ---
 
@@ -79,12 +79,12 @@ Use these paths for all references below.
 
 ```
 IF argument provided:
-    Resolve plan: blueprint plan resolve <identifier>
+    Resolve plan: ~/.claude/skills/blueprint/blueprint.sh plan resolve <identifier>
 ELSE:
-    List active plans: blueprint plan list --status in-progress
+    List active plans: ~/.claude/skills/blueprint/blueprint.sh plan list --status in-progress
     Present list to user
     Wait for selection
-    Resolve selected: blueprint plan resolve <selection>
+    Resolve selected: ~/.claude/skills/blueprint/blueprint.sh plan resolve <selection>
 ```
 
 ### Phase 2: Document Review (No Tools Yet)
