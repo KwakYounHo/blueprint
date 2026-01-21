@@ -27,7 +27,7 @@ Usage:
   blueprint project unlink <alias> [path]           Unlink path from project
   blueprint project rename <new-alias>              Rename project alias
   blueprint project manage                          Scan and manage projects
-  blueprint project current [--plans|--data]        Show current project info
+  blueprint project current [--data]                Show current project info
 
 Options:
   -h, --help    Show this help message
@@ -42,7 +42,6 @@ Examples:
   blueprint project rename my-new-alias
   blueprint project manage
   blueprint project current
-  blueprint project current --plans
   blueprint project current --data
 EOF
 }
@@ -471,16 +470,11 @@ do_rename() {
 }
 
 do_current() {
-  local show_plans=false
   local show_data=false
 
   # Parse flags
   while [ $# -gt 0 ]; do
     case "$1" in
-      --plans)
-        show_plans=true
-        shift
-        ;;
       --data)
         show_data=true
         shift
@@ -495,7 +489,8 @@ do_current() {
     esac
   done
 
-  local current_path="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+  local current_path
+  current_path=$(get_project_path)
   local data_dir
   data_dir=$(get_blueprint_data_dir "$current_path")
 
@@ -512,17 +507,12 @@ do_current() {
     alias_name=$(basename "$data_dir")
   fi
 
-  local plans_dir="$data_dir/plans"
-
   # Output based on flags
-  if [ "$show_plans" = true ]; then
-    echo "$plans_dir"
-  elif [ "$show_data" = true ]; then
+  if [ "$show_data" = true ]; then
     echo "$data_dir"
   else
     echo "Alias: $alias_name"
     echo "Data: $data_dir"
-    echo "Plans: $plans_dir"
   fi
 }
 

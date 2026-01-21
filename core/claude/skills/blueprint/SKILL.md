@@ -17,6 +17,7 @@ Unified CLI for the Blueprint orchestration framework.
 | `frontis` | FrontMatter search & schemas | `blueprint/front-matters/` |
 | `hermes` | Handoff forms | `blueprint/forms/` |
 | `lexis` | Constitution viewer | `blueprint/constitutions/` |
+| `plan` | Plan directory & listing | `blueprint/plans/` |
 | `polis` | Agent registry | `.claude/agents/` |
 | `project` | Project alias management | `~/.claude/blueprint/projects/` |
 
@@ -25,13 +26,13 @@ Unified CLI for the Blueprint orchestration framework.
 ```
 blueprint <submodule> <subcommand> [flags] [arguments]
          │            │             │       └─ Positional values (e.g., <file>, <alias>)
-         │            │             └─ Options (e.g., --list, --base, --plans)
+         │            │             └─ Options (e.g., --list, --base, --data)
          │            └─ Submodule action (e.g., current, show, search)
-         └─ Functional module (e.g., project, forma, lexis)
+         └─ Functional module (e.g., project, forma, lexis, plan)
 ```
 
 **Terminology:**
-- **Submodule**: Independent functional module (`aegis`, `forma`, `frontis`, `hermes`, `lexis`, `polis`, `project`)
+- **Submodule**: Independent functional module (`aegis`, `forma`, `frontis`, `hermes`, `lexis`, `plan`, `polis`, `project`)
 - **Subcommand**: Action within a submodule (`current`, `show`, `search`, `init`, `list`)
 - **Flag**: Boolean switch (`--list`, `--base`, `--aspects`)
 - **Argument**: Positional value (`<file>`, `<alias>`, `<gate>`)
@@ -74,6 +75,12 @@ blueprint lexis --list                # List all agents
 blueprint lexis <agent>               # Show agent constitution
 blueprint lexis --base                # Show base constitution only
 
+# Plan - Plans
+blueprint plan dir                    # Get plans directory path
+blueprint plan list                   # List all plans
+blueprint plan list --status <status> # List plans by status (e.g., in-progress)
+blueprint plan resolve <identifier>   # Resolve plan path from identifier
+
 # Polis - Agents
 blueprint polis --list                # List all agents with descriptions
 blueprint polis <agent>               # Show agent instruction
@@ -88,7 +95,6 @@ blueprint project unlink <alias> [path]           # Unlink path from project
 blueprint project rename <new-alias>              # Rename project alias
 blueprint project manage                          # Scan and manage projects
 blueprint project current                         # Show current project info
-blueprint project current --plans                 # Get plans directory path (for Commands)
 blueprint project current --data                  # Get data directory path
 ```
 
@@ -120,8 +126,14 @@ blueprint polis --list
 blueprint project list
 blueprint project init myproject --notes "My project"
 
-# Get current project's plans directory (used in Commands)
-PLANS_DIR=$(blueprint project current --plans)
+# Get plans directory
+blueprint plan dir
+
+# List active plans
+blueprint plan list --status in-progress
+
+# Resolve specific plan
+blueprint plan resolve 001
 ```
 
 ## When to Use

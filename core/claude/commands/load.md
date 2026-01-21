@@ -21,17 +21,29 @@ Load `/blueprint` skill for plan discovery and handoff operations. Execute comma
 
 ## Plan Path Resolution
 
-**First**, resolve the current project's plans directory:
-
+**Get plans directory:**
 ```bash
-PLANS_DIR=$(~/.claude/skills/blueprint/blueprint.sh project current --plans)
+blueprint plan dir
 ```
 
-**Then**, after plan selection (Phase 1), set:
-- `{PLAN_PATH}` = `{PLANS_DIR}/{nnn}-{topic}/`
+**Resolve specific plan:**
+```bash
+blueprint plan resolve 001        # → /path/to/plans/001-topic/
+blueprint plan resolve auth       # → /path/to/plans/NNN-auth-feature/
+```
+
+**List active plans:**
+```bash
+blueprint plan list --status in-progress
+```
+
+> **Note**: Each plan is a **directory** containing master-plan.md, ROADMAP.md, session-context/, etc.
+
+After plan selection (Phase 1), set:
+- `{PLAN_PATH}` = resolved plan path (e.g., from `blueprint plan resolve 001`)
 - `{SESSION_PATH}` = `{PLAN_PATH}/session-context/`
 
-Use these variables for all path references below.
+Use these paths for all references below.
 
 ---
 
@@ -55,9 +67,9 @@ Use these variables for all path references below.
 /load
 ```
 
-1. Find active plans: `blueprint frontis search status in-progress {PLANS_DIR}/`
+1. Find active plans: `blueprint plan list --status in-progress`
 2. Present list to user
-3. User selects → Load session-context/
+3. User selects → Use `blueprint plan resolve <selection>` to get path
 
 ---
 
@@ -67,11 +79,12 @@ Use these variables for all path references below.
 
 ```
 IF argument provided:
-    Resolve plan from identifier
+    Resolve plan: blueprint plan resolve <identifier>
 ELSE:
-    Use blueprint skill: frontis search status in-progress {PLANS_DIR}/
+    List active plans: blueprint plan list --status in-progress
     Present list to user
     Wait for selection
+    Resolve selected: blueprint plan resolve <selection>
 ```
 
 ### Phase 2: Document Review (No Tools Yet)

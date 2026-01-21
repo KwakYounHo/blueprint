@@ -21,13 +21,18 @@ Load `/blueprint` skill for template and handoff operations. Execute commands in
 
 ## Plan Path Resolution
 
-**First**, resolve the current project's plans directory:
-
+**Get plans directory:**
 ```bash
-PLANS_DIR=$(~/.claude/skills/blueprint/blueprint.sh project current --plans)
+blueprint plan dir
 ```
 
-Use `{PLANS_DIR}` for all plan path references below.
+**Resolve specific plan:**
+```bash
+blueprint plan resolve 001        # → /path/to/plans/001-topic/
+blueprint plan resolve auth       # → /path/to/plans/NNN-auth-feature/
+```
+
+> **Note**: Each plan is a **directory** containing master-plan.md, ROADMAP.md, session-context/, etc.
 
 ---
 
@@ -43,23 +48,23 @@ Use `{PLANS_DIR}` for all plan path references below.
 2. **From Git Branch** (Secondary)
    - Get current branch: `git branch --show-current`
    - Pattern match: `<convention>/<nnn>-<brief-summary>`
-   - Extract `{nnn}` → Look for `{PLANS_DIR}/{nnn}-*/`
+   - Extract `{nnn}` → Use `blueprint plan resolve {nnn}`
 
 3. **From Argument** (Override)
-   - `/save 001` → Force save to PLAN-001
-   - `/save auth` → Match `{PLANS_DIR}/*-*auth*/`
+   - `/save 001` → Use `blueprint plan resolve 001`
+   - `/save auth` → Use `blueprint plan resolve auth`
 
 ### Resolution Logic
 
 ```
 IF /save has argument:
-    Resolve plan from argument
+    Resolve plan: blueprint plan resolve <argument>
 ELSE IF session-context/CURRENT.md exists in plan directory:
     Use plan-id from frontmatter
 ELSE:
     Get current git branch
     IF matches pattern <convention>/<nnn>-*:
-        Infer plan from {nnn}
+        Resolve plan: blueprint plan resolve {nnn}
         Confirm with user: "Saving to PLAN-{nnn}. Correct?"
     ELSE:
         Ask user to select plan or specify: /save <plan-id>
@@ -85,7 +90,7 @@ Check `session-context/` in resolved plan:
 
 ```
 Determine target plan (see Plan Recognition above)
-Set: PLAN_PATH = {PLANS_DIR}/{nnn}-{topic}/
+Set: PLAN_PATH = output from `blueprint plan resolve <identifier>`
 Set: SESSION_PATH = {PLAN_PATH}/session-context/
 ```
 

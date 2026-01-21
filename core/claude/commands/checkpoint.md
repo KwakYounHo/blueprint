@@ -30,17 +30,24 @@ Load `/blueprint` skill for template and handoff operations. Execute commands in
 
 ## Plan Path Resolution
 
-**First**, resolve the current project's plans directory:
-
+**Get plans directory:**
 ```bash
-PLANS_DIR=$(~/.claude/skills/blueprint/blueprint.sh project current --plans)
+blueprint plan dir
 ```
 
-**Then**, after plan recognition, set:
-- `{PLAN_PATH}` = `{PLANS_DIR}/{nnn}-{topic}/`
+**Resolve specific plan:**
+```bash
+blueprint plan resolve 001        # → /path/to/plans/001-topic/
+blueprint plan resolve auth       # → /path/to/plans/NNN-auth-feature/
+```
+
+> **Note**: Each plan is a **directory** containing master-plan.md, ROADMAP.md, session-context/, etc.
+
+After plan recognition, set:
+- `{PLAN_PATH}` = output from `blueprint plan resolve <identifier>`
 - `{SESSION_PATH}` = `{PLAN_PATH}/session-context/`
 
-Use these variables for all path references below.
+Use these paths for all references below.
 
 ---
 
