@@ -2,80 +2,129 @@
 
 ## What We Build
 
-A **practical framework** for orchestrating LLM agents that:
+A **user interaction-centered** session management framework for Claude Code that:
 
-1. Preserves main session context through intelligent delegation
-2. Maintains code quality and architectural consistency across parallel workers
-3. Provides clear patterns that can be adopted incrementally
+1. Establishes accurate plans through dialogue with the user
+2. Preserves context across sessions to maintain development continuity
+3. Provides workflow control through Slash Commands
 
 ## How We Achieve It
 
-### 1. Orchestrator-Workers Pattern
+### 1. Slash Commands
+
+Users directly control the workflow through intuitive commands:
+
+| Command | Purpose |
+|---------|---------|
+| `/master` | Create a structured implementation plan (Master Plan) |
+| `/save` | Save session state for handoff |
+| `/load` | Load previous session state |
+| `/checkpoint` | Save milestone checkpoint |
+
+### 2. Master Plan
+
+Decompose complex work into structured Phase/Task hierarchies:
 
 ```
-Main Session (Orchestrator)
-├── State Management     → Track phase, status, pending decisions
-├── Task Distribution    → Delegate to specialized workers
-├── Result Collection    → Receive structured summaries only
-└── Decision Making      → Handle user confirmations
-
-Workers (Subagents)
-├── Specifier    → Requirements and specification
-├── Implementer  → Code implementation
-└── Reviewer     → Quality validation
+Master Plan
+├── Phase 1: Foundation
+│   ├── Task 1.1: Environment setup
+│   └── Task 1.2: Basic structure
+├── Phase 2: Core Implementation
+│   └── ...
+└── Phase 3: Finalization
+    └── ...
 ```
 
-### 2. Role-Specific Constitutions
+### 3. Session Management
 
-Instead of one massive instruction set, each worker loads only what it needs:
-
-| Worker | Loads |
-|--------|-------|
-| Orchestrator | `base.md` + `orchestrator.md` |
-| Specifier | `base.md` + `specifier.md` |
-| Implementer | `base.md` + `implementer.md` |
-| Reviewer | `base.md` + `reviewer.md` |
-
-This prevents context pollution and instruction bleed.
-
-### 3. Quality Gates
-
-Phase boundaries enforce quality through structured validation:
+Preserve development context beyond session boundaries:
 
 ```
-Specification Phase → [Specification Gate] → Implementation Phase
-                      ├── Completeness Aspect (Reviewer)
-                      └── Feasibility Aspect (Reviewer)
+Session 1 → /save → [External Storage] → /load → Session 2
+
+├── Background, purpose, approach preserved
+├── Continuity maintained regardless of session reset
+└── Essential for large-scale development
 ```
 
-Each aspect has dedicated criteria and a specialized reviewer.
+### 4. Blueprint Skill
 
-### 4. Structured Handoffs
+Unified CLI access to framework capabilities:
 
-Workers return condensed, structured results:
+| Submodule | Purpose |
+|-----------|---------|
+| `aegis` | Gate validation and aspects |
+| `forma` | Document templates |
+| `frontis` | FrontMatter schemas |
+| `hermes` | Handoff forms |
+| `lexis` | Constitution viewer |
+| `plan` | Plan directory and listing |
+| `polis` | Agent registry |
+| `project` | Project alias management |
 
-```yaml
-files_changed: [...]
-status: success | fail
-decisions_made: [...]
-needs_confirmation: [...]
+### 5. Quality Gates
+
+Validate at phase boundaries through structured criteria:
+
+```
+Phase N → [Gate Validation] → Phase N+1
+           ├── Aspect 1
+           ├── Aspect 2
+           └── ...
 ```
 
-The orchestrator never receives raw implementation details.
+### 6. SubAgent Delegation
+
+Protect Main Session context by delegating complex tasks:
+
+| Agent | Role |
+|-------|------|
+| `phase-analyzer` | Multi-dimensional complexity analysis |
+| `reviewer` | Quality validation |
 
 ## What We Don't Do
 
-| Avoid | Instead |
-|-------|---------|
-| Over-engineering simple tasks | Use main session directly for trivial work |
-| Static task decomposition | Allow dynamic adjustment based on context |
-| Framework over-abstraction | Keep patterns transparent and debuggable |
-| All-or-nothing adoption | Enable incremental adoption of patterns |
+| Avoid | Instead | Rationale |
+|-------|---------|-----------|
+| Automated implementation chains | User controls implementation | Spec completeness limitations |
+| Pursuing perfect specifications | Reflect intent through interaction | Practical difficulty |
+| Assuming single-session completion | Design for session continuity | Large-scale development reality |
+| Complex agent orchestration | Simple command-based workflow | Maintainability and clarity |
 
 ## Guiding Principles
 
-1. **Start simple** - Only add complexity when simpler solutions fall short
-2. **Context is precious** - Treat the main session context window as a scarce resource
-3. **Isolation by design** - Workers should never pollute each other's context
-4. **Quality at boundaries** - Validate at phase transitions, not continuously
-5. **Practical over theoretical** - Patterns must work in real Claude Code sessions
+### Context is Precious
+
+The foundational principle underlying all decisions.
+Main Session context is a scarce resource that must be protected.
+
+### Start Simple
+
+Only add complexity when simpler solutions fall short.
+Resist the urge to over-engineer.
+
+### User in Control
+
+The user is the primary agent of the workflow.
+The framework supports and enables, not automates and replaces.
+
+### Session Continuity
+
+Design for development that spans multiple sessions.
+Context preservation is not optional—it's essential.
+
+### Isolation by Design
+
+SubAgents operate in isolated context to protect Main Session.
+Complex analysis and validation are delegated, not executed in-place.
+
+### Quality at Boundaries
+
+Validate at phase transitions, not continuously.
+Boundary validation is more efficient and less disruptive.
+
+### Practical over Theoretical
+
+Patterns must work in real Claude Code sessions.
+A working simple solution beats an elegant complex one.

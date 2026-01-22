@@ -2,42 +2,39 @@
 
 ## The Problem
 
-Modern LLM agents suffer from **context window degradation**. As conversations grow longer:
+Fundamental limitations encountered in LLM-based development:
 
-- Computational costs increase quadratically
-- "Lost in the Middle" effect reduces information recall
-- Tool call efficiency drops by up to 70%
-- Critical information accuracy falls from 92% to 63%
+### 1. Session Discontinuity
 
-Even with context windows expanding from 4K to 1M+ tokens, the fundamental constraint remains: **longer context leads to worse performance**.
+Large-scale development inevitably spans multiple sessions.
+Each time a session resets, the development context—background, purpose, and progress—is lost.
+
+### 2. Cost of Inaccurate Plans
+
+Automated specification writing struggles to accurately reflect user intent.
+The cost of corrections frequently exceeds the cost of planning itself.
+
+### 3. Limitations of Automated Implementation Chains
+
+"Deterministic code generation" through perfect specifications,
+combined with automated implementation chains, is realistically unattainable.
 
 ## The Vision
 
-> **Enable deeper, more complex work with less main session context.**
+> **Plan once, develop across sessions.**
 
-We envision a future where:
+We pursue the following:
 
-1. **Main sessions remain lightweight** - The orchestrator holds only state and decisions, never implementation details
-2. **Workers operate in isolation** - Each specialized agent works with a clean, focused context
-3. **Quality is guaranteed** - Structured handoffs and validation gates ensure consistency
-4. **Complexity scales efficiently** - Adding more features doesn't degrade the agent's reasoning ability
-
-## Success Metrics
-
-| Metric | Current State | Target State |
-|--------|---------------|--------------|
-| Main session context usage | Unbounded growth | Capped at lightweight state |
-| Worker context pollution | Shared instructions | Role-specific only |
-| Information handoff | Unstructured | Structured summaries (1-2K tokens) |
-| Quality consistency | Variable | Gate-validated at phase boundaries |
+1. **Accurate Plans** - Precisely reflect user intent through sufficient interaction
+2. **Session Continuity** - Guarantee development continuity beyond session boundaries
+3. **Continuous Development** - Enable large-scale development through context preservation
 
 ## Core Belief
 
-The solution is not larger context windows. The solution is **smarter context engineering**:
+**Context is Precious.**
 
-- **Write** - Persist state externally
-- **Select** - Load only what's needed
-- **Compress** - Summarize at boundaries
-- **Isolate** - Separate worker contexts
+Context efficiency lies at the foundation of all design decisions.
 
-This framework exists to make these principles actionable.
+- Sufficient interaction during planning reduces correction costs during implementation
+- Main Session context must be protected; complex analysis is delegated to SubAgents
+- Context preservation across sessions is essential for large-scale development
