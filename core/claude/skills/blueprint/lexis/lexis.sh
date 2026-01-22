@@ -17,6 +17,7 @@ check_project_initialized
 
 CONST_DIR="$BLUEPRINT_DATA_DIR/constitutions"
 BASE_FILE="$CONST_DIR/base.md"
+BLUEPRINT_FILE="$CONST_DIR/blueprint.md"
 AGENTS_DIR="$CONST_DIR/agents"
 
 # Check if constitutions exist
@@ -57,6 +58,16 @@ if [ "$1" = "--base" ] || [ "$1" = "-b" ]; then
   exit 0
 fi
 
+# --framework: Show framework constitution only
+if [ "$1" = "--framework" ] || [ "$1" = "-f" ]; then
+  if [ ! -f "$BLUEPRINT_FILE" ]; then
+    error "Framework constitution not found: $BLUEPRINT_FILE"
+    exit 1
+  fi
+  cat "$BLUEPRINT_FILE"
+  exit 0
+fi
+
 # No argument: show usage
 if [ -z "$1" ]; then
   echo "Lexis - Constitution Viewer"
@@ -64,11 +75,13 @@ if [ -z "$1" ]; then
   echo "Usage:"
   echo "  lexis --list               List all agents"
   echo "  lexis <agent>              Show agent constitution"
-  echo "  lexis --base               Show base constitution only"
+  echo "  lexis --base               Show project constitution only"
+  echo "  lexis --framework          Show framework constitution only"
   echo ""
   echo "Examples:"
   echo "  blueprint.sh lexis --list"
   echo "  blueprint.sh lexis reviewer"
+  echo "  blueprint.sh lexis --framework"
   exit 1
 fi
 

@@ -21,16 +21,19 @@ case "$SOURCE" in
     if [ -f "$BLUEPRINT_SCRIPT" ]; then
       # Check if current directory is a registered Blueprint project
       if "$BLUEPRINT_SCRIPT" project current >/dev/null 2>&1; then
-        # Registered project → Load base constitution + guidance
+        # Registered project → Load framework + project constitutions + guidance
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "Blueprint Project Detected"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
+        "$BLUEPRINT_SCRIPT" lexis --framework
+        echo ""
         "$BLUEPRINT_SCRIPT" lexis --base
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "Actively use '/blueprint' skill (in 'Available skills') for this project."
+        echo "REQUIRED: Load '/blueprint' skill for Blueprint operations."
+        echo "Project data is NOT in local directories - use skill commands."
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
       else
         # Unregistered project → Simple notice
@@ -46,16 +49,19 @@ case "$SOURCE" in
     echo ""
     ;;
   *)
-    # Unknown source → Only check if registered, load base constitution
+    # Unknown source → Only check if registered, load constitutions
     if [ -f "$BLUEPRINT_SCRIPT" ] && "$BLUEPRINT_SCRIPT" project current >/dev/null 2>&1; then
       echo ""
       echo "[WARN] Unknown session source: $SOURCE"
-      echo "[INFO] Loading base constitution for Blueprint project."
+      echo "[INFO] Loading constitutions for Blueprint project."
+      echo ""
+      "$BLUEPRINT_SCRIPT" lexis --framework
       echo ""
       "$BLUEPRINT_SCRIPT" lexis --base
       echo ""
       echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-      echo "Actively use '/blueprint' skill (in 'Available skills') for this project."
+      echo "REQUIRED: Load '/blueprint' skill for Blueprint operations."
+      echo "Project data is NOT in local directories - use skill commands."
       echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     fi
     ;;

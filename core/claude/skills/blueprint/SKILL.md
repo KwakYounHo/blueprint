@@ -8,6 +8,20 @@ allowed-tools: Bash, Read
 
 Unified CLI for the Blueprint orchestration framework.
 
+## CRITICAL: Data Location
+
+Blueprint project data (plans, session state, configurations) is **NOT stored in local project directories**.
+
+**You MUST**:
+- Load this skill FIRST when user asks about Blueprint projects, plans, or status
+- Use `blueprint` commands to access project data
+
+**You MUST NOT**:
+- Search local directories (`./blueprint/`, `./.claude/`) for Blueprint data
+- Assume "no local files" means "not initialized"
+
+Without loading this skill, you cannot determine Blueprint project status.
+
 ## Quick Reference
 
 | Submodule | Purpose | Data Source |
@@ -138,13 +152,19 @@ blueprint plan resolve 001
 
 ## When to Use
 
-Use this skill when working with Blueprint Framework:
+**Load this skill IMMEDIATELY** when user mentions:
+- Blueprint project, plan, or phase
+- Master Plan status or progress
+- Project initialization or registration
 
-- **Creating documents**: Use `forma` for templates, `frontis` for schemas
-- **Validating work**: Use `aegis` for gate criteria and aspects
-- **Agent communication**: Use `hermes` for handoff formats
-- **Understanding roles**: Use `lexis` for constitutions, `polis` for agent info
-- **Managing projects**: Use `project` for cross-machine project aliases
+Then use appropriate commands:
+- **Checking status**: `project current` - determines if project is registered
+- **Viewing plans**: `plan list` - shows available plans
+- **Reading FrontMatter**: `frontis show` - do NOT use `head` or direct file reading
+- **Creating documents**: `forma` for templates, `frontis` for schemas
+- **Validating work**: `aegis` for gate criteria and aspects
+- **Agent communication**: `hermes` for handoff formats
+- **Understanding roles**: `lexis` for constitutions, `polis` for agent info
 
 ## Template Usage Guidelines
 
@@ -175,11 +195,16 @@ Use **AskUserQuestion** tool to ask the user:
 2. If project exists, link current path: `~/.claude/skills/blueprint/blueprint.sh project link <alias>`
 3. If not, create new project: `~/.claude/skills/blueprint/blueprint.sh project init <alias>`
 
-### Registry Location
+### Data Locations
 
-- Registry: `~/.claude/blueprint/projects/.projects`
-- Project data: `~/.claude/blueprint/projects/<alias>/`
-- Base files: `~/.claude/blueprint/base/`
+| Data | Path | Access |
+|------|------|--------|
+| Registry | `~/.claude/blueprint/projects/.projects` | Use `project` submodule |
+| Project data | `~/.claude/blueprint/projects/<alias>/` | Use `project` submodule |
+| Plans | `~/.claude/blueprint/projects/<alias>/plans/` | Use `plan` submodule |
+
+**NOTE**: For **querying** (status checks, listing), use submodule commands.
+Direct file access is permitted when following skill instructions (e.g., `/master`, `/save`, `/load`).
 
 ### Session Guidelines
 
