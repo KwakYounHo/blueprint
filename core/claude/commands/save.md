@@ -236,7 +236,7 @@ No existing session context found.
 
 Options:
 1. Specify plan: /save 001 or /save auth
-2. Create new plan first: /plan
+2. Create new plan first: /bplan
 
 Which option?
 ```

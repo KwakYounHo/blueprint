@@ -16,7 +16,7 @@ Users directly control the workflow through intuitive commands:
 
 | Command | Purpose |
 |---------|---------|
-| `/plan` | Create a structured implementation plan |
+| `/bplan` | Create a structured implementation plan |
 | `/save` | Save session state for handoff |
 | `/load` | Load previous session state |
 | `/checkpoint` | Save milestone checkpoint |

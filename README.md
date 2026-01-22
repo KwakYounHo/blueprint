@@ -3,7 +3,7 @@
 > **Plan once, develop across sessions.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-alpha-orange.svg)]()
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-blueviolet.svg)]()
 
@@ -31,7 +31,7 @@ Control the workflow through intuitive commands:
 
 | Command | Purpose |
 |---------|---------|
-| `/plan` | Create a structured implementation plan |
+| `/bplan` | Create a structured implementation plan |
 | `/save` | Save session state for handoff |
 | `/load` | Load previous session state |
 | `/checkpoint` | Save milestone checkpoint |
@@ -148,7 +148,7 @@ After installation, in each project:
 ### 2. Create Plan
 
 ```
-/plan
+/bplan
 ```
 
 Create a structured plan (Phase/Task) through conversation with the user.
@@ -164,7 +164,7 @@ Create a structured plan (Phase/Task) through conversation with the user.
 ### 4. Typical Workflow
 
 ```
-Session 1: /plan → Development → /save
+Session 1: /bplan → Development → /save
                               ↓
 Session 2: /load → Continue development → /save
                               ↓
@@ -182,7 +182,7 @@ blueprint/
 ├── core/                    # Framework core
 │   ├── claude/              # Claude Code configuration
 │   │   ├── agents/          # SubAgent definitions
-│   │   ├── commands/        # Slash commands (/plan, /save, etc.)
+│   │   ├── commands/        # Slash commands (/bplan, /save, etc.)
 │   │   ├── hooks/           # Session hooks
 │   │   └── skills/          # Blueprint skill with submodules
 │   ├── constitutions/       # Principle definitions

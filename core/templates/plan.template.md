@@ -78,7 +78,7 @@ phase-count: 0
 ## Plan Mode Strategy
 
 > **IMPORTANT**: This section MUST be followed before starting Phase implementation.
-> Triggered by: `/plan` completion OR `/load` with `yes` response.
+> Triggered by: `/bplan` completion OR `/load` with `yes` response.
 
 ### Invocation
 

@@ -3,7 +3,7 @@
 > **Plan once, develop across sessions.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-alpha-orange.svg)]()
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-blueviolet.svg)]()
 
@@ -31,7 +31,7 @@
 
 | 커맨드 | 용도 |
 |--------|------|
-| `/plan` | 구조화된 구현 계획 생성 |
+| `/bplan` | 구조화된 구현 계획 생성 |
 | `/save` | 세션 상태 저장 (핸드오프용) |
 | `/load` | 이전 세션 상태 로드 |
 | `/checkpoint` | 마일스톤 체크포인트 저장 |
@@ -148,7 +148,7 @@ cd blueprint
 ### 2. Plan 생성
 
 ```
-/plan
+/bplan
 ```
 
 사용자와 대화하며 구조화된 계획(Phase/Task)을 생성합니다.
@@ -164,7 +164,7 @@ cd blueprint
 ### 4. 일반적인 워크플로우
 
 ```
-Session 1: /plan → 개발 → /save
+Session 1: /bplan → 개발 → /save
                        ↓
 Session 2: /load → 개발 계속 → /save
                        ↓
@@ -182,7 +182,7 @@ blueprint/
 ├── core/                    # 프레임워크 핵심
 │   ├── claude/              # Claude Code 설정
 │   │   ├── agents/          # SubAgent 정의
-│   │   ├── commands/        # Slash 커맨드 (/plan, /save 등)
+│   │   ├── commands/        # Slash 커맨드 (/bplan, /save 등)
 │   │   ├── hooks/           # 세션 훅
 │   │   └── skills/          # Blueprint 스킬 (서브모듈 포함)
 │   ├── constitutions/       # 원칙 정의

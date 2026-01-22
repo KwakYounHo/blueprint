@@ -204,7 +204,7 @@ Use **AskUserQuestion** tool to ask the user:
 | Plans | `~/.claude/blueprint/projects/<alias>/plans/` | Use `plan` submodule |
 
 **NOTE**: For **querying** (status checks, listing), use submodule commands.
-Direct file access is permitted when following skill instructions (e.g., `/plan`, `/save`, `/load`).
+Direct file access is permitted when following skill instructions (e.g., `/bplan`, `/save`, `/load`).
 
 ### Session Guidelines
 

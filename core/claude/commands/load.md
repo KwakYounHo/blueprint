@@ -183,7 +183,7 @@ Try: /load 001 or /load auth
 📋 No active Plans found.
 
 Options:
-1. Create new plan: /plan
+1. Create new plan: /bplan
 2. Load completed plan: /load {plan-id}
 
 Which option?
