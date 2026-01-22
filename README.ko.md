@@ -3,7 +3,7 @@
 > **Plan once, develop across sessions.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-alpha-orange.svg)]()
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-blueviolet.svg)]()
 
