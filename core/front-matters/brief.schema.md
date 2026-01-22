@@ -4,13 +4,13 @@ status: active
 version: 1.1.0
 created: {{date}}
 updated: {{date}}
-tags: [schema, memory, specification, front-matter]
+tags: [schema, brief, specification, front-matter]
 dependencies: [front-matters/base.schema.md]
 ---
 
-# Schema: Memory FrontMatter
+# Schema: Brief FrontMatter
 
-> Extends base schema with Memory-specific fields. Memory files serve as **Specification Plans** - maintaining context across multi-session specification work and tracking implementation decisions.
+> Extends base schema with Brief-specific fields. Brief files serve as **Specification Plans** - maintaining context across multi-session specification work and tracking implementation decisions.
 
 ## Inherits
 
@@ -31,7 +31,7 @@ All fields from `base.schema.md`:
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `source-discussion` | string | `null` | Path to originating discussion file (if created from discussion) |
-| `source-memory` | string | `null` | Path to parent memory (for continuation) |
+| `source-brief` | string | `null` | Path to parent brief (for continuation) |
 
 ## Field Definitions
 
@@ -41,7 +41,7 @@ All fields from `base.schema.md`:
 - **Required**: Yes
 - **Format**: `PLAN-{NNN}`
 - **Examples**: `"PLAN-001"`, `"PLAN-042"`
-- **Description**: Reference to the parent Master Plan. Memory files are located within the plan directory.
+- **Description**: Reference to the parent Plan. Brief files are located within the plan directory.
 
 ### source-discussion
 
@@ -50,7 +50,7 @@ All fields from `base.schema.md`:
 - **Default**: `null`
 - **Format**: Relative path to discussion file
 - **Examples**: `"blueprint/discussions/001-elevenlabs-tts.md"`, `null`
-- **Description**: Traceability to the originating discussion. When `null`, Memory was created through interactive mode (direct conversation with Specifier).
+- **Description**: Traceability to the originating discussion. When `null`, Brief was created through interactive mode (direct conversation with Specifier).
 
 ### session-count
 
@@ -66,14 +66,14 @@ All fields from `base.schema.md`:
 - **Format**: `YYYY-MM-DD`
 - **Description**: Date of the most recent interaction session.
 
-### source-memory
+### source-brief
 
 - **Type**: string | null
 - **Required**: No
 - **Default**: `null`
-- **Description**: Reference to parent memory for continued sessions.
+- **Description**: Reference to parent brief for continued sessions.
 
-## Memory Body Sections (6 Required)
+## Brief Body Sections (6 Required)
 
 ### 1. Session Log
 
@@ -193,34 +193,34 @@ Tracking of outputs produced.
 | Value | Description |
 |-------|-------------|
 | `active` | Specification work in progress |
-| `completed` | All specs generated, memory archived for reference |
+| `completed` | All specs generated, brief archived for reference |
 | `archived` | Superseded or abandoned |
 
 ## Constraints
 
 | Rule | Description |
 |------|-------------|
-| Type | `type` field must be `memory` |
+| Type | `type` field must be `brief` |
 | Traceability | If `source-discussion` is set, must reference valid discussion |
 | Update | Must be updated after each significant decision |
-| Location | `blueprint/plans/{plan-id}/memory.md` |
+| Location | `blueprint/plans/{plan-id}/BRIEF.md` |
 
 ## Template
 
 For complete example, use:
 
 ```bash
-forma show memory
+forma show brief
 ```
 
 ## File Naming
 
-Memory files use sequential numbering with descriptive suffix:
+Brief files use sequential numbering with descriptive suffix:
 
 | Creation Mode | Pattern | Example |
 |---------------|---------|---------|
 | Interactive | `{NNN}-{brief-topic}.md` | `001-user-authentication.md` |
-| From Discussion | `{discussion-id}-memory.md` | `001-feature-request-memory.md` |
+| From Discussion | `{discussion-id}-brief.md` | `001-feature-request-brief.md` |
 
 **Interactive Mode** (source-discussion: null):
 - Created through direct conversation with Specifier

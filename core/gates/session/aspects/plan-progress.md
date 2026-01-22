@@ -16,7 +16,7 @@ description: "Validates Phase progress consistency across session documents"
 
 ## Description
 
-Validates that Master Plan phase progress is consistent across ROADMAP.md, CURRENT.md, and TODO.md.
+Validates that Plan phase progress is consistent across ROADMAP.md, CURRENT.md, and TODO.md.
 Ensures all documents agree on current phase and completion status.
 
 ## Criteria
@@ -51,9 +51,9 @@ Ensures all documents agree on current phase and completion status.
 - [ ] TODO.md progress roughly matches session count
 - [ ] No phase marked complete without corresponding TODO completion
 
-#### Master Plan Reference
-- [ ] Current phase exists in master-plan.md
-- [ ] Phase objectives match between CURRENT.md and master-plan.md
+#### Plan Reference
+- [ ] Current phase exists in PLAN.md
+- [ ] Phase objectives match between CURRENT.md and PLAN.md
 
 ## Validation Method
 

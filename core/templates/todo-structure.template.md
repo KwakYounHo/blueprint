@@ -5,7 +5,7 @@ version: 1.0.0
 created: {{date}}
 updated: {{date}}
 tags: [session, todo, tasks]
-dependencies: [../master-plan.md]
+dependencies: [../PLAN.md]
 
 plan-id: "PLAN-{NNN}"
 ---

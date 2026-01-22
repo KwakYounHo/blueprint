@@ -5,15 +5,15 @@ version: 1.0.0
 created: {{date}}
 updated: {{date}}
 tags: [roadmap, session, tracking]
-dependencies: [master-plan.md]
+dependencies: [PLAN.md]
 
 plan-id: "PLAN-{NNN}"
-source-plan: "master-plan.md"
+source-plan: "PLAN.md"
 ---
 
 # Roadmap: {Plan Name}
 
-> Auto-generated from Master Plan. Phase and Task list synced with master-plan.md.
+> Auto-generated from Plan. Phase and Task list synced with PLAN.md.
 
 ## Progress
 
@@ -29,7 +29,7 @@ source-plan: "master-plan.md"
 
 ### Phase 1: {Phase Name}
 
-**Objective:** {from master-plan.md}
+**Objective:** {from PLAN.md}
 **Status:** Not started
 **Started:** -
 **Completed:** -
@@ -38,7 +38,7 @@ source-plan: "master-plan.md"
 
 ### Phase 2: {Phase Name}
 
-**Objective:** {from master-plan.md}
+**Objective:** {from PLAN.md}
 **Status:** Not started
 **Started:** -
 **Completed:** -
@@ -47,7 +47,7 @@ source-plan: "master-plan.md"
 
 ### Phase 3: {Phase Name}
 
-**Objective:** {from master-plan.md}
+**Objective:** {from PLAN.md}
 **Status:** Not started
 **Started:** -
 **Completed:** -

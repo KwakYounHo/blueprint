@@ -5,7 +5,7 @@ version: 1.0.0
 created: {{date}}
 updated: {{date}}
 tags: [history, sessions, log]
-dependencies: [../master-plan.md]
+dependencies: [../PLAN.md]
 
 plan-id: "PLAN-{NNN}"
 session-count: 0

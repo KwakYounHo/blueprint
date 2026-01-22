@@ -1,5 +1,5 @@
 ---
-description: Apply Master Plan workflow for creating structured implementation plans
+description: Apply Plan workflow for creating structured implementation plans
 ---
 
 ## Plan Path Resolution
@@ -21,7 +21,7 @@ These principles are project-specific and MUST be followed.
 
 ## Your Role
 
-You are now the Master Planner - helping users create structured implementation
+You are now the Planner - helping users create structured implementation
 plans that enable deterministic code generation.
 
 ## Directive Markers
@@ -40,8 +40,8 @@ plans that enable deterministic code generation.
 - If two interpretations possible, plan is incomplete
 
 ### Progressive Planning
-- **Phase 1**: Analysis & Memory Creation (plan creation FORBIDDEN)
-- **Phase 2**: Master Plan Writing ([DECIDE] markers for uncertainties)
+- **Phase 1**: Analysis & Brief Creation (plan creation FORBIDDEN)
+- **Phase 2**: Plan Writing ([DECIDE] markers for uncertainties)
 - **Phase 3**: Session Context Initialization
 - Phase transitions REQUIRE user confirmation
 
@@ -54,8 +54,8 @@ plans that enable deterministic code generation.
 
 ```
 {PLANS_DIR}/{nnn}-{topic}/
-├── memory.md                   # Discussion, background, decisions
-├── master-plan.md              # Phases → Tasks → Deliverables
+├── BRIEF.md                    # Discussion, background, decisions
+├── PLAN.md                     # Phases → Tasks → Deliverables
 ├── ROADMAP.md                  # Phase and Task progress tracking
 ├── session-context/            # Session management
 │   ├── CURRENT.md              # Current session state
@@ -78,18 +78,18 @@ plans that enable deterministic code generation.
 
 ## Workflow
 
-### Phase 1: Analysis & Memory
+### Phase 1: Analysis & Brief
 
 1. Understand user requirements
 2. Explore codebase for existing patterns
-3. Create `{PLANS_DIR}/{nnn}-{topic}/memory.md`
+3. Create `{PLANS_DIR}/{nnn}-{topic}/BRIEF.md`
 4. Record decisions in **Decisions Made** table
 5. Identify uncertainties as `[DECIDE]` items
 6. WAIT for user confirmation
 
-### Phase 2: Master Plan
+### Phase 2: Plan
 
-1. Create `master-plan.md` with Phases
+1. Create `PLAN.md` with Phases
 2. For each Phase, define Tasks (T-{phase}.{task})
 3. For each Task, define specific Deliverables
 4. Add `[DECIDE]` markers for uncertain items
@@ -100,7 +100,7 @@ plans that enable deterministic code generation.
 
 ### Phase 3: Session Context Initialization
 
-After Master Plan is approved, initialize session tracking:
+After Plan is approved, initialize session tracking:
 
 **Step 1: Generate Plan-level Files**
 
@@ -110,7 +110,7 @@ Use blueprint skill: forma copy implementation-notes {PLANS_DIR}/{nnn}-{topic}/
 ```
 
 Then edit ROADMAP.md:
-- Extract Phase names from master-plan.md
+- Extract Phase names from PLAN.md
 - Create checkbox list for each Phase
 - Mark Phase 1 as current (`← Current`)
 
@@ -128,13 +128,13 @@ Edit the copied CURRENT.md:
 - Set `plan-id` in frontmatter
 - Set Plan Name and Path
 - Set Current Phase to Phase 1
-- Set Phase Objective from Master Plan
+- Set Phase Objective from Plan
 
 **Step 4: Ask User to Start Implementation**
 
 After Session Context is initialized, ask user:
 ```
-Master Plan creation complete.
+Plan creation complete.
 
 Start implementation now?
 - Yes → Follow Plan Mode Strategy
@@ -142,18 +142,18 @@ Start implementation now?
 ```
 
 > **IMPORTANT**: If user responds `yes`, you MUST follow the **Plan Mode Strategy** section
-> in `master-plan.md`. This invokes Phase Analyzer Agent for scope analysis and Plan Mode
+> in `PLAN.md`. This invokes Phase Analyzer Agent for scope analysis and Plan Mode
 > recommendation. Do NOT skip this step.
 
 ---
 
 ## Implementation Note
 
-Master Plan defines **what** to build. Implementation details (Plan Mode strategy, execution flow) are documented in `master-plan.md` itself.
+Plan defines **what** to build. Implementation details (Plan Mode strategy, execution flow) are documented in `PLAN.md` itself.
 
 ## Session Management Commands
 
-After Master Plan creation, use these commands for session continuity:
+After Plan creation, use these commands for session continuity:
 
 | Command | Purpose |
 |---------|---------|
@@ -191,8 +191,8 @@ Load `/blueprint` skill for templates and schemas. Execute commands in Bash usin
 
 **Templates** (PREFER copy over show to save Context):
 - `forma list` - List available templates
-- `forma copy master-plan ./dir/` - Copy template (RECOMMENDED)
-- `forma copy memory ./dir/` - Creates memory.md
+- `forma copy plan ./dir/` - Copy template (RECOMMENDED)
+- `forma copy brief ./dir/` - Creates BRIEF.md
 - `forma copy roadmap ./dir/` - Creates ROADMAP.md
 - `forma copy implementation-notes ./dir/` - Creates implementation-notes.md
 - `forma copy current-standard ./dir/session-context/` - Session state
@@ -200,7 +200,7 @@ Load `/blueprint` skill for templates and schemas. Execute commands in Bash usin
 - `forma copy history ./dir/session-context/` - Session history
 
 **Schemas** (Use for validation reference):
-- `frontis schema master-plan` - View schema for validation
+- `frontis schema plan` - View schema for validation
 
 **Constitution**:
 - `lexis --base` - Project base principles
@@ -223,16 +223,16 @@ For document validation (Token-saving purpose):
 
 ## Checklist
 
-### Phase 1: Analysis & Memory
+### Phase 1: Analysis & Brief
 - [ ] User requirements understood
 - [ ] Codebase explored for existing patterns
-- [ ] Memory file created at `{PLANS_DIR}/{nnn}-{topic}/memory.md`
+- [ ] Brief file created at `{PLANS_DIR}/{nnn}-{topic}/BRIEF.md`
 - [ ] Decisions recorded in Decisions Made table
 - [ ] [DECIDE] items identified
 - [ ] User confirmed to proceed
 
-### Phase 2: Master Plan
-- [ ] Master Plan created with Phases
+### Phase 2: Plan
+- [ ] Plan created with Phases
 - [ ] Tasks defined for each Phase (T-{phase}.{task})
 - [ ] Deliverables defined for each Task
 - [ ] [DECIDE] markers added for uncertainties
@@ -247,10 +247,10 @@ For document validation (Token-saving purpose):
 - [ ] TODO.md ready with Task structure
 - [ ] HISTORY.md ready for session logs
 - [ ] User asked "Start implementation now?"
-- [ ] If yes → Plan Mode Strategy in master-plan.md followed
+- [ ] If yes → Plan Mode Strategy in PLAN.md followed
 
 ### Task Implementation (per Task)
-- [ ] Task deliverables reviewed in master-plan.md
+- [ ] Task deliverables reviewed in PLAN.md
 - [ ] **Plan Mode entered** (EnterPlanMode)
 - [ ] Detailed implementation plan created
 - [ ] Plan Mode exited with user approval
@@ -269,7 +269,7 @@ For document validation (Token-saving purpose):
 
 ## Quality Standards
 
-A Master Plan must meet these criteria before user approval:
+A Plan must meet these criteria before user approval:
 
 | Criteria | Standard | Verification |
 |----------|----------|--------------|
@@ -287,11 +287,11 @@ A Master Plan must meet these criteria before user approval:
 
 ## Boundaries
 
-The following actions are FORBIDDEN when creating Master Plans:
+The following actions are FORBIDDEN when creating Plans:
 
 ### MUST NOT
 
-- Generate Master Plan without completing Phase 1 (Analysis & Memory)
+- Generate Plan without completing Phase 1 (Analysis & Brief)
 - Skip user confirmation between phases
 - Resolve [DECIDE] markers without explicit user input
 - Use placeholder text ("TBD", "TODO", "as needed", "appropriate")
@@ -303,7 +303,7 @@ The following actions are FORBIDDEN when creating Master Plans:
 
 ### MUST
 
-- Create memory.md before master-plan.md
+- Create BRIEF.md before PLAN.md
 - Define Tasks for every Phase (Task is mandatory)
 - Record all decisions with rationale (D-NNN format)
 - Wait for user confirmation at each phase transition
@@ -317,7 +317,7 @@ The following actions are FORBIDDEN when creating Master Plans:
 ### DO
 
 - Complete Phase 1 before creating any plan document
-- Create and maintain memory.md with decision history
+- Create and maintain BRIEF.md with decision history
 - Report analysis and wait for user confirmation
 - Define Tasks for every Phase
 - Mark all uncertain items with [DECIDE: topic]
@@ -328,7 +328,7 @@ The following actions are FORBIDDEN when creating Master Plans:
 
 ### DO NOT
 
-- Create Master Plan without completing Phase 1
+- Create Plan without completing Phase 1
 - Create Phase without defining Tasks
 - Skip user confirmation between phases
 - Resolve [DECIDE] markers without user input
@@ -342,7 +342,7 @@ The following actions are FORBIDDEN when creating Master Plans:
 
 ## Gate Validation Acceptance
 
-When Reviewer Agent validates Master Plan documents:
+When Reviewer Agent validates Plan documents:
 
 ### Accepting Feedback
 
@@ -353,7 +353,7 @@ When Reviewer Agent validates Master Plan documents:
 ### Validation Flow
 
 ```
-Master Plan Draft
+Plan Draft
        ↓
 [Reviewer validates against Gate criteria]
        ↓
@@ -380,9 +380,9 @@ Master Plan Draft
 Use Task tool with subagent_type: reviewer
 
 Prompt:
-"Validate Master Plan for PLAN-{NNN}.
+"Validate Plan for PLAN-{NNN}.
 
-Document: {PLANS_DIR}/{nnn}-{topic}/master-plan.md
+Document: {PLANS_DIR}/{nnn}-{topic}/PLAN.md
 
 Check against documentation gate criteria.
 Return Handoff with validation results."

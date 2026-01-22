@@ -43,7 +43,7 @@
 core/
 ├── claude/              # Claude Code configuration
 │   ├── agents/          # Subagent definitions (reviewer, etc.)
-│   ├── commands/        # Slash commands (/master, /save, /load, /checkpoint)
+│   ├── commands/        # Slash commands (/plan, /save, /load, /checkpoint)
 │   ├── hooks/           # Session hooks (session-init.sh)
 │   └── skills/          # Skills (blueprint with submodules)
 │       └── blueprint/   # aegis, forma, frontis, hermes, lexis, polis, project

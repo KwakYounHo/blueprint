@@ -1,10 +1,10 @@
 ---
-type: memory
+type: brief
 status: active
 version: 1.0.0
 created: {{date}}
 updated: {{date}}
-tags: [memory]
+tags: [brief]
 dependencies: []
 
 plan-id: "PLAN-{NNN}"
@@ -13,7 +13,7 @@ session-count: 1
 last-session: {{date}}
 ---
 
-# Memory: {Feature Name}
+# Brief: {Feature Name}
 
 ## CRITICAL: Specification Principles
 
@@ -75,5 +75,5 @@ last-session: {{date}}
 
 | Type | Path | Status |
 |------|------|--------|
-| Memory | {PLANS_DIR}/{plan-id}/memory.md | active |
-| Master Plan | {PLANS_DIR}/{plan-id}/master-plan.md | draft |
+| Brief | {PLANS_DIR}/{plan-id}/BRIEF.md | active |
+| Plan | {PLANS_DIR}/{plan-id}/PLAN.md | draft |

@@ -35,7 +35,7 @@ dependencies: []
 
 - **Type**: enum
 - **Required**: Yes
-- **Values**: `schema` | `constitution` | `gate` | `aspect` | `memory` | `discussion` | `master-plan` | `implementation-notes` | `lib-spec` | `feature-spec` | `roadmap` | `current` | `todo` | `history` | `checkpoint-summary` | `weekly-review`
+- **Values**: `schema` | `constitution` | `gate` | `aspect` | `brief` | `discussion` | `plan` | `implementation-notes` | `lib-spec` | `feature-spec` | `roadmap` | `current` | `todo` | `history` | `checkpoint-summary` | `weekly-review`
 - **Description**: Identifies the document category for routing and validation.
 
 ### status
@@ -52,14 +52,14 @@ dependencies: []
 | `deprecated` | Superseded, avoid using |
 | `archived` | No longer relevant, kept for history |
 
-**Memory Documents** (`memory`):
+**Brief Documents** (`brief`):
 | Value | Description |
 |-------|-------------|
 | `active` | Specification work in progress |
-| `completed` | All specs generated, memory archived for reference |
+| `completed` | All specs generated, brief archived for reference |
 | `archived` | Superseded or abandoned |
 
-**Master Plan Documents** (`master-plan`):
+**Plan Documents** (`plan`):
 | Value | Description |
 |-------|-------------|
 | `draft` | Plan in progress, may have unresolved [DECIDE] markers |
@@ -182,8 +182,8 @@ base.schema.md modified
 | `constitution` | Definition | `draft`, `active`, `deprecated`, `archived` |
 | `gate` | Definition | `draft`, `active`, `deprecated`, `archived` |
 | `aspect` | Definition | `draft`, `active`, `deprecated`, `archived` |
-| `memory` | Planning | `active`, `completed`, `archived` |
-| `master-plan` | Planning | `draft`, `ready`, `in-progress`, `completed`, `archived` |
+| `brief` | Planning | `active`, `completed`, `archived` |
+| `plan` | Planning | `draft`, `ready`, `in-progress`, `completed`, `archived` |
 | `implementation-notes` | Planning | `active`, `completed`, `archived` |
 | `lib-spec` | Specification | `draft`, `ready` |
 | `feature-spec` | Specification | `draft`, `ready` |

@@ -35,7 +35,7 @@ All fields from `base.schema.md`:
 - **Required**: Yes
 - **Format**: `PLAN-{NNN}`
 - **Examples**: `"PLAN-001"`, `"PLAN-042"`
-- **Description**: Reference to the parent Master Plan.
+- **Description**: Reference to the parent Plan.
 
 ### phase-completed
 

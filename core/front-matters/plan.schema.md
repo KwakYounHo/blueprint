@@ -4,13 +4,13 @@ status: active
 version: 1.0.0
 created: 2026-01-13
 updated: 2026-01-13
-tags: [schema, master-plan, front-matter]
+tags: [schema, plan, front-matter]
 dependencies: [front-matters/base.schema.md]
 ---
 
-# Schema: Master Plan FrontMatter
+# Schema: Plan FrontMatter
 
-> Extends base schema with Master Plan-specific fields. Master Plan files define high-level implementation phases and track progress through Directive Markers.
+> Extends base schema with Plan-specific fields. Plan files define high-level implementation phases and track progress through Directive Markers.
 
 ## Inherits
 
@@ -24,7 +24,7 @@ All fields from `base.schema.md`:
 |-------|------|-------------|
 | `plan-id` | string | Unique plan identifier (PLAN-NNN) |
 | `name` | string | Human-readable plan name |
-| `source-memory` | string | Reference to memory file |
+| `source-brief` | string | Reference to brief file |
 | `phase-count` | number | Number of phases in plan |
 
 ## Additional Optional Fields
@@ -51,13 +51,13 @@ All fields from `base.schema.md`:
 - **Examples**: `"ElevenLabs TTS Integration"`, `"User Authentication System"`
 - **Description**: Descriptive name for the plan.
 
-### source-memory
+### source-brief
 
 - **Type**: string
 - **Required**: Yes
-- **Format**: Relative path to memory file
-- **Default**: `"memory.md"`
-- **Description**: Reference to the memory file containing decisions and context.
+- **Format**: Relative path to brief file
+- **Default**: `"BRIEF.md"`
+- **Description**: Reference to the brief file containing decisions and context.
 
 ### phase-count
 
@@ -83,7 +83,7 @@ All fields from `base.schema.md`:
 | `completed` | All phases implemented |
 | `archived` | Plan superseded or abandoned |
 
-## Master Plan Body Sections
+## Plan Body Sections
 
 ### Required Sections
 
@@ -106,9 +106,9 @@ All fields from `base.schema.md`:
 
 | Rule | Description |
 |------|-------------|
-| Type | `type` field must be `master-plan` |
-| Location | `blueprint/plans/{plan-id}/master-plan.md` |
-| Memory | Must have corresponding memory.md in same directory |
+| Type | `type` field must be `plan` |
+| Location | `blueprint/plans/{plan-id}/PLAN.md` |
+| Brief | Must have corresponding BRIEF.md in same directory |
 | Directive Markers | All `[DECIDE]` must be resolved before `status: ready` |
 
 ## Template
@@ -116,5 +116,5 @@ All fields from `base.schema.md`:
 For complete example, use:
 
 ```bash
-blueprint.sh forma show master-plan
+blueprint.sh forma show plan
 ```

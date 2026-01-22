@@ -1,10 +1,10 @@
 ---
-description: Load session state from Master Plan (adaptive)
+description: Load session state from Plan (adaptive)
 ---
 
 # Adaptive Session Load
 
-Load previous session's state with Master Plan context and verification.
+Load previous session's state with Plan context and verification.
 
 ## Blueprint Skill Reference
 
@@ -37,7 +37,7 @@ Load `/blueprint` skill for plan discovery and handoff operations. Execute comma
 ~/.claude/skills/blueprint/blueprint.sh plan list --status in-progress
 ```
 
-> **Note**: Each plan is a **directory** containing master-plan.md, ROADMAP.md, session-context/, etc.
+> **Note**: Each plan is a **directory** containing PLAN.md, ROADMAP.md, session-context/, etc.
 
 After plan selection (Phase 1), set:
 - `{PLAN_PATH}` = resolved plan path (e.g., from `~/.claude/skills/blueprint/blueprint.sh plan resolve 001`)
@@ -92,7 +92,7 @@ ELSE:
 Read and understand before verification:
 
 1. **Read Plan Context:**
-   - `{PLAN_PATH}/master-plan.md` - Phase definitions
+   - `{PLAN_PATH}/PLAN.md` - Phase definitions
    - `{PLAN_PATH}/ROADMAP.md` - Progress status
    - `{PLAN_PATH}/implementation-notes.md` - Deviations and issues
 
@@ -104,7 +104,7 @@ Read and understand before verification:
    - Plan: {name}
    - Current Phase: {N} - {name}
    - Current Task: {T-N.M} - {task name}
-   - Task Objective: {deliverable from master-plan.md}
+   - Task Objective: {deliverable from PLAN.md}
    - Previous work: {summary}
    - My task: {next steps from CURRENT.md}
    - Expected mode: {Quick/Standard/Compressed}
@@ -139,12 +139,12 @@ Present briefing based on detected mode:
 ### Phase 5: User Confirmation
 
 Wait for input:
-- `yes` → **IMPORTANT**: Follow Plan Mode Strategy in `master-plan.md` (if plan in-progress)
+- `yes` → **IMPORTANT**: Follow Plan Mode Strategy in `PLAN.md` (if plan in-progress)
 - `no` / `wait` → Pause for user review
 - `explain {topic}` → Provide detail on topic
 - `show {file}` → Display file content
 
-> **IMPORTANT**: On `yes`, you MUST follow the **Plan Mode Strategy** section in `{PLAN_PATH}/master-plan.md`.
+> **IMPORTANT**: On `yes`, you MUST follow the **Plan Mode Strategy** section in `{PLAN_PATH}/PLAN.md`.
 > This invokes Phase Analyzer Agent for scope analysis and Plan Mode recommendation.
 > Do NOT skip this step - it ensures appropriate planning depth for each Phase.
 
@@ -180,10 +180,10 @@ Try: /load 001 or /load auth
 ### No Active Plans
 
 ```
-📋 No active Master Plans found.
+📋 No active Plans found.
 
 Options:
-1. Create new plan: /master
+1. Create new plan: /plan
 2. Load completed plan: /load {plan-id}
 
 Which option?
@@ -296,7 +296,7 @@ Before presenting briefing, verify:
 |-----------|------------|
 | Missing TODO.md | Check CURRENT.md "Next Steps" |
 | No HISTORY.md | Assume Quick task mode |
-| Missing ROADMAP.md | Read phases from master-plan.md |
+| Missing ROADMAP.md | Read phases from PLAN.md |
 
 ---
 

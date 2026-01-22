@@ -5,7 +5,7 @@ version: 1.0.0
 created: {{date}}
 updated: {{date}}
 tags: [implementation, notes]
-dependencies: [master-plan.md]
+dependencies: [PLAN.md]
 
 plan-id: "PLAN-{NNN}"
 ---
@@ -21,7 +21,7 @@ plan-id: "PLAN-{NNN}"
 
 ## Deviations from Plan
 
-> Record when implementation differs from master-plan.md and why.
+> Record when implementation differs from PLAN.md and why.
 
 | Date | Phase/Task | Original Plan | Actual Implementation | Reason |
 |------|------------|---------------|----------------------|--------|

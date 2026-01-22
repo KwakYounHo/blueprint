@@ -20,7 +20,7 @@ All fields from `base.schema.md` (type, status, version, created, updated, tags,
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `plan-id` | string | Master Plan identifier (e.g., "PLAN-001") |
+| `plan-id` | string | Plan identifier (e.g., "PLAN-001") |
 | `week-start` | date | Start date of the review week |
 | `week-end` | date | End date of the review week |
 
@@ -38,7 +38,7 @@ All fields from `base.schema.md` (type, status, version, created, updated, tags,
 - **Required**: Yes
 - **Format**: `PLAN-{NNN}` where NNN is zero-padded number
 - **Example**: `"PLAN-001"`, `"PLAN-042"`
-- **Description**: Links this weekly review to its parent Master Plan.
+- **Description**: Links this weekly review to its parent Plan.
 
 ### week-start
 
@@ -75,7 +75,7 @@ All fields from `base.schema.md` (type, status, version, created, updated, tags,
 1. `week-end` MUST be after `week-start`
 2. `week-end - week-start` SHOULD be approximately 7 days
 3. `sessions-count` MUST be non-negative integer
-4. `plan-id` MUST reference an existing Master Plan
+4. `plan-id` MUST reference an existing Plan
 
 ## Example FrontMatter
 
@@ -87,7 +87,7 @@ version: 1.0.0
 created: 2026-01-12
 updated: 2026-01-12
 tags: [weekly-review, metrics, progress]
-dependencies: [../master-plan.md, HISTORY.md]
+dependencies: [../PLAN.md, HISTORY.md]
 
 plan-id: "PLAN-001"
 week-start: "2026-01-06"

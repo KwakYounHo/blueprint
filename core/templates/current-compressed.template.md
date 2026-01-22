@@ -5,7 +5,7 @@ version: 1.0.0
 created: {{date}}
 updated: {{date}}
 tags: [session, handoff, current, compressed]
-dependencies: [../master-plan.md, ../ROADMAP.md]
+dependencies: [../PLAN.md, ../ROADMAP.md]
 
 plan-id: "PLAN-{NNN}"
 session-id: 1

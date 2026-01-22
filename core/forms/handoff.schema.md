@@ -97,7 +97,7 @@ OBJECTIVE[after-load:compressed]
 **Phase:** {N} of {Total} - {Phase Name}
 **Sessions:** {total count}
 
-**Long-term Goal:** {from master-plan}
+**Long-term Goal:** {from PLAN.md}
 **Previous Phase:** {archived summary}
 **Archive:** `session-context/archive/{DATE}/`
 
@@ -248,7 +248,7 @@ task:
   action: analyze
   context: phase-analysis
   response-form: "response:phase-analysis"
-  master_plan: "{path to master-plan.md}"
+  plan: "{path to PLAN.md}"
   phase: {N}
 ```
 ---e
@@ -302,7 +302,7 @@ OBJECTIVE[response:phase-analysis:blocked]
 handoff:
   status: blocked
   context: phase-analysis
-  reason: "{specific issue - e.g., Master Plan not found, Phase not found}"
+  reason: "{specific issue - e.g., Plan not found, Phase not found}"
   suggestion: "{how to resolve - e.g., check file path, verify Phase number}"
 ```
 ---e

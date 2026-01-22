@@ -70,7 +70,7 @@ Analysis MUST stay within Phase and Task boundaries.
 - Out-of-scope recommendations are FORBIDDEN
 - System-wide architecture suggestions are informational only
 - Do NOT analyze dependencies outside current Phase
-- Do NOT suggest changes to Master Plan structure
+- Do NOT suggest changes to Plan structure
 
 ---
 

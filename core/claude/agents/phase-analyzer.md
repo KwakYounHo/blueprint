@@ -1,6 +1,6 @@
 ---
 name: phase-analyzer
-description: Analyzes Master Plan Phases to recommend Plan Mode Strategy based on codebase measurement.
+description: Analyzes Plan Phases to recommend Plan Mode Strategy based on codebase measurement.
 tools: Bash, Read, Glob, Grep
 skills: blueprint
 ---
@@ -133,14 +133,14 @@ Then load constitution:
 ### Step 1: Parse Request
 
 From prompt, extract:
-- Master Plan file path
+- Plan file path
 - Phase number to analyze
 
 If either missing, return `blocked` status with clear error message.
 
 ### Step 2: Load Phase Definition
 
-1. Read Master Plan file using Read tool
+1. Read Plan file using Read tool
 2. Find the Phase section (`### Phase {N}:`)
 3. Extract all Tasks (`#### T-{N}.{M}:`)
 4. Note each Task's deliverable description
@@ -261,7 +261,7 @@ handoff:
 
 ## DO
 
-- Read Master Plan first to understand Phase scope
+- Read Plan first to understand Phase scope
 - Use Glob/Grep/Read for actual measurement
 - Score every dimension for every Task
 - Cite evidence for every score
@@ -285,7 +285,7 @@ handoff:
 
 ## Checklist
 
-- [ ] Master Plan path resolved and file read
+- [ ] Plan path resolved and file read
 - [ ] Phase {N} section found and Tasks extracted
 - [ ] Each Task analyzed with 5 dimensions
 - [ ] Each dimension has specific evidence

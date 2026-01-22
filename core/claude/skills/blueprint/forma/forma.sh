@@ -51,8 +51,8 @@ do_show() {
     echo "Usage: forma show <name>"
     echo ""
     echo "Examples:"
-    echo "  blueprint.sh forma show master-plan"
-    echo "  blueprint.sh forma show memory"
+    echo "  blueprint.sh forma show plan"
+    echo "  blueprint.sh forma show brief"
     echo "  blueprint.sh forma show lib-spec"
     echo ""
     echo "Run 'blueprint.sh forma list' to see available templates."
@@ -86,8 +86,8 @@ do_copy() {
     echo "Usage: forma copy <template> <target>"
     echo ""
     echo "Examples:"
-    echo "  blueprint.sh forma copy master-plan blueprint/plans/001-feature/"
-    echo "  blueprint.sh forma copy memory blueprint/plans/001-feature/my-memory.md"
+    echo "  blueprint.sh forma copy plan blueprint/plans/001-feature/"
+    echo "  blueprint.sh forma copy brief blueprint/plans/001-feature/my-brief.md"
     echo ""
     echo "If target is a directory (ends with / or exists), file is named after template."
     echo "If target is a file path, that exact path is used."
@@ -149,8 +149,8 @@ case "$COMMAND" in
     echo ""
     echo "Examples:"
     echo "  blueprint.sh forma list"
-    echo "  blueprint.sh forma show master-plan"
-    echo "  blueprint.sh forma copy master-plan blueprint/plans/001-feature/"
+    echo "  blueprint.sh forma show plan"
+    echo "  blueprint.sh forma copy plan blueprint/plans/001-feature/"
     exit 1
     ;;
 esac

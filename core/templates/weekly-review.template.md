@@ -5,7 +5,7 @@ version: 1.0.0
 created: {{date}}
 updated: {{date}}
 tags: [weekly-review, metrics, progress]
-dependencies: [../master-plan.md, HISTORY.md]
+dependencies: [../PLAN.md, HISTORY.md]
 
 plan-id: "PLAN-{NNN}"
 week-start: "{{date}}"

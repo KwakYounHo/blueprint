@@ -5,7 +5,7 @@ version: 1.0.0
 created: {{date}}
 updated: {{date}}
 tags: [session, handoff, current]
-dependencies: [../master-plan.md, ../ROADMAP.md]
+dependencies: [../PLAN.md, ../ROADMAP.md]
 
 plan-id: "PLAN-{NNN}"
 session-id: 1
@@ -20,13 +20,13 @@ current-task: "T-1.1"
 
 ---
 
-## Master Plan Context
+## Plan Context
 
 **Plan:** PLAN-{NNN} - {Plan Name}
-**Plan Path:** `../master-plan.md`
+**Plan Path:** `../PLAN.md`
 **Current Phase:** Phase {N} - {Phase Name}
 **Current Task:** T-{N}.{M} - {Task Name}
-**Task Objective:** {One sentence from master-plan.md}
+**Task Objective:** {One sentence from PLAN.md}
 
 ---
 
@@ -68,7 +68,7 @@ current-task: "T-1.1"
 
 ## References
 
-- Master Plan: `../master-plan.md`
+- Plan: `../PLAN.md`
 - ROADMAP: `../ROADMAP.md`
 - ADR: {if applicable}
 - Related Issues: {links}

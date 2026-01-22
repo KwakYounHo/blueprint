@@ -35,7 +35,7 @@ All fields from `base.schema.md`:
 - **Required**: Yes
 - **Format**: `PLAN-{NNN}`
 - **Examples**: `"PLAN-001"`, `"PLAN-042"`
-- **Description**: Reference to the parent Master Plan.
+- **Description**: Reference to the parent Plan.
 
 ### session-id
 
@@ -49,7 +49,7 @@ All fields from `base.schema.md`:
 - **Type**: number
 - **Required**: Yes
 - **Minimum**: 1
-- **Description**: Current phase number from Master Plan.
+- **Description**: Current phase number from Plan.
 
 ### current-task
 

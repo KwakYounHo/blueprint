@@ -53,17 +53,17 @@ do_list() {
     local plan_name
     plan_name=$(basename "$plan_dir")
 
-    # If status filter, check master-plan.md frontmatter
+    # If status filter, check PLAN.md frontmatter
     if [ -n "$status_filter" ]; then
-      local master_plan="$plan_dir/master-plan.md"
-      if [ -f "$master_plan" ]; then
+      local plan_file="$plan_dir/PLAN.md"
+      if [ -f "$plan_file" ]; then
         local fm
-        fm=$(get_frontmatter "$master_plan")
+        fm=$(get_frontmatter "$plan_file")
         local plan_status
         plan_status=$(get_field "$fm" "status")
         [ "$plan_status" != "$status_filter" ] && continue
       else
-        # No master-plan.md, skip if filtering
+        # No PLAN.md, skip if filtering
         continue
       fi
     fi

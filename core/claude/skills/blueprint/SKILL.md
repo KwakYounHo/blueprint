@@ -154,7 +154,7 @@ blueprint plan resolve 001
 
 **Load this skill IMMEDIATELY** when user mentions:
 - Blueprint project, plan, or phase
-- Master Plan status or progress
+- Plan status or progress
 - Project initialization or registration
 
 Then use appropriate commands:
@@ -204,7 +204,7 @@ Use **AskUserQuestion** tool to ask the user:
 | Plans | `~/.claude/blueprint/projects/<alias>/plans/` | Use `plan` submodule |
 
 **NOTE**: For **querying** (status checks, listing), use submodule commands.
-Direct file access is permitted when following skill instructions (e.g., `/master`, `/save`, `/load`).
+Direct file access is permitted when following skill instructions (e.g., `/plan`, `/save`, `/load`).
 
 ### Session Guidelines
 

@@ -10,7 +10,7 @@ dependencies: [base.schema.md]
 
 # Schema: Roadmap FrontMatter
 
-> Extends base schema with Roadmap-specific fields. Roadmap files track Phase progress for a Master Plan.
+> Extends base schema with Roadmap-specific fields. Roadmap files track Phase progress for a Plan.
 
 ## Inherits
 
@@ -23,7 +23,7 @@ All fields from `base.schema.md`:
 | Field | Type | Description |
 |-------|------|-------------|
 | `plan-id` | string | Parent plan identifier (PLAN-NNN) |
-| `source-plan` | string | Path to master-plan.md |
+| `source-plan` | string | Path to PLAN.md |
 
 ## Field Definitions
 
@@ -33,14 +33,14 @@ All fields from `base.schema.md`:
 - **Required**: Yes
 - **Format**: `PLAN-{NNN}`
 - **Examples**: `"PLAN-001"`, `"PLAN-042"`
-- **Description**: Reference to the parent Master Plan.
+- **Description**: Reference to the parent Plan.
 
 ### source-plan
 
 - **Type**: string
 - **Required**: Yes
-- **Format**: Relative path to master-plan.md
-- **Examples**: `"master-plan.md"`
+- **Format**: Relative path to PLAN.md
+- **Examples**: `"PLAN.md"`
 - **Description**: Source file for Phase definitions. ROADMAP Phase list should sync with this file.
 
 ## Status Definitions
@@ -57,7 +57,7 @@ All fields from `base.schema.md`:
 |------|-------------|
 | Type | `type` field must be `roadmap` |
 | Location | `blueprint/plans/{plan-id}/ROADMAP.md` |
-| Sync | Phase and Task list must match master-plan.md |
+| Sync | Phase and Task list must match PLAN.md |
 | Task Format | Tasks use `T-{N}.{M}` format under each Phase |
 
 ## Template

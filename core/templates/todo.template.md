@@ -5,7 +5,7 @@ version: 1.0.0
 created: {{date}}
 updated: {{date}}
 tags: [todo, tasks, tracking]
-dependencies: [../master-plan.md, CURRENT.md]
+dependencies: [../PLAN.md, CURRENT.md]
 
 plan-id: "PLAN-{NNN}"
 current-phase: 1

@@ -16,17 +16,17 @@ Users directly control the workflow through intuitive commands:
 
 | Command | Purpose |
 |---------|---------|
-| `/master` | Create a structured implementation plan (Master Plan) |
+| `/plan` | Create a structured implementation plan |
 | `/save` | Save session state for handoff |
 | `/load` | Load previous session state |
 | `/checkpoint` | Save milestone checkpoint |
 
-### 2. Master Plan
+### 2. Structured Plan
 
 Decompose complex work into structured Phase/Task hierarchies:
 
 ```
-Master Plan
+Plan
 ├── Phase 1: Foundation
 │   ├── Task 1.1: Environment setup
 │   └── Task 1.2: Basic structure

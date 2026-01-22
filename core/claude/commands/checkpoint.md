@@ -1,10 +1,10 @@
 ---
-description: Save major milestone checkpoint for Master Plan phase completion
+description: Save major milestone checkpoint for Plan phase completion
 ---
 
 # Checkpoint: Milestone Save
 
-Comprehensive checkpoint for completing a Master Plan phase.
+Comprehensive checkpoint for completing a Plan phase.
 
 ## When to Use
 
@@ -41,7 +41,7 @@ Load `/blueprint` skill for template and handoff operations. Execute commands in
 ~/.claude/skills/blueprint/blueprint.sh plan resolve auth  # → /path/to/plans/NNN-auth-feature/
 ```
 
-> **Note**: Each plan is a **directory** containing master-plan.md, ROADMAP.md, session-context/, etc.
+> **Note**: Each plan is a **directory** containing PLAN.md, ROADMAP.md, session-context/, etc.
 
 After plan recognition, set:
 - `{PLAN_PATH}` = output from `~/.claude/skills/blueprint/blueprint.sh plan resolve <identifier>`
@@ -150,7 +150,7 @@ Shift to next phase:
 **Step 8.1**: Session Content Analysis
 
 Review conversation for potential implementation-notes content (same as /save):
-- **Deviations**: Approach changes from master-plan.md
+- **Deviations**: Approach changes from PLAN.md
 - **Issues**: Blockers, bugs, unexpected problems
 - **Learnings**: Insights, discoveries
 
@@ -187,11 +187,11 @@ Options:
 3. Continue anyway
 ```
 
-### Step 9: Check Master Plan Status
+### Step 9: Check Plan Status
 
 ```
 IF all phases completed in ROADMAP.md:
-    Update master-plan.md frontmatter:
+    Update PLAN.md frontmatter:
     - status: in-progress → completed
 ```
 
@@ -313,7 +313,7 @@ Rename to: `WEEKLY-REVIEW-{YYYY-MM-DD}.md`
 When all phases are done:
 
 ```
-🎉 Master Plan PLAN-{NNN} completed!
+🎉 Plan PLAN-{NNN} completed!
 
 Duration: {start} to {end}
 Total Phases: {N}

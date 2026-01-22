@@ -49,7 +49,7 @@ All fields from `base.schema.md`:
 - **Type**: string
 - **Required**: Yes
 - **Format**: `PLAN-{NNN}`
-- **Description**: Reference to the parent Master Plan.
+- **Description**: Reference to the parent Plan.
 
 ### lib-dependencies
 

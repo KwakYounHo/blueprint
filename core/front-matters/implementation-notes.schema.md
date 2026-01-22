@@ -31,7 +31,7 @@ All fields from `base.schema.md`:
 - **Type**: string
 - **Required**: Yes
 - **Format**: `PLAN-{NNN}`
-- **Description**: Reference to the parent Master Plan.
+- **Description**: Reference to the parent Plan.
 
 ## Status Definitions
 
@@ -60,7 +60,7 @@ All fields from `base.schema.md`:
 |------|-------------|
 | Type | `type` field must be `implementation-notes` |
 | Location | `blueprint/plans/{plan-id}/implementation-notes.md` |
-| Creation | Initialized after master-plan approval; populated during implementation |
+| Creation | Initialized after plan approval; populated during implementation |
 
 ## Template
 

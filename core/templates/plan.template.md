@@ -1,19 +1,19 @@
 ---
-type: master-plan
+type: plan
 status: draft
 version: 1.0.0
 created: {{date}}
 updated: {{date}}
-tags: [master-plan]
-dependencies: [memory.md]
+tags: [plan]
+dependencies: [BRIEF.md]
 
 plan-id: "PLAN-{NNN}"
 name: "{Plan Name}"
-source-memory: "memory.md"
+source-brief: "BRIEF.md"
 phase-count: 0
 ---
 
-# Master Plan: {Plan Name}
+# Plan: {Plan Name}
 
 ## Overview
 
@@ -78,7 +78,7 @@ phase-count: 0
 ## Plan Mode Strategy
 
 > **IMPORTANT**: This section MUST be followed before starting Phase implementation.
-> Triggered by: `/master` completion OR `/load` with `yes` response.
+> Triggered by: `/plan` completion OR `/load` with `yes` response.
 
 ### Invocation
 
@@ -88,9 +88,9 @@ At Phase start, invoke Phase Analyzer Agent:
 Task tool:
   subagent_type: "phase-analyzer"
   prompt: |
-    Analyze Phase {N} of Master Plan.
+    Analyze Phase {N} of Plan.
 
-    Master Plan: {path to master-plan.md}
+    Plan: {path to PLAN.md}
     Phase: {N}
 
     Perform 5-dimension evaluation for each Task.
@@ -132,4 +132,4 @@ For each Task (regardless of Plan Mode choice):
 
 | Type | Path | Description |
 |------|------|-------------|
-| Memory | `memory.md` | Decisions Made (D-NNN), Background, Discussion |
+| Brief | `BRIEF.md` | Decisions Made (D-NNN), Background, Discussion |

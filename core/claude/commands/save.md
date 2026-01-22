@@ -1,10 +1,10 @@
 ---
-description: Save session state for Master Plan handoff (adaptive)
+description: Save session state for Plan handoff (adaptive)
 ---
 
 # Adaptive Session Save
 
-Save session state with Master Plan context for handoff to next session.
+Save session state with Plan context for handoff to next session.
 
 ## Blueprint Skill Reference
 
@@ -32,7 +32,7 @@ Load `/blueprint` skill for template and handoff operations. Execute commands in
 ~/.claude/skills/blueprint/blueprint.sh plan resolve auth  # → /path/to/plans/NNN-auth-feature/
 ```
 
-> **Note**: Each plan is a **directory** containing master-plan.md, ROADMAP.md, session-context/, etc.
+> **Note**: Each plan is a **directory** containing PLAN.md, ROADMAP.md, session-context/, etc.
 
 ---
 
@@ -110,8 +110,8 @@ Select appropriate template
 - Modified files
 - Current TODO list (if exists)
 
-**Master Plan gathering:**
-- Read `{PLAN_PATH}/master-plan.md` for Phase info
+**Plan gathering:**
+- Read `{PLAN_PATH}/PLAN.md` for Phase info
 - Read `{PLAN_PATH}/ROADMAP.md` for progress status
 - Determine current Phase from CURRENT.md or ask user
 - Determine current Task from TODO.md or ask user
@@ -126,7 +126,7 @@ Select appropriate template
 ### Step 4: Write Files
 
 **Update CURRENT.md:**
-- Include Master Plan Context section
+- Include Plan Context section
 - Update `session-id` in frontmatter (increment)
 - Update `current-phase` in frontmatter
 - Update `current-task` in frontmatter
@@ -146,7 +146,7 @@ Select appropriate template
 **Step 5.1**: Session Content Analysis
 
 Review the current session conversation for potential implementation-notes content:
-- **Deviations**: Approach changes from master-plan.md (e.g., "instead of", "changed approach", "decided to")
+- **Deviations**: Approach changes from PLAN.md (e.g., "instead of", "changed approach", "decided to")
 - **Issues**: Blockers, bugs, unexpected problems (e.g., "blocked by", "error", "doesn't work")
 - **Learnings**: Insights, discoveries (e.g., "realized", "found out", "turns out")
 
@@ -236,7 +236,7 @@ No existing session context found.
 
 Options:
 1. Specify plan: /save 001 or /save auth
-2. Create new plan first: /master
+2. Create new plan first: /plan
 
 Which option?
 ```
