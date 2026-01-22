@@ -4,13 +4,20 @@ description: Apply Plan workflow for creating structured implementation plans
 
 ## Plan Path Resolution
 
-**First**, resolve the current project's plans directory:
-
+**Get plans directory:**
 ```bash
-PLANS_DIR=$(~/.claude/skills/blueprint/blueprint.sh project current --plans)
+~/.claude/skills/blueprint/blueprint.sh plan dir
 ```
 
-Use `{PLANS_DIR}` for all plan path references below.
+**Resolve specific plan:**
+```bash
+~/.claude/skills/blueprint/blueprint.sh plan resolve 001   # → /path/to/plans/001-topic/
+~/.claude/skills/blueprint/blueprint.sh plan resolve auth  # → /path/to/plans/NNN-auth-feature/
+```
+
+> **Note**: Each plan is a **directory** containing PLAN.md, BRIEF.md, ROADMAP.md, session-context/, etc.
+
+Use `{PLANS_DIR}` (from `plan dir`) and `{PLAN_PATH}` (from `plan resolve`) for path references below.
 
 ---
 
