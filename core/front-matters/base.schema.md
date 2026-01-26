@@ -35,7 +35,7 @@ dependencies: []
 
 - **Type**: enum
 - **Required**: Yes
-- **Values**: `schema` | `constitution` | `gate` | `aspect` | `brief` | `discussion` | `plan` | `implementation-notes` | `lib-spec` | `feature-spec` | `roadmap` | `current` | `todo` | `history` | `checkpoint-summary` | `weekly-review`
+- **Values**: `schema` | `constitution` | `gate` | `aspect` | `brief` | `discussion` | `plan` | `implementation-notes` | `roadmap` | `current` | `todo` | `history` | `checkpoint-summary` | `weekly-review`
 - **Description**: Identifies the document category for routing and validation.
 
 ### status
@@ -74,12 +74,6 @@ dependencies: []
 | `active` | Implementation ongoing, notes being added |
 | `completed` | Implementation finished |
 | `archived` | Historical reference |
-
-**Specification Documents** (`lib-spec`, `feature-spec`):
-| Value | Description |
-|-------|-------------|
-| `draft` | Specification in progress |
-| `ready` | All sections complete, ready for implementation |
 
 **Discussion Documents** (`discussion`):
 | Value | Description |
@@ -185,8 +179,6 @@ base.schema.md modified
 | `brief` | Planning | `active`, `completed`, `archived` |
 | `plan` | Planning | `draft`, `ready`, `in-progress`, `completed`, `archived` |
 | `implementation-notes` | Planning | `active`, `completed`, `archived` |
-| `lib-spec` | Specification | `draft`, `ready` |
-| `feature-spec` | Specification | `draft`, `ready` |
 | `discussion` | Discussion | `recording`, `archived` |
 | `roadmap` | Session | `active`, `completed`, `archived` |
 | `current` | Session | `active`, `archived` |
