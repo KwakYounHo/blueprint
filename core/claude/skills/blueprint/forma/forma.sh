@@ -53,7 +53,7 @@ do_show() {
     echo "Examples:"
     echo "  blueprint.sh forma show plan"
     echo "  blueprint.sh forma show brief"
-    echo "  blueprint.sh forma show lib-spec"
+    echo "  blueprint.sh forma show roadmap"
     echo ""
     echo "Run 'blueprint.sh forma list' to see available templates."
     exit 1
@@ -75,6 +75,22 @@ do_show() {
   fi
 
   cat "$template_file"
+}
+
+# === FILENAME MAPPING ===
+# Map template names to proper output filenames (uppercase for core documents)
+get_output_filename() {
+  local name="$1"
+  case "$name" in
+    brief) echo "BRIEF.md" ;;
+    plan) echo "PLAN.md" ;;
+    roadmap) echo "ROADMAP.md" ;;
+    current-standard|current-quick|current-compressed) echo "CURRENT.md" ;;
+    todo) echo "TODO.md" ;;
+    history) echo "HISTORY.md" ;;
+    checkpoint-summary) echo "CHECKPOINT-SUMMARY.md" ;;
+    *) echo "${name}.md" ;;  # default: use template name as-is
+  esac
 }
 
 # === COPY ===
@@ -112,9 +128,9 @@ do_copy() {
   # Determine output path
   local output_file
   if [[ "$target" == */ ]] || [ -d "$target" ]; then
-    # Target is directory → use template name
+    # Target is directory → use mapped filename
     mkdir -p "$target"
-    output_file="${target%/}/${name}.md"
+    output_file="${target%/}/$(get_output_filename "$name")"
   else
     # Target is file path
     mkdir -p "$(dirname "$target")"
