@@ -20,6 +20,7 @@ Project - Manage project aliases for cross-machine portability
 
 Usage:
   blueprint project init <alias> [--notes "text"]   Initialize new project
+  blueprint project sync [--dry-run] [--force]      Sync templates/schemas from base
   blueprint project list                            List all projects
   blueprint project show <alias>                    Show project details
   blueprint project remove <alias>                  Remove project
@@ -35,6 +36,8 @@ Options:
 Examples:
   blueprint project init myproject
   blueprint project init myproject --notes "My awesome project"
+  blueprint project sync --dry-run
+  blueprint project sync --force
   blueprint project list
   blueprint project show myproject
   blueprint project link myproject
@@ -516,6 +519,248 @@ do_current() {
   fi
 }
 
+# =============================================================================
+# Sync Functions
+# =============================================================================
+
+# Compare semver versions: returns 0 if $1 > $2
+version_gt() {
+  [ "$1" = "$2" ] && return 1
+  local higher
+  higher=$(printf '%s\n' "$1" "$2" | sort -V | tail -n1)
+  [ "$higher" = "$1" ]
+}
+
+# Compare dates (YYYY-MM-DD): returns 0 if $1 > $2
+date_gt() {
+  [ "$1" = "$2" ] && return 1
+  [ "$1" \> "$2" ]
+}
+
+# Get version from file's FrontMatter
+get_file_version() {
+  local file="$1"
+  local fm
+  fm=$(get_frontmatter "$file")
+  local ver
+  ver=$(get_field "$fm" "version")
+  echo "${ver:-0.0.0}"
+}
+
+# Get updated date from file's FrontMatter
+get_file_updated() {
+  local file="$1"
+  local fm
+  fm=$(get_frontmatter "$file")
+  local upd
+  upd=$(get_field "$fm" "updated")
+  echo "${upd:-1970-01-01}"
+}
+
+# Compare two files and return status
+# Returns: NEW, UPDATE, PATCH, DIFFERS, OK, CUSTOMIZED
+compare_files() {
+  local base_file="$1"
+  local project_file="$2"
+
+  # File doesn't exist in project
+  if [ ! -f "$project_file" ]; then
+    echo "NEW"
+    return
+  fi
+
+  local base_ver project_ver
+  base_ver=$(get_file_version "$base_file")
+  project_ver=$(get_file_version "$project_file")
+
+  # Version comparison
+  if version_gt "$base_ver" "$project_ver"; then
+    echo "UPDATE"
+    return
+  elif version_gt "$project_ver" "$base_ver"; then
+    echo "CUSTOMIZED"
+    return
+  fi
+
+  # Same version - compare updated date
+  local base_upd project_upd
+  base_upd=$(get_file_updated "$base_file")
+  project_upd=$(get_file_updated "$project_file")
+
+  if date_gt "$base_upd" "$project_upd"; then
+    echo "PATCH"
+  elif date_gt "$project_upd" "$base_upd"; then
+    echo "CUSTOMIZED"
+  else
+    # Same version and updated - check content with checksum
+    local base_hash project_hash
+    base_hash=$(md5 -q "$base_file" 2>/dev/null || md5sum "$base_file" | cut -d' ' -f1)
+    project_hash=$(md5 -q "$project_file" 2>/dev/null || md5sum "$project_file" | cut -d' ' -f1)
+
+    if [ "$base_hash" != "$project_hash" ]; then
+      echo "DIFFERS"
+    else
+      echo "OK"
+    fi
+  fi
+}
+
+# Sync a single directory (recursive)
+sync_directory() {
+  local base_path="$1"
+  local project_path="$2"
+  local dry_run="$3"
+  local force="$4"
+  local rel_path="${5:-}"
+
+  [ ! -d "$base_path" ] && return
+
+  # Ensure project directory exists
+  if [ "$dry_run" = false ]; then
+    mkdir -p "$project_path"
+  fi
+
+  # Process files
+  for base_file in "$base_path"/*; do
+    [ ! -e "$base_file" ] && continue
+
+    local filename
+    filename=$(basename "$base_file")
+    local project_file="$project_path/$filename"
+    local display_path="${rel_path:+$rel_path/}$filename"
+
+    # Handle subdirectories recursively
+    if [ -d "$base_file" ]; then
+      sync_directory "$base_file" "$project_file" "$dry_run" "$force" "$display_path"
+      continue
+    fi
+
+    # Compare files
+    local status
+    status=$(compare_files "$base_file" "$project_file")
+
+    case "$status" in
+      NEW)
+        if [ "$dry_run" = true ]; then
+          echo "  [NEW]        $display_path"
+        else
+          cp "$base_file" "$project_file"
+          echo "  [NEW]        $display_path (copied)"
+        fi
+        ;;
+      UPDATE)
+        local base_ver project_ver
+        base_ver=$(get_file_version "$base_file")
+        project_ver=$(get_file_version "$project_file")
+        if [ "$force" = true ]; then
+          if [ "$dry_run" = true ]; then
+            echo "  [UPDATE]     $display_path ($project_ver → $base_ver)"
+          else
+            cp "$base_file" "$project_file"
+            echo "  [UPDATE]     $display_path ($project_ver → $base_ver) (updated)"
+          fi
+        else
+          echo "  [UPDATE]     $display_path ($project_ver → $base_ver available, use --force)"
+        fi
+        ;;
+      PATCH)
+        local base_upd project_upd
+        base_upd=$(get_file_updated "$base_file")
+        project_upd=$(get_file_updated "$project_file")
+        if [ "$force" = true ]; then
+          if [ "$dry_run" = true ]; then
+            echo "  [PATCH]      $display_path ($project_upd → $base_upd)"
+          else
+            cp "$base_file" "$project_file"
+            echo "  [PATCH]      $display_path ($project_upd → $base_upd) (patched)"
+          fi
+        else
+          echo "  [PATCH]      $display_path ($project_upd → $base_upd available, use --force)"
+        fi
+        ;;
+      CUSTOMIZED)
+        echo "  [CUSTOMIZED] $display_path (skipped - project version is newer)"
+        ;;
+      DIFFERS)
+        echo "  [DIFFERS]    $display_path (same version/date but content differs)"
+        if [ "$force" = true ]; then
+          if [ "$dry_run" = false ]; then
+            cp "$base_file" "$project_file"
+            echo "               → overwritten with base version"
+          fi
+        else
+          echo "               → review manually or use --force to overwrite"
+        fi
+        ;;
+      OK)
+        # Silent for OK files unless verbose
+        ;;
+    esac
+  done
+}
+
+do_sync() {
+  local dry_run=false
+  local force=false
+
+  # Parse flags
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --dry-run)
+        dry_run=true
+        shift
+        ;;
+      --force)
+        force=true
+        shift
+        ;;
+      *)
+        error "Unknown option: $1"
+        exit 1
+        ;;
+    esac
+  done
+
+  check_project_initialized
+
+  local base_dir="$HOME/.claude/blueprint/base"
+  local project_dir="$BLUEPRINT_DATA_DIR"
+
+  # Verify base directory exists
+  if [ ! -d "$base_dir" ]; then
+    error "Base directory not found: $base_dir"
+    echo "Run 'install-global.sh' to set up Blueprint base files."
+    exit 1
+  fi
+
+  echo "Syncing from: $base_dir"
+  echo "          to: $project_dir"
+  [ "$dry_run" = true ] && echo "(dry-run mode - no changes will be made)"
+  echo ""
+
+  # Directories to sync (plans is excluded - project-specific data)
+  local sync_dirs=("constitutions" "forms" "front-matters" "gates" "templates")
+
+  for dir in "${sync_dirs[@]}"; do
+    if [ -d "$base_dir/$dir" ]; then
+      echo "$dir/"
+      sync_directory "$base_dir/$dir" "$project_dir/$dir" "$dry_run" "$force" "$dir"
+    fi
+  done
+
+  echo ""
+  if [ "$dry_run" = true ]; then
+    info "Dry run complete. Use without --dry-run to apply changes."
+  else
+    info "Sync complete."
+  fi
+
+  # Show protection tip
+  echo ""
+  echo "Tip: To protect customized files from future syncs, update their 'version'"
+  echo "     or 'updated' field to a value higher than the base file."
+}
+
 do_manage() {
   require_jq
   init_registry
@@ -629,6 +874,10 @@ case "$COMMAND" in
   init)
     shift
     do_init "$@"
+    ;;
+  sync)
+    shift
+    do_sync "$@"
     ;;
   list)
     do_list

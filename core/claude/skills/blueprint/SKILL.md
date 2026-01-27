@@ -101,6 +101,7 @@ blueprint polis <agent>               # Show agent instruction
 
 # Project - Project Aliases
 blueprint project init <alias> [--notes "text"]  # Initialize new project
+blueprint project sync [--dry-run] [--force]     # Sync templates/schemas from base
 blueprint project list                            # List all projects
 blueprint project show <alias>                    # Show project details
 blueprint project remove <alias> --registry [--data-dir]  # Remove project
@@ -232,3 +233,74 @@ Use **AskUserQuestion** to confirm with user:
 Then execute with appropriate flags in Bash:
 - Registry only: `~/.claude/skills/blueprint/blueprint.sh project remove <alias> --registry`
 - Registry + data: `~/.claude/skills/blueprint/blueprint.sh project remove <alias> --registry --data-dir`
+
+## Project Sync Guidelines
+
+The `sync` command updates project templates and schemas from the global base (`~/.claude/blueprint/base/`).
+
+### When to Use Sync
+
+- After running `install-global.sh` to get new framework updates
+- When new templates or schemas are added to the framework
+- To check what files differ between base and project
+
+### Sync Workflow
+
+**IMPORTANT**: Always run `--dry-run` first to preview changes.
+
+```bash
+# Step 1: Preview changes (REQUIRED before actual sync)
+blueprint project sync --dry-run
+
+# Step 2: Review output and decide
+# Step 3: Apply changes if needed
+blueprint project sync [--force]
+```
+
+### Sync Status Labels
+
+| Status | Meaning | Action |
+|--------|---------|--------|
+| `[NEW]` | File exists in base but not in project | Copied automatically |
+| `[UPDATE]` | Base has newer version | Requires `--force` to apply |
+| `[PATCH]` | Same version but base has newer `updated` date | Requires `--force` to apply |
+| `[DIFFERS]` | Same version/date but **content differs** | Review manually or `--force` |
+| `[CUSTOMIZED]` | Project version/date is newer than base | **Skipped** (protected) |
+| `[OK]` | Files are identical | No action needed |
+
+**Important**: `[DIFFERS]` indicates a potential issue:
+- Either framework updated without bumping version (framework bug)
+- Or project modified without updating version (should bump version to protect)
+
+### Protecting Customized Files
+
+When you customize a template or schema for your project:
+
+1. **Update the `version` field** (recommended):
+   ```yaml
+   version: 1.0.0  # Increase from base's 0.0.1
+   ```
+
+2. **Or update the `updated` field**:
+   ```yaml
+   updated: 2026-01-28  # Set to current date
+   ```
+
+Files with higher `version` or `updated` values than base are marked `[CUSTOMIZED]` and **will not be overwritten**.
+
+### User Notification Requirements
+
+When `--dry-run` shows `[UPDATE]` or `[PATCH]` status:
+
+1. **Inform the user** which files will change
+2. **Warn about potential overwrites** if `--force` is used
+3. **Recommend reviewing** customized files before forcing updates
+
+Example notification:
+```
+⚠️ Sync will modify existing files:
+  - front-matters/base.schema.md (UPDATE: 0.0.1 → 0.0.2)
+
+Use --force only if you want to accept base changes.
+Customized files (version > base) are protected.
+```

@@ -35,7 +35,7 @@ dependencies: []
 
 - **Type**: enum
 - **Required**: Yes
-- **Values**: `schema` | `constitution` | `gate` | `aspect` | `brief` | `discussion` | `plan` | `implementation-notes` | `roadmap` | `current` | `todo` | `history` | `checkpoint-summary` | `weekly-review`
+- **Values**: `schema` | `constitution` | `gate` | `aspect` | `brief` | `discussion` | `plan` | `implementation-notes` | `roadmap` | `current` | `todo` | `history` | `checkpoint-summary` | `weekly-review` | `adr`
 - **Description**: Identifies the document category for routing and validation.
 
 ### status
@@ -97,6 +97,14 @@ dependencies: []
 | Value | Description |
 |-------|-------------|
 | `completed` | Weekly review finalized |
+
+**ADR Documents** (`adr`):
+| Value | Description |
+|-------|-------------|
+| `proposed` | Decision under consideration, not yet accepted |
+| `accepted` | Decision approved and in effect |
+| `deprecated` | Decision still valid but discouraged for new work |
+| `superseded` | Decision replaced by another ADR (see `superseded-by`) |
 
 ### version
 
@@ -186,3 +194,4 @@ base.schema.md modified
 | `history` | Session | `active`, `archived` |
 | `checkpoint-summary` | Session | `completed` |
 | `weekly-review` | Session | `completed` |
+| `adr` | Decision | `proposed`, `accepted`, `deprecated`, `superseded` |
