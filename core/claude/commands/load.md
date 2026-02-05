@@ -109,6 +109,22 @@ Read and understand before verification:
    - My task: {next steps from CURRENT.md}
    - Expected mode: {Quick/Standard/Compressed}
 
+### Phase 2.5: Branch Safety Check
+
+```
+HIGH_LEVEL_BRANCHES = [main, master, develop, release]
+
+current_branch = git branch --show-current
+
+IF current_branch IN HIGH_LEVEL_BRANCHES:
+    Show High-Level Branch Warning
+    Wait for user selection
+    IF user selects "Create feature branch":
+        Create and switch to feature branch
+    ELSE IF user selects "Cancel":
+        Abort /load
+```
+
 ### Phase 3: State Verification (Reviewer Delegation)
 
 Delegate to Reviewer SubAgent to preserve your context.
@@ -215,6 +231,24 @@ Options:
 1. Switch to expected branch
 2. Continue on current branch
 3. Create new branch matching plan
+
+Which option? (1/2/3)
+```
+
+### High-Level Branch Warning
+
+```
+⚠️ High-level branch detected.
+
+Current branch: {branch-name}
+High-level branches (main, master, develop, release) are protected.
+
+Plan-based work should typically be on a feature branch.
+
+Options:
+1. Create feature branch: {convention}/{nnn}-{topic}
+2. Continue on current branch (acknowledge risk)
+3. Cancel and review
 
 Which option? (1/2/3)
 ```

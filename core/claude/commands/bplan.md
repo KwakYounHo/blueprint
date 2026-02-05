@@ -233,6 +233,7 @@ For document validation (Token-saving purpose):
 ### Phase 1: Analysis & Brief
 - [ ] User requirements understood
 - [ ] Codebase explored for existing patterns
+- [ ] File Context collected for affected files (Purpose + Constraint)
 - [ ] Brief file created at `{PLANS_DIR}/{nnn}-{topic}/BRIEF.md`
 - [ ] Decisions recorded in Decisions Made table
 - [ ] [DECIDE] items identified
@@ -241,6 +242,8 @@ For document validation (Token-saving purpose):
 ### Phase 2: Plan
 - [ ] Plan created with Phases
 - [ ] Tasks defined for each Phase (T-{phase}.{task})
+- [ ] File Context section populated (all modified files)
+- [ ] Files field added to each Task
 - [ ] Deliverables defined for each Task
 - [ ] [DECIDE] markers added for uncertainties
 - [ ] [FIXED] constraints documented
@@ -286,6 +289,7 @@ A Plan must meet these criteria before user approval:
 | **User-Confirmed** | All [DECIDE] resolved with user input | Status column shows ✅ |
 | **Phase-Compliant** | All 3 workflow phases completed in order | Checklist verified |
 | **Traceable** | Decisions linked to rationale | D-NNN IDs with reasoning |
+| **File Context** | All modified files documented | File Context section + Task Files complete |
 
 **Self-Check Question:**
 > "Can another agent implement this plan without asking clarifying questions?"

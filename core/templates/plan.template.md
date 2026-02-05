@@ -38,6 +38,16 @@ phase-count: 0
 
 ---
 
+## File Context
+
+> Modifications must respect stated purpose and constraint.
+
+| File | Purpose | Constraint |
+|------|---------|------------|
+| `{path}` | {why this file exists} | {what NOT to do} |
+
+---
+
 ## Phases
 
 ### Phase 1: {Phase Name}
@@ -46,9 +56,11 @@ phase-count: 0
 
 #### T-1.1: {Task Name}
 **Deliverable**: {Specific deliverable for this task}
+**Files**: `{file1}`, `{file2}` (or `None` if no file modifications)
 
 #### T-1.2: {Task Name}
 **Deliverable**: {Specific deliverable for this task}
+**Files**: `{file1}`, `{file2}` (or `None` if no file modifications)
 
 **Dependencies**: None
 
@@ -60,6 +72,7 @@ phase-count: 0
 
 #### T-2.1: {Task Name}
 **Deliverable**: {Specific deliverable for this task}
+**Files**: `{file1}`, `{file2}` (or `None` if no file modifications)
 
 **Dependencies**: Phase 1
 
@@ -99,17 +112,42 @@ Task tool:
 
 ### After Receiving Recommendation
 
-1. Review Phase Analyzer's Handoff:
-   - Per-Task scores and evidence
-   - Aggregated Phase complexity
-   - Recommended strategy with rationale
+1. **Review Phase Analyzer's Handoff** (internal)
 
-2. Present to user via AskUserQuestion:
-   - Summary of analysis
+2. **Present Analysis Summary to User** (MANDATORY before AskUserQuestion):
+
+   Output the following information:
+
+   **A. Task List with Complexity**
+
+   | Task | Description | Score | Grade |
+   |------|-------------|-------|-------|
+   | T-N.1 | {task description} | {5-20} | Simple/Moderate/Complex/Critical |
+
+   **B. Scoring Method Summary**
+
+   - 5 dimensions: Change Volume, Structural Complexity, Dependency, Precedent, Change Type
+   - Each dimension: 1-4 points (total 5-20)
+   - Grade thresholds: Simple(5-8), Moderate(9-12), Complex(13-16), Critical(17+)
+
+   **C. Task Dependency Graph** (if inter-task dependency exists)
+
+   ```
+   T-1.1 → T-1.2 → T-1.4
+   T-1.3 ────────↗
+   ```
+
+   **D. Phase Summary**
+
+   - Grade distribution: {N} Simple, {M} Moderate, ...
+   - Highest complexity: T-N.M ({reason})
+   - Inter-task dependency: low/medium/high
+
+3. **Ask User via AskUserQuestion**:
    - Recommended strategy (mark as recommended)
    - Alternative options
 
-3. Execute based on user's choice:
+4. Execute based on user's choice:
 
 | Choice | Workflow |
 |--------|----------|
