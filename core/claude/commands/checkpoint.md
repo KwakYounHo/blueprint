@@ -77,6 +77,7 @@ Construct prompt using: `blueprint hermes request:review:phase-completion`
 While waiting for Reviewer response, pre-read files needed for later steps:
 - `{PLAN_PATH}/PLAN.md` (needed for Steps 3, 9)
 - `{PLAN_PATH}/implementation-notes.md` (needed for Step 8)
+- `{SESSION_PATH}/CURRENT.md` (needed for Step 1.5)
 - `{SESSION_PATH}/HISTORY.md` (needed for Step 4)
 
 These reads are independent of the Reviewer and can proceed in parallel.
@@ -90,6 +91,41 @@ These reads are independent of the Reviewer and can proceed in parallel.
 - `pass` → Proceed to Step 2
 - `warning` → Present warnings, ask user: "Phase {N} has warnings. Checkpoint anyway? (yes/no)"
 - `fail` → Present issues (including incomplete Tasks), go to Error Handling: Phase Not Complete
+
+### Step 1.5: Session Sync
+
+> `/checkpoint` is self-contained — it does NOT require `/save` to be run first.
+> This step ensures documents reflect the current session's work before archiving.
+
+Perform the following updates (same as `/save` Steps 2-4):
+
+1. **Gather Information:**
+   - `git status`, `git log -3 --oneline`
+   - Current Phase and completed Tasks from session context
+   - Key decisions made this session
+
+**Steps 2-5: Update Documents (Parallel)**
+
+> Steps 2 through 5 each write to different files and are mutually independent.
+> Execute them in parallel (single message with multiple tool calls) after
+> gathering information from step 1.
+
+2. **Update CURRENT.md:**
+   - Update `session-id` (increment), `current-phase`, `current-task`
+   - Fill in session-specific sections (Completed, Decisions, State)
+
+3. **Update ROADMAP.md Task checkboxes:**
+   - Check `[x]` for all completed Tasks in current Phase
+   - Verify against git commits and session work
+
+4. **Append to HISTORY.md** (if Standard/Compressed mode):
+   - Add session entry using `history-entry` template format
+
+5. **Update TODO.md** (if exists and not template):
+   - Mark completed tasks, update current-task
+
+> **Idempotent**: If `/save` was already run this session, these updates
+> produce the same result. Safe to run regardless.
 
 ### Step 2: Archive Current Session Context
 
