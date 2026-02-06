@@ -32,6 +32,7 @@ Used primarily by `/load` command to verify handoff integrity before resuming wo
 | git-state | Validates Git status matches CURRENT.md documentation | `/load` |
 | file-integrity | Validates Key Files exist and match descriptions | `/load` |
 | plan-progress | Validates Phase and Task progress consistency across documents | `/load`, `/checkpoint` |
+| analysis-completeness | Validates Analysis Results populated for current Phase | `/load` |
 | phase-completion | Validates all Tasks in Phase are complete before checkpoint | `/checkpoint` |
 
 ## Usage
@@ -39,10 +40,9 @@ Used primarily by `/load` command to verify handoff integrity before resuming wo
 ### In `/load` Command
 
 ```
-Phase 3: State Verification
-    ├── [Direct] Main Session performs verification
+Phase 1.5: State Verification (background)
     └── [Delegated] Spawn Reviewer Agent
-        └── aegis session --aspects git-state,file-integrity,plan-progress
+        └── aegis session --aspects git-state,file-integrity,plan-progress,analysis-completeness
 ```
 
 ### In `/checkpoint` Command

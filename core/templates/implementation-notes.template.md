@@ -17,6 +17,10 @@ plan-id: "PLAN-{NNN}"
 > **DO NOT** use for progress tracking - see ROADMAP.md and HISTORY.md.
 > Only document items that differ from the original plan or require future reference.
 
+> **Status Markers**: ISSUE entries use `[ACTIVE]` or `[RESOLVED]` heading markers
+> for selective loading. `/load` reads only `[ACTIVE]` entries to preserve context.
+> `/checkpoint` archives `[RESOLVED]` entries. New entries default to `[ACTIVE]`.
+
 ---
 
 ## Deviations from Plan
@@ -33,7 +37,7 @@ plan-id: "PLAN-{NNN}"
 
 > Document blockers, bugs, or problems that affected implementation.
 
-### ISSUE-001: {Issue Title}
+### [ACTIVE] ISSUE-001: {Issue Title}
 
 **Discovered**: {{date}}
 **Phase/Task**: {T-N.M}
