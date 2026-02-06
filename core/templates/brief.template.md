@@ -13,6 +13,10 @@ session-count: 1
 last-session: {{date}}
 ---
 
+> **[FIXED] Document Immutability**: This document is frozen after implementation begins.
+> Do NOT modify during implementation. Record deviations, new decisions, and issues
+> in `implementation-notes.md` instead.
+
 # Brief: {Feature Name}
 
 ## CRITICAL: Specification Principles
