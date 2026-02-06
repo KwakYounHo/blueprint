@@ -106,6 +106,39 @@ ELSE (Moderate mixed or uncertain)
 
 ---
 
+## Independence Evaluation
+
+### Mandatory Criteria (Always Evaluate)
+
+| # | Criterion | Method |
+|---|-----------|--------|
+| 1 | File Disjointness | Compare `**Files**` fields between all Task pairs; shared files = dependent |
+| 2 | Data Flow Independence | Analyze if Task A's deliverable is Task B's prerequisite; check import chains |
+| 3 | Structural Independence | Check if Task A creates new exports (types, functions, modules) that Task B imports |
+
+### Optional Criteria (When External Dependencies Involved)
+
+| # | Criterion | Trigger | Method |
+|---|-----------|---------|--------|
+| 4 | Resource Independence | Task involves DB schema, API spec, or shared config | Check if both Tasks modify same external resource incompatibly |
+| 5 | Order Independence | Criteria 1-3 show no dependency but uncertainty remains | Verify execution order swap produces identical final state |
+
+### Independence Determination
+
+Two Tasks are independent if and only if ALL applicable criteria are satisfied.
+If ANY criterion shows dependency, record the dependency with type and reason.
+
+### Dependency Types
+
+| Type | Meaning | Example |
+|------|---------|---------|
+| `file` | Shared output files | Both Tasks modify `schema.ts` |
+| `data` | Output-input relationship | T-1.1 creates types that T-1.2 imports |
+| `structural` | New export consumed | T-1.1 defines interface that T-1.2 implements |
+| `resource` | Shared external resource | Both modify `users` table migration |
+
+---
+
 ## Workflow
 
 ### Step 0: Load Blueprint Skill (MANDATORY)
@@ -177,11 +210,15 @@ Use Glob to find files matching deliverable description:
 After all Tasks analyzed:
 1. List all Task scores
 2. Identify highest complexity Task
-3. Assess inter-Task dependencies:
-   - Do Tasks share files?
-   - Do Tasks have sequential dependencies?
-   - Can Tasks be executed in any order?
-4. Determine grade distribution
+3. Determine grade distribution
+4. **Evaluate Task independence**:
+   - For each Task pair, apply mandatory criteria (1-3)
+   - If any Task involves external dependencies, apply optional criteria (4-5)
+   - Build dependency list with type and reason
+   - Group independent Tasks
+   - Compute execution layers via topological sort:
+     - Layer 0 = Tasks with no incoming dependencies
+     - Layer N+1 = Tasks whose all predecessors are in Layer ≤ N
 
 ### Step 5: Formulate Recommendation
 
@@ -235,7 +272,22 @@ handoff:
       complex: {count}
       critical: {count}
     highest_complexity: "T-{N}.{M}"
-    inter_task_dependency: low | medium | high
+
+  task_dependencies:
+    - from: "T-{N}.{M}"
+      to: "T-{N}.{M}"
+      type: file | data | structural | resource
+      reason: "{description}"
+
+  independent_groups:
+    - group: {N}
+      tasks: ["T-{N}.{M}", ...]
+      reason: "{why these are independent}"
+
+  execution_layers:
+    - layer: {N}
+      tasks: ["T-{N}.{M}", ...]
+      blocked_by: [{layer numbers}]
 
   recommendation:
     strategy: "No Plan Mode" | "Phase-level" | "Task-level"
@@ -292,7 +344,10 @@ handoff:
 - [ ] Total score and grade assigned per Task
 - [ ] External dependency check performed (if applicable)
 - [ ] Phase summary compiled with grade distribution
-- [ ] Inter-Task dependency assessed
+- [ ] Independence criteria applied to all Task pairs
+- [ ] Dependencies recorded with type and reason
+- [ ] Independent groups identified
+- [ ] Execution layers computed
 - [ ] Recommendation determined from decision tree
 - [ ] Rationale provided for recommendation
 - [ ] Alternatives listed with trade-offs

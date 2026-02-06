@@ -55,7 +55,7 @@ Next:
 2. {action 2}
 3. {action 3}
 
-Ready? (yes/no)
+[INFER: contextual next action from session context]
 ```
 ---e
 
@@ -82,7 +82,7 @@ OBJECTIVE[after-load:standard]
 
 **Next:** {first action}
 
-Proceed? (yes/no/explain {topic})
+[INFER: contextual next action from session context and Analysis Results]
 ```
 ---e
 
@@ -114,7 +114,7 @@ OBJECTIVE[after-load:compressed]
 **Status:** {pass/issues}
 **Next:** {first action}
 
-Proceed? (yes/no/explain {topic})
+[INFER: contextual next action from session context and Analysis Results]
 ```
 ---e
 
@@ -285,7 +285,22 @@ handoff:
       complex: {N}
       critical: {N}
     highest_complexity: "T-{N}.{M}"
-    inter_task_dependency: low | medium | high
+
+  task_dependencies:
+    - from: "T-{N}.{M}"
+      to: "T-{N}.{M}"
+      type: file | data | structural | resource
+      reason: "{why dependent}"
+
+  independent_groups:
+    - group: {N}
+      tasks: ["T-{N}.{M}", ...]
+      reason: "{why independent}"
+
+  execution_layers:
+    - layer: {N}
+      tasks: ["T-{N}.{M}", ...]
+      blocked_by: [{layer numbers}]
 
   recommendation:
     strategy: "No Plan Mode" | "Phase-level" | "Task-level"

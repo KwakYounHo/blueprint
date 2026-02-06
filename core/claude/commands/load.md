@@ -152,17 +152,27 @@ Present briefing based on detected mode:
 | Standard | `hermes after-load:standard` |
 | Compressed | `hermes after-load:compressed` |
 
+**[INFER] Resolution**: The Handoff form ends with an `[INFER]` marker.
+Fill this dynamically by synthesizing:
+- CURRENT.md "Next Agent Should" section
+- PLAN.md "Analysis Results > Selected Strategies" (if populated)
+- implementation-notes.md active blockers (if any)
+
+Generate a contextual next-action suggestion instead of a generic "Proceed?" prompt.
+
 ### Phase 5: User Confirmation
 
-Wait for input:
-- `yes` → **IMPORTANT**: Follow Plan Mode Strategy in `PLAN.md` (if plan in-progress)
-- `no` / `wait` → Pause for user review
-- `explain {topic}` → Provide detail on topic
-- `show {file}` → Display file content
+Wait for user response to the [INFER] suggestion.
 
-> **IMPORTANT**: On `yes`, you MUST follow the **Plan Mode Strategy** section in `{PLAN_PATH}/PLAN.md`.
-> This invokes Phase Analyzer Agent for scope analysis and Plan Mode recommendation.
-> Do NOT skip this step - it ensures appropriate planning depth for each Phase.
+On confirmation:
+1. Read PLAN.md "Analysis Results > Selected Strategies" for current Phase
+2. If populated → Follow the Selected Plan Mode via "Task Execution Flow" in PLAN.md
+3. If empty → Inform user: "Analysis Results is empty. Run `/banalyze` to analyze
+   all Phases and select Plan Mode strategies before starting implementation."
+
+On decline or request for more info:
+- Provide requested detail
+- Wait for further instruction
 
 ---
 

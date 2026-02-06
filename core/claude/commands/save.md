@@ -325,3 +325,4 @@ Which option? (1/2/3)
 - **Keep it actionable:** Next steps should be clear actions
 - **Verify git status:** Docs should match reality
 - **Compress ruthlessly:** If over line limit, move details to HISTORY.md
+- ❌ Modify BRIEF.md or PLAN.md during implementation (record in implementation-notes.md instead)

@@ -13,6 +13,10 @@ source-brief: "BRIEF.md"
 phase-count: 0
 ---
 
+> **[FIXED] Document Immutability**: This document is frozen after implementation begins.
+> Do NOT modify during implementation. Record deviations, new decisions, and issues
+> in `implementation-notes.md` instead.
+
 # Plan: {Plan Name}
 
 ## Overview
@@ -90,79 +94,44 @@ phase-count: 0
 
 ## Plan Mode Strategy
 
-> **IMPORTANT**: This section MUST be followed before starting Phase implementation.
-> Triggered by: `/bplan` completion OR `/load` with `yes` response.
+> Reference **Analysis Results** section for Phase-specific Plan Mode decisions.
+> If Analysis Results is empty, inform the user that running `/banalyze` is recommended before starting implementation.
 
-### Invocation
+### Task Execution Flow
 
-At Phase start, invoke Phase Analyzer Agent:
+For each Task (using Selected Plan Mode from Analysis Results):
 
-```
-Task tool:
-  subagent_type: "phase-analyzer"
-  prompt: |
-    Analyze Phase {N} of Plan.
-
-    Plan: {path to PLAN.md}
-    Phase: {N}
-
-    Perform 5-dimension evaluation for each Task.
-    Return Plan Mode Strategy recommendation.
-```
-
-### After Receiving Recommendation
-
-1. **Review Phase Analyzer's Handoff** (internal)
-
-2. **Present Analysis Summary to User** (MANDATORY before AskUserQuestion):
-
-   Output the following information:
-
-   **A. Task List with Complexity**
-
-   | Task | Description | Score | Grade |
-   |------|-------------|-------|-------|
-   | T-N.1 | {task description} | {5-20} | Simple/Moderate/Complex/Critical |
-
-   **B. Scoring Method Summary**
-
-   - 5 dimensions: Change Volume, Structural Complexity, Dependency, Precedent, Change Type
-   - Each dimension: 1-4 points (total 5-20)
-   - Grade thresholds: Simple(5-8), Moderate(9-12), Complex(13-16), Critical(17+)
-
-   **C. Task Dependency Graph** (if inter-task dependency exists)
-
-   ```
-   T-1.1 → T-1.2 → T-1.4
-   T-1.3 ────────↗
-   ```
-
-   **D. Phase Summary**
-
-   - Grade distribution: {N} Simple, {M} Moderate, ...
-   - Highest complexity: T-N.M ({reason})
-   - Inter-task dependency: low/medium/high
-
-3. **Ask User via AskUserQuestion**:
-   - Recommended strategy (mark as recommended)
-   - Alternative options
-
-4. Execute based on user's choice:
-
-| Choice | Workflow |
-|--------|----------|
+| Selected Mode | Workflow |
+|---------------|----------|
 | No Plan Mode | Execute directly → Mark complete → `/save` |
 | Phase level | Plan Mode once → Plan all Tasks → Execute all → `/save` |
 | Task level | Per Task: Plan Mode → Execute → Mark complete |
 
-### Task Execution Flow
+---
 
-For each Task (regardless of Plan Mode choice):
+## Analysis Results
 
-1. Review Task deliverables in this document
-2. Execute the Task
-3. Mark Task complete in TODO.md and ROADMAP.md
-4. Continue to next Task or `/save`
+> Populated by `/banalyze`. If empty, remind the user to run `/banalyze` before starting implementation.
+
+### Phase Summaries
+
+| Phase | Task Count | Grade Distribution | Highest Complexity | Plan Mode (Recommended) |
+|-------|-----------|-------------------|-------------------|------------------------|
+
+### Selected Strategies
+
+| Phase | Recommended | Selected | Rationale |
+|-------|------------|----------|-----------|
+
+### Execution Layers
+
+| Phase | Layer | Tasks | Blocked By |
+|-------|-------|-------|------------|
+
+### Independent Tasks (Cross-Phase)
+
+| Task | Phase | Files | Independence Reason |
+|------|-------|-------|--------------------|
 
 ---
 
