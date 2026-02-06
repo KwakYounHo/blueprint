@@ -74,6 +74,13 @@ Construct prompt using: `blueprint hermes request:review:phase-completion`
 - Replace {PLAN_PATH} with resolved plan path (e.g., {PLANS_DIR}/001-auth)
 ```
 
+While waiting for Reviewer response, pre-read files needed for later steps:
+- `{PLAN_PATH}/PLAN.md` (needed for Steps 3, 9)
+- `{PLAN_PATH}/implementation-notes.md` (needed for Step 8)
+- `{SESSION_PATH}/HISTORY.md` (needed for Step 4)
+
+These reads are independent of the Reviewer and can proceed in parallel.
+
 **Verification includes:**
 - ALL Tasks in Phase are complete (checked in ROADMAP.md)
 - Task status in TODO.md matches ROADMAP.md
@@ -96,7 +103,13 @@ Copy current state:
 - TODO.md
 - HISTORY.md
 
-### Step 3: Create CHECKPOINT-SUMMARY.md
+### Steps 3-7: Update Documents (Parallel)
+
+> Steps 3 through 7 each write to different files and are mutually independent.
+> Execute them in parallel (single message with multiple tool calls) after
+> determining content for each from the pre-read source documents.
+
+#### Step 3: Create CHECKPOINT-SUMMARY.md
 
 ```
 blueprint forma copy checkpoint-summary {PLAN_PATH}/session-context/archive/{YYYY-MM-DD}/
@@ -112,14 +125,14 @@ Then fill in:
 - Lessons learned
 - Next phase preview
 
-### Step 4: Compress HISTORY.md
+#### Step 4: Compress HISTORY.md
 
 Move detailed session entries to archive:
 - Keep only summary entries in HISTORY.md
 - Goal: Under 300 lines
 - Add reference: `See archive/{DATE}/CHECKPOINT-SUMMARY.md`
 
-### Step 5: Reset CURRENT.md for Next Phase
+#### Step 5: Reset CURRENT.md for Next Phase
 
 Reset CURRENT.md with:
 - New phase information
@@ -130,7 +143,7 @@ Update frontmatter:
 - `current-phase`: Increment to next
 - `session-id`: Reset or continue sequence
 
-### Step 6: Update ROADMAP.md
+#### Step 6: Update ROADMAP.md
 
 Mark completed phase:
 ```markdown
@@ -138,7 +151,7 @@ Mark completed phase:
 - [ ] Phase {N+1}: {Name} ← Current
 ```
 
-### Step 7: Update TODO.md
+#### Step 7: Update TODO.md
 
 Shift to next phase:
 - Mark previous phase tasks as archived
@@ -154,12 +167,17 @@ Review conversation for potential implementation-notes content (same as /save):
 - **Issues**: Blockers, bugs, unexpected problems
 - **Learnings**: Insights, discoveries
 
-**Step 8.2**: Phase Completion Review
+**Step 8.2**: Implementation Notes Lifecycle
 
-Check `{PLAN_PATH}/implementation-notes.md` status:
-- Any unresolved ISSUE-NNN for this Phase?
-- All deviations properly documented?
-- Key learnings captured for future reference?
+1. Read `{PLAN_PATH}/implementation-notes.md`
+2. Identify all ISSUE entries for the completing Phase:
+   - `[ACTIVE]` entries: Present to user for resolution decision
+   - `[RESOLVED]` entries: Mark for archival
+3. Archive `[RESOLVED]` entries:
+   - Move to `{SESSION_PATH}/archive/{YYYY-MM-DD}/implementation-notes-resolved.md`
+   - Remove from main `implementation-notes.md`
+   - Keep `[ACTIVE]` entries in place (carried forward to next Phase)
+4. Update counts: "Archived {N} resolved issues. {M} active issues carried forward."
 
 **Step 8.3**: Present Comprehensive Summary
 
@@ -195,7 +213,40 @@ IF all phases completed in ROADMAP.md:
     - status: in-progress → completed
 ```
 
-### Step 10: Confirm
+### Step 10: ADR Detection
+
+Scan the current session for ADR-worthy signals:
+
+**Signals to detect:**
+- Architectural decisions made (technology choices, pattern selections, structural changes)
+- Trade-off discussions that resulted in a decision
+- Deviations from Plan representing deliberate design choices (check Deviations table)
+- New conventions or standards established
+
+**Additional signals for checkpoint:**
+- Phase-level architectural patterns established
+- Cross-Phase design decisions visible in retrospect
+- Significant deviations that changed the approach (from Deviations table)
+
+**If signals detected:**
+
+Use `AskUserQuestion`:
+
+| Field | Content |
+|-------|---------|
+| Header | "ADR" |
+| Question | "This session contains potential ADR-worthy decisions:\n\n{list of detected signals}\n\nWould you like to create an ADR?" |
+| Option A | "Create ADR now" |
+| Option B | "Note for later" |
+| Option C | "Skip" |
+
+- Option A → Use `blueprint forma copy adr` and fill from session context
+- Option B → Add to CURRENT.md "Next Agent Should" section: "Consider ADR for: {topic}"
+- Option C → Continue to confirmation
+
+**If no signals detected:** Skip silently, proceed to confirmation.
+
+### Step 11: Confirm
 
 Use confirmation format: `blueprint hermes after-checkpoint`
 

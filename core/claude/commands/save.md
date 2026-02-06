@@ -94,7 +94,12 @@ Set: PLAN_PATH = output from `~/.claude/skills/blueprint/blueprint.sh plan resol
 Set: SESSION_PATH = {PLAN_PATH}/session-context/
 ```
 
-### Step 2: Detect Mode
+### Steps 2-3: Detect Mode and Gather Information (Parallel)
+
+> Steps 2 and 3 are independent — both need only `{PLAN_PATH}` from Step 1.
+> Execute them in parallel (single message with multiple tool calls).
+
+#### Step 2: Detect Mode
 
 ```
 Check {SESSION_PATH}/HISTORY.md
@@ -102,7 +107,7 @@ Determine Quick/Standard/Compressed mode
 Select appropriate template
 ```
 
-### Step 3: Gather Information
+#### Step 3: Gather Information
 
 **Standard gathering:**
 - `git status`
@@ -167,6 +172,8 @@ Use `AskUserQuestion`:
 Update `{PLAN_PATH}/implementation-notes.md`:
 - Add to Deviations table if approach changed
 - Add ISSUE-NNN entries for problems
+  - New ISSUE entries MUST use `[ACTIVE]` heading marker: `### [ACTIVE] ISSUE-NNN: {title}`
+  - When marking existing ISSUE as resolved, update heading from `[ACTIVE]` to `[RESOLVED]`
 - Add LEARN-NNN entries for insights
 - Update `updated` date in frontmatter
 
@@ -179,7 +186,35 @@ Update `{PLAN_PATH}/implementation-notes.md`:
 - [ ] Git status matches documentation?
 - [ ] Implementation notes updated if needed?
 
-### Step 7: Confirm
+### Step 7: ADR Detection
+
+Scan the current session for ADR-worthy signals:
+
+**Signals to detect:**
+- Architectural decisions made (technology choices, pattern selections, structural changes)
+- Trade-off discussions that resulted in a decision
+- Deviations from Plan representing deliberate design choices (check Deviations table)
+- New conventions or standards established
+
+**If signals detected:**
+
+Use `AskUserQuestion`:
+
+| Field | Content |
+|-------|---------|
+| Header | "ADR" |
+| Question | "This session contains potential ADR-worthy decisions:\n\n{list of detected signals}\n\nWould you like to create an ADR?" |
+| Option A | "Create ADR now" |
+| Option B | "Note for later" |
+| Option C | "Skip" |
+
+- Option A → Use `blueprint forma copy adr` and fill from session context
+- Option B → Add to CURRENT.md "Next Agent Should" section: "Consider ADR for: {topic}"
+- Option C → Continue to confirmation
+
+**If no signals detected:** Skip silently, proceed to confirmation.
+
+### Step 8: Confirm
 
 Use confirmation format: `blueprint hermes after-save`
 

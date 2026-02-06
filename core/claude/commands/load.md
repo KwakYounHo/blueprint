@@ -87,14 +87,28 @@ ELSE:
     Resolve selected: ~/.claude/skills/blueprint/blueprint.sh plan resolve <selection>
 ```
 
-### Phase 2: Document Review (No Tools Yet)
+### Phase 1.5: Start Background Verification
 
-Read and understand before verification:
+Immediately after Plan Resolution, spawn Reviewer as a background task:
+
+```
+Use Task tool with subagent_type: reviewer
+run_in_background: true
+
+Construct prompt using: `blueprint hermes request:review:session-state`
+- Replace {PLAN_PATH} with resolved plan path
+```
+
+Do NOT wait for Reviewer to complete. Proceed immediately to Phase 2.
+
+### Phase 2: Document Review
+
+Read and understand plan context (in parallel where possible):
 
 1. **Read Plan Context:**
    - `{PLAN_PATH}/PLAN.md` - Phase definitions
    - `{PLAN_PATH}/ROADMAP.md` - Progress status
-   - `{PLAN_PATH}/implementation-notes.md` - Deviations and issues
+   - `{PLAN_PATH}/implementation-notes.md` - **[ACTIVE] entries only** (see Selective Loading below)
 
 2. **Read Session Context:**
    - `{SESSION_PATH}/CURRENT.md` - Last session state
@@ -108,6 +122,14 @@ Read and understand before verification:
    - Previous work: {summary}
    - My task: {next steps from CURRENT.md}
    - Expected mode: {Quick/Standard/Compressed}
+
+#### Selective Loading: implementation-notes.md
+
+When reading `implementation-notes.md`:
+- Read only ISSUE entries with `[ACTIVE]` in the heading
+- Skip entries with `[RESOLVED]` in the heading (count them for summary)
+- Always read: Deviations table, Learnings, Environment Notes (these are small)
+- Report: "{N} active issues, {M} resolved (archived)"
 
 ### Phase 2.5: Branch Safety Check
 
@@ -125,17 +147,9 @@ IF current_branch IN HIGH_LEVEL_BRANCHES:
         Abort /load
 ```
 
-### Phase 3: State Verification (Reviewer Delegation)
+### Phase 3: Collect Reviewer Results
 
-Delegate to Reviewer SubAgent to preserve your context.
-
-**Handoff:**
-```
-Use Task tool with subagent_type: reviewer
-
-Construct prompt using: `blueprint hermes request:review:session-state`
-- Replace {PLAN_PATH} with resolved plan path (e.g., {PLANS_DIR}/001-auth)
-```
+Retrieve the background Reviewer task result started in Phase 1.5.
 
 **Process response:** `blueprint hermes response:review:session-state`
 - `pass` → Proceed to Phase 4
@@ -322,6 +336,8 @@ Before presenting briefing, verify:
 - [ ] Git status checked
 - [ ] Key files verified (2-3 minimum)
 - [ ] Briefing message is concise
+- [ ] Reviewer background task collected before briefing
+- [ ] analysis-completeness result noted
 
 ---
 
