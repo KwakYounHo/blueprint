@@ -166,11 +166,13 @@ task:
   files:
     - "{PLAN_PATH}/session-context/CURRENT.md"
     - "{PLAN_PATH}/ROADMAP.md"
+    - "{PLAN_PATH}/PLAN.md"
   gate: session
   aspects:
     - git-state
     - file-integrity
     - plan-progress
+    - analysis-completeness
 ```
 ---e
 
@@ -190,6 +192,9 @@ handoff:
       issues: [...]
     plan-progress:
       status: pass | fail
+      issues: [...]
+    analysis-completeness:
+      status: pass | warning
       issues: [...]
   suggestions:
     - "{how to resolve issue}"
