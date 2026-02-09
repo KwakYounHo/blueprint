@@ -147,18 +147,33 @@ IF current_branch IN HIGH_LEVEL_BRANCHES:
         Abort /load
 ```
 
-### Phase 3: Collect Reviewer Results
+### Phase 3: Yield for Reviewer
 
-Retrieve the background Reviewer task result started in Phase 1.5.
+After completing Phase 2 and 2.5, **end your current turn immediately**.
 
-**Process response:** `blueprint hermes response:review:session-state`
-- `pass` → Proceed to Phase 4
-- `warning` → Present warnings, proceed with user confirmation
-- `fail` → Present issues, go to Error Recovery
+**CRITICAL**:
+- Do NOT use `TaskOutput` or `Read` to poll the Reviewer's output
+- Do NOT synthesize or guess the Reviewer's result
+- Do NOT present any status summary or document review results yet
 
-### Phase 4: Handoff Briefing
+The Reviewer's completion signal will arrive automatically after your turn ends.
+End your turn with a brief message that conveys:
+- The Reviewer result will arrive shortly and processing will resume automatically
+- The user just needs to wait a moment
 
-Present briefing based on detected mode:
+Do NOT include any document review results, status summaries, or internal notes.
+All briefing content will be presented together in Phase 4.
+
+### Phase 4: Receive Reviewer + Handoff Briefing
+
+When the Reviewer completion signal arrives as a new turn:
+
+1. **Process Reviewer response:** `blueprint hermes response:review:session-state`
+   - `pass` → Continue to briefing
+   - `warning` → Include warnings in briefing
+   - `fail` → Present issues, go to Error Recovery
+
+2. **Present briefing** based on detected mode:
 
 | Mode | Command |
 |------|---------|
@@ -336,7 +351,7 @@ Before presenting briefing, verify:
 - [ ] Git status checked
 - [ ] Key files verified (2-3 minimum)
 - [ ] Briefing message is concise
-- [ ] Reviewer background task collected before briefing
+- [ ] Reviewer completion signal received before briefing (do NOT poll)
 - [ ] analysis-completeness result noted
 
 ---
