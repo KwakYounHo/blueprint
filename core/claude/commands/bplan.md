@@ -137,26 +137,37 @@ Edit the copied CURRENT.md:
 - Set Current Phase to Phase 1
 - Set Phase Objective from Plan
 
-**Step 4: Ask User to Start Implementation**
+**Step 4: Guide Next Step**
 
-After Session Context is initialized, ask user:
+After Session Context is initialized, assess context window usage and guide the user:
+
+```
+IF context window remaining >= 20%:
+    Recommend running `/banalyze` now
+ELSE:
+    Recommend starting a new session for `/banalyze`
+```
+
+Present to user:
 ```
 Plan creation complete.
 
-Start implementation now?
-- Yes → Follow Plan Mode Strategy
-- No → End session (use /load to resume later)
+Next step: Run `/banalyze` to analyze Phase complexity and select Plan Mode strategies.
+This is required before starting implementation.
+
+- Context window sufficient → Run `/banalyze` now
+- Context window low → Start a new session and run `/banalyze {plan-id}`
 ```
 
-> **IMPORTANT**: If user responds `yes`, you MUST follow the **Plan Mode Strategy** section
-> in `PLAN.md`. This invokes Phase Analyzer Agent for scope analysis and Plan Mode
-> recommendation. Do NOT skip this step.
+> **IMPORTANT**: Implementation MUST NOT begin without `/banalyze` completing first.
+> `/banalyze` results are referenced by `/load` when starting implementation sessions.
 
 ---
 
 ## Implementation Note
 
-Plan defines **what** to build. Implementation details (Plan Mode strategy, execution flow) are documented in `PLAN.md` itself.
+Plan defines **what** to build. Phase analysis (`/banalyze`) determines **how** to execute.
+Implementation begins via `/load`, which references the analysis results.
 
 ## Session Management Commands
 
@@ -256,8 +267,7 @@ For document validation (Token-saving purpose):
 - [ ] CURRENT.md initialized with Plan context and current-task
 - [ ] TODO.md ready with Task structure
 - [ ] HISTORY.md ready for session logs
-- [ ] User asked "Start implementation now?"
-- [ ] If yes → Plan Mode Strategy in PLAN.md followed
+- [ ] User guided to run `/banalyze` (now or in new session)
 
 ### Task Implementation (per Task)
 - [ ] Task deliverables reviewed in PLAN.md
