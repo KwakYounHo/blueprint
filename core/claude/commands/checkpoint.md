@@ -24,7 +24,7 @@ Load `/blueprint` skill for template and handoff operations. Execute commands in
 |-----------|----------------------|
 | Copy templates | `forma copy` |
 | View confirmation format | `hermes after-checkpoint` |
-| Reviewer delegation | `hermes request:review:session-state` |
+| Reviewer delegation | `hermes request:review:phase-completion` |
 
 ---
 
@@ -62,7 +62,43 @@ Same as `/save`:
 
 ## Checkpoint Process
 
-### Step 1: Verify Phase Completion (Reviewer Delegation)
+### Step 1: Session Sync
+
+> `/checkpoint` is self-contained — it does NOT require `/save` to be run first.
+> This step ensures documents reflect the current session's work before validation.
+
+Perform the following updates (same as `/save` Steps 2-4):
+
+**Step 1.1: Gather Information**
+
+- `git status`, `git log -3 --oneline`
+- Current Phase and completed Tasks from session context
+- Key decisions made this session
+
+**Steps 1.2-1.5: Update Documents (Parallel)**
+
+> Steps 1.2 through 1.5 each write to different files and are mutually independent.
+> Execute them in parallel (single message with multiple tool calls) after
+> gathering information from Step 1.1.
+
+**Step 1.2**: Update CURRENT.md
+- Update `session-id` (increment), `current-phase`, `current-task`
+- Fill in session-specific sections (Completed, Decisions, State)
+
+**Step 1.3**: Update ROADMAP.md Task checkboxes
+- Check `[x]` for all completed Tasks in current Phase
+- Verify against git commits and session work
+
+**Step 1.4**: Append to HISTORY.md (if Standard/Compressed mode)
+- Add session entry using `history-entry` template format
+
+**Step 1.5**: Update TODO.md (if exists and not template)
+- Mark completed tasks, update current-task
+
+> **Idempotent**: If `/save` was already run this session, these updates
+> produce the same result. Safe to run regardless.
+
+### Step 2: Verify Phase Completion (Reviewer Delegation)
 
 Delegate to Reviewer SubAgent to validate phase is ready for checkpoint.
 
@@ -74,60 +110,17 @@ Construct prompt using: `blueprint hermes request:review:phase-completion`
 - Replace {PLAN_PATH} with resolved plan path (e.g., {PLANS_DIR}/001-auth)
 ```
 
-While waiting for Reviewer response, pre-read files needed for later steps:
-- `{PLAN_PATH}/PLAN.md` (needed for Steps 3, 9)
-- `{PLAN_PATH}/implementation-notes.md` (needed for Step 8)
-- `{SESSION_PATH}/CURRENT.md` (needed for Step 1.5)
-- `{SESSION_PATH}/HISTORY.md` (needed for Step 4)
-
-These reads are independent of the Reviewer and can proceed in parallel.
-
 **Verification includes:**
 - ALL Tasks in Phase are complete (checked in ROADMAP.md)
 - Task status in TODO.md matches ROADMAP.md
 - No incomplete Task items for this Phase
 
 **Process response:** `blueprint hermes response:review:phase-completion`
-- `pass` → Proceed to Step 2
+- `pass` → Proceed to Step 3
 - `warning` → Present warnings, ask user: "Phase {N} has warnings. Checkpoint anyway? (yes/no)"
 - `fail` → Present issues (including incomplete Tasks), go to Error Handling: Phase Not Complete
 
-### Step 1.5: Session Sync
-
-> `/checkpoint` is self-contained — it does NOT require `/save` to be run first.
-> This step ensures documents reflect the current session's work before archiving.
-
-Perform the following updates (same as `/save` Steps 2-4):
-
-1. **Gather Information:**
-   - `git status`, `git log -3 --oneline`
-   - Current Phase and completed Tasks from session context
-   - Key decisions made this session
-
-**Steps 2-5: Update Documents (Parallel)**
-
-> Steps 2 through 5 each write to different files and are mutually independent.
-> Execute them in parallel (single message with multiple tool calls) after
-> gathering information from step 1.
-
-2. **Update CURRENT.md:**
-   - Update `session-id` (increment), `current-phase`, `current-task`
-   - Fill in session-specific sections (Completed, Decisions, State)
-
-3. **Update ROADMAP.md Task checkboxes:**
-   - Check `[x]` for all completed Tasks in current Phase
-   - Verify against git commits and session work
-
-4. **Append to HISTORY.md** (if Standard/Compressed mode):
-   - Add session entry using `history-entry` template format
-
-5. **Update TODO.md** (if exists and not template):
-   - Mark completed tasks, update current-task
-
-> **Idempotent**: If `/save` was already run this session, these updates
-> produce the same result. Safe to run regardless.
-
-### Step 2: Archive Current Session Context
+### Step 3: Archive Current Session Context
 
 Create dated archive directory:
 ```
@@ -139,13 +132,13 @@ Copy current state:
 - TODO.md
 - HISTORY.md
 
-### Steps 3-7: Update Documents (Parallel)
+### Steps 4-8: Update Documents (Parallel)
 
-> Steps 3 through 7 each write to different files and are mutually independent.
+> Steps 4 through 8 each write to different files and are mutually independent.
 > Execute them in parallel (single message with multiple tool calls) after
-> determining content for each from the pre-read source documents.
+> determining content for each from the source documents.
 
-#### Step 3: Create CHECKPOINT-SUMMARY.md
+#### Step 4: Create CHECKPOINT-SUMMARY.md
 
 ```
 blueprint forma copy checkpoint-summary {PLAN_PATH}/session-context/archive/{YYYY-MM-DD}/
@@ -161,14 +154,14 @@ Then fill in:
 - Lessons learned
 - Next phase preview
 
-#### Step 4: Compress HISTORY.md
+#### Step 5: Compress HISTORY.md
 
 Move detailed session entries to archive:
 - Keep only summary entries in HISTORY.md
 - Goal: Under 300 lines
 - Add reference: `See archive/{DATE}/CHECKPOINT-SUMMARY.md`
 
-#### Step 5: Reset CURRENT.md for Next Phase
+#### Step 6: Reset CURRENT.md for Next Phase
 
 Reset CURRENT.md with:
 - New phase information
@@ -179,7 +172,7 @@ Update frontmatter:
 - `current-phase`: Increment to next
 - `session-id`: Reset or continue sequence
 
-#### Step 6: Update ROADMAP.md
+#### Step 7: Update ROADMAP.md
 
 Mark completed phase:
 ```markdown
@@ -187,23 +180,23 @@ Mark completed phase:
 - [ ] Phase {N+1}: {Name} ← Current
 ```
 
-#### Step 7: Update TODO.md
+#### Step 8: Update TODO.md
 
 Shift to next phase:
 - Mark previous phase tasks as archived
 - Add next phase milestones
 - Reset "In Progress" section
 
-### Step 8: Implementation Notes Review (Comprehensive)
+### Step 9: Implementation Notes Review (Comprehensive)
 
-**Step 8.1**: Session Content Analysis
+**Step 9.1**: Session Content Analysis
 
 Review conversation for potential implementation-notes content (same as /save):
 - **Deviations**: Approach changes from PLAN.md
 - **Issues**: Blockers, bugs, unexpected problems
 - **Learnings**: Insights, discoveries
 
-**Step 8.2**: Implementation Notes Lifecycle
+**Step 9.2**: Implementation Notes Lifecycle
 
 1. Read `{PLAN_PATH}/implementation-notes.md`
 2. Identify all ISSUE entries for the completing Phase:
@@ -215,7 +208,7 @@ Review conversation for potential implementation-notes content (same as /save):
    - Keep `[ACTIVE]` entries in place (carried forward to next Phase)
 4. Update counts: "Archived {N} resolved issues. {M} active issues carried forward."
 
-**Step 8.3**: Present Comprehensive Summary
+**Step 9.3**: Present Comprehensive Summary
 
 Use `AskUserQuestion`:
 
@@ -227,7 +220,7 @@ Use `AskUserQuestion`:
 | Option B | "Add/edit notes first" |
 | Option C | "Skip, proceed to checkpoint" |
 
-**Step 8.4**: Unresolved Issues Warning
+**Step 9.4**: Unresolved Issues Warning
 
 If unresolved issues exist:
 ```
@@ -241,7 +234,7 @@ Options:
 3. Continue anyway
 ```
 
-### Step 9: Check Plan Status
+### Step 10: Check Plan Status
 
 ```
 IF all phases completed in ROADMAP.md:
@@ -249,7 +242,7 @@ IF all phases completed in ROADMAP.md:
     - status: in-progress → completed
 ```
 
-### Step 10: ADR Detection
+### Step 11: ADR Detection
 
 Scan the current session for ADR-worthy signals:
 
@@ -282,7 +275,7 @@ Use `AskUserQuestion`:
 
 **If no signals detected:** Skip silently, proceed to confirmation.
 
-### Step 11: Confirm
+### Step 12: Confirm
 
 Use confirmation format: `blueprint hermes after-checkpoint`
 
