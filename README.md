@@ -32,6 +32,7 @@ Control the workflow through intuitive commands:
 | Command | Purpose |
 |---------|---------|
 | `/bplan` | Create a structured implementation plan |
+| `/banalyze` | Analyze phase complexity for plan mode decisions |
 | `/save` | Save session state for handoff |
 | `/load` | Load previous session state |
 | `/checkpoint` | Save milestone checkpoint |
@@ -211,6 +212,8 @@ blueprint/
 | [002](docs/adr/002-constitution-instruction-separation.md) | Constitution/Instruction Separation |
 | [003](docs/adr/003-template-annotation-system.md) | Template Annotation System |
 | [004](docs/adr/004-marker-convention-system.md) | Marker Convention System |
+| [005](docs/adr/005-sync-versioning-strategy.md) | Sync Versioning Strategy |
+| [006](docs/adr/006-orchestrator-pattern.md) | Orchestrator Pattern |
 
 ---
 

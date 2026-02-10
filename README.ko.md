@@ -32,6 +32,7 @@
 | 커맨드 | 용도 |
 |--------|------|
 | `/bplan` | 구조화된 구현 계획 생성 |
+| `/banalyze` | Phase 복잡도 분석 (Plan Mode 결정) |
 | `/save` | 세션 상태 저장 (핸드오프용) |
 | `/load` | 이전 세션 상태 로드 |
 | `/checkpoint` | 마일스톤 체크포인트 저장 |
@@ -211,6 +212,8 @@ blueprint/
 | [002](docs/adr/002-constitution-instruction-separation.md) | Constitution/Instruction Separation |
 | [003](docs/adr/003-template-annotation-system.md) | Template Annotation System |
 | [004](docs/adr/004-marker-convention-system.md) | Marker Convention System |
+| [005](docs/adr/005-sync-versioning-strategy.md) | Sync Versioning Strategy |
+| [006](docs/adr/006-orchestrator-pattern.md) | Orchestrator Pattern |
 
 ---
 
