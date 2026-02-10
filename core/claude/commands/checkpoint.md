@@ -110,6 +110,10 @@ Construct prompt using: `blueprint hermes request:review:phase-completion`
 - Replace {PLAN_PATH} with resolved plan path (e.g., {PLANS_DIR}/001-auth)
 ```
 
+> **IMPORTANT**: Do NOT use `run_in_background`. All subsequent steps depend on the
+> Reviewer result. Call the Task tool synchronously and wait for the response before
+> proceeding. Do NOT use TaskOutput to poll for results.
+
 **Verification includes:**
 - ALL Tasks in Phase are complete (checked in ROADMAP.md)
 - Task status in TODO.md matches ROADMAP.md
