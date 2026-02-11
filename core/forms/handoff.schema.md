@@ -181,23 +181,25 @@ task:
 OBJECTIVE[response:review:session-state]
 ---s
 ```yaml
+# When overall status is pass:
 handoff:
-  status: pass | fail | warning
+  status: pass
+  gate: session
+  summary: "{N}/{N} aspects pass. {one-line description}."
+
+# When overall status is warning or fail:
+handoff:
+  status: warning | fail
   gate: session
   summary: "{human-readable summary}"
-  checks:
-    git-state:
-      status: pass | fail
-      issues: [...]
-    file-integrity:
-      status: pass | fail
-      issues: [...]
-    plan-progress:
-      status: pass | fail
-      issues: [...]
-    analysis-completeness:
-      status: pass | warning
-      issues: [...]
+  checks:                           # Only include fail/warning aspects
+    {aspect-name}:
+      status: fail | warning
+      issues:
+        - location: "{file:line or section}"
+          expected: "{what was expected}"
+          actual: "{what was found}"
+          suggestion: "{how to fix}"
   suggestions:
     - "{how to resolve issue}"
 ```
@@ -223,22 +225,33 @@ task:
 OBJECTIVE[response:review:phase-completion]
 ---s
 ```yaml
+# When overall status is pass:
 handoff:
-  status: pass | fail | warning
+  status: pass
+  gate: session
+  context: phase-completion
+  phase_checked: {N}
+  summary: "Phase {N} complete. {completed}/{total} tasks done."
+
+# When overall status is warning or fail:
+handoff:
+  status: warning | fail
   gate: session
   context: phase-completion
   phase_checked: {N}
   summary: "{human-readable summary}"
   checks:
     phase-completion:
-      status: pass | fail | warning
+      status: fail | warning
       tasks:
         total: {N}
         completed: {N}
         incomplete: {N}
-      git_clean: true | false
-      blockers_resolved: true | false
-      issues: [...]
+      issues:
+        - location: "{file:line or section}"
+          expected: "{what was expected}"
+          actual: "{what was found}"
+          suggestion: "{how to fix}"
   suggestions:
     - "{how to resolve issue}"
 ```
@@ -288,26 +301,33 @@ task:
 OBJECTIVE[response:review:document-schema]
 ---s
 ```yaml
+# When overall status is pass:
 handoff:
-  status: pass | fail | warning
+  status: pass
+  gate: documentation
+  summary: "All {N} files valid. FrontMatter conforms to schemas."
+  files_checked: {N}
+  files_skipped: {N}
+
+# When overall status is warning or fail:
+handoff:
+  status: warning | fail
   gate: documentation
   summary: "{human-readable summary}"
   files_checked: {N}
   files_skipped: {N}
   checks:
     schema-validation:
-      status: pass | fail | warning
-      results:
+      status: fail | warning
+      results:                      # Only include fail/warning files
         - file: "{path}"
           type: "{document type}"
-          schema: "{type}.schema.md"
-          status: pass | fail
+          status: fail | warning
           issues:
             - field: "{field name}"
               expected: "{schema constraint}"
               actual: "{found value}"
               suggestion: "{how to fix}"
-      issues: [...]
   suggestions:
     - "{how to resolve issue}"
 ```

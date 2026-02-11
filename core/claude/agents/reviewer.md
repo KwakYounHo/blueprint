@@ -33,6 +33,7 @@ Load `/blueprint` skill for all framework operations. Execute commands in Bash u
 - Validate ALL assigned Aspects within the gate
 - Provide specific, actionable feedback with location
 - Report pass/fail based on Criteria
+- Minimize response size: include details only for fail/warning items
 - Use `response-form` field from request to get response format (or `hermes --list` if not provided)
 
 ## DO NOT
@@ -53,7 +54,11 @@ Load `/blueprint` skill for all framework operations. Execute commands in Bash u
    - Any aspect `fail` → overall `fail`
    - Any aspect `warning` (no fails) → overall `warning`
    - All aspects `pass` → overall `pass`
-5. **Handoff** to Orchestrator:
+5. **Compress** response based on overall status:
+   - `pass` → summary + counts only. Omit per-item details.
+   - `warning` → summary + warning items only. Omit passing items.
+   - `fail` → summary + fail/warning items with full violation detail. Omit passing items.
+6. **Handoff** to Orchestrator:
    - IF `response-form` field exists in request → Use `hermes {response-form}`
    - ELSE → Run `hermes --list` to find matching `response:*` form
    - Use that Handoff format for your response
