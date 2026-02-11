@@ -18,6 +18,8 @@ Use **Hermes** skill to view specific forms:
 - `hermes request:review:session-state` - Review request format
 - `hermes request:phase-analysis` - Phase analysis request format
 - `hermes response:phase-analysis` - Phase analysis response format
+- `hermes request:review:document-schema:session` - Document schema review for /load
+- `hermes request:review:document-schema:checkpoint` - Document schema review for /checkpoint
 - `hermes --list` - List all forms
 
 ---
@@ -236,6 +238,75 @@ handoff:
         incomplete: {N}
       git_clean: true | false
       blockers_resolved: true | false
+      issues: [...]
+  suggestions:
+    - "{how to resolve issue}"
+```
+---e
+
+OBJECTIVE[request:review:document-schema:session]
+---s
+```yaml
+task:
+  action: review
+  context: document-schema-session
+  response-form: "response:review:document-schema"
+  files:
+    - "{PLAN_PATH}/session-context/CURRENT.md"
+    - "{PLAN_PATH}/session-context/TODO.md"
+    - "{PLAN_PATH}/ROADMAP.md"
+    - "{PLAN_PATH}/session-context/HISTORY.md"
+  gate: documentation
+  aspects:
+    - schema-validation
+  note: "Validate files exist before checking. Skip gracefully if optional file (TODO.md, HISTORY.md) is missing."
+```
+---e
+
+OBJECTIVE[request:review:document-schema:checkpoint]
+---s
+```yaml
+task:
+  action: review
+  context: document-schema-checkpoint
+  response-form: "response:review:document-schema"
+  files:
+    - "{PLAN_PATH}/session-context/CURRENT.md"
+    - "{PLAN_PATH}/session-context/TODO.md"
+    - "{PLAN_PATH}/ROADMAP.md"
+    - "{PLAN_PATH}/session-context/HISTORY.md"
+    - "{PLAN_PATH}/PLAN.md"
+    - "{PLAN_PATH}/BRIEF.md"
+    - "{PLAN_PATH}/session-context/archive/{YYYY-MM-DD}/CHECKPOINT-SUMMARY.md"
+  gate: documentation
+  aspects:
+    - schema-validation
+  note: "Validate files exist before checking. Skip gracefully if optional file is missing."
+```
+---e
+
+OBJECTIVE[response:review:document-schema]
+---s
+```yaml
+handoff:
+  status: pass | fail | warning
+  gate: documentation
+  summary: "{human-readable summary}"
+  files_checked: {N}
+  files_skipped: {N}
+  checks:
+    schema-validation:
+      status: pass | fail | warning
+      results:
+        - file: "{path}"
+          type: "{document type}"
+          schema: "{type}.schema.md"
+          status: pass | fail
+          issues:
+            - field: "{field name}"
+              expected: "{schema constraint}"
+              actual: "{found value}"
+              suggestion: "{how to fix}"
       issues: [...]
   suggestions:
     - "{how to resolve issue}"

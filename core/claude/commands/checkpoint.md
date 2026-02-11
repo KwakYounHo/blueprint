@@ -24,7 +24,8 @@ Load `/blueprint` skill for template and handoff operations. Execute commands in
 |-----------|----------------------|
 | Copy templates | `forma copy` |
 | View confirmation format | `hermes after-checkpoint` |
-| Reviewer delegation | `hermes request:review:phase-completion` |
+| Reviewer delegation (phase) | `hermes request:review:phase-completion` |
+| Reviewer delegation (schema) | `hermes request:review:document-schema:checkpoint` |
 
 ---
 
@@ -98,11 +99,11 @@ Perform the following updates (same as `/save` Steps 2-4):
 > **Idempotent**: If `/save` was already run this session, these updates
 > produce the same result. Safe to run regardless.
 
-### Step 2: Verify Phase Completion (Reviewer Delegation)
+### Step 2: Verify Phase Completion and Document Schema (Reviewer Delegation)
 
-Delegate to Reviewer SubAgent to validate phase is ready for checkpoint.
+Delegate to **two** Reviewer SubAgents to validate phase completion and document schema.
 
-**Handoff:**
+**Handoff (Phase Completion):**
 ```
 Use Task tool with subagent_type: reviewer
 
@@ -110,19 +111,41 @@ Construct prompt using: `blueprint hermes request:review:phase-completion`
 - Replace {PLAN_PATH} with resolved plan path (e.g., {PLANS_DIR}/001-auth)
 ```
 
-> **IMPORTANT**: Do NOT use `run_in_background`. All subsequent steps depend on the
-> Reviewer result. Call the Task tool synchronously and wait for the response before
-> proceeding. Do NOT use TaskOutput to poll for results.
+**Handoff (Document Schema — ADR-007):**
+```
+Use Task tool with subagent_type: reviewer
 
-**Verification includes:**
+Construct prompt using: `blueprint hermes request:review:document-schema:checkpoint`
+- Replace {PLAN_PATH} with resolved plan path
+- Replace {YYYY-MM-DD} with today's date (archive directory for this checkpoint)
+```
+
+> **IMPORTANT**: Do NOT use `run_in_background`. All subsequent steps depend on the
+> Reviewer results. Call both Task tools synchronously (in a single message for parallel
+> execution) and wait for both responses before proceeding.
+> Do NOT use TaskOutput to poll for results.
+
+**Phase Completion verification includes:**
 - ALL Tasks in Phase are complete (checked in ROADMAP.md)
 - Task status in TODO.md matches ROADMAP.md
 - No incomplete Task items for this Phase
 
-**Process response:** `blueprint hermes response:review:phase-completion`
-- `pass` → Proceed to Step 3
+**Document Schema verification includes:**
+- FrontMatter fields comply with type-specific schemas
+- Required fields present with valid formats and constraints
+- Files that don't exist are skipped gracefully
+
+**Process Phase Completion response:** `blueprint hermes response:review:phase-completion`
+- `pass` → Continue
 - `warning` → Present warnings, ask user: "Phase {N} has warnings. Checkpoint anyway? (yes/no)"
 - `fail` → Present issues (including incomplete Tasks), go to Error Handling: Phase Not Complete
+
+**Process Document Schema response:** `blueprint hermes response:review:document-schema`
+- `pass` → Continue
+- `warning` → Include FrontMatter warnings in checkpoint summary
+- `fail` → Present FrontMatter violations, ask user to fix before proceeding
+
+Both must pass (or be acknowledged) before proceeding to Step 3.
 
 ### Step 3: Archive Current Session Context
 

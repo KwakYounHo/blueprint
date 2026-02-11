@@ -15,7 +15,8 @@ Load `/blueprint` skill for plan discovery and handoff operations. Execute comma
 | Find plans by status | `frontis search` |
 | Read plan metadata | `frontis show` |
 | View briefing format | `hermes after-load:{mode}` |
-| Reviewer delegation | `hermes request:review:session-state` |
+| Reviewer delegation (session) | `hermes request:review:session-state` |
+| Reviewer delegation (schema) | `hermes request:review:document-schema:session` |
 
 ---
 
@@ -89,8 +90,9 @@ ELSE:
 
 ### Phase 1.5: Start Background Verification
 
-Immediately after Plan Resolution, spawn Reviewer as a background task:
+Immediately after Plan Resolution, spawn **two** Reviewers as background tasks in parallel:
 
+**Reviewer 1: Session State** (existing)
 ```
 Use Task tool with subagent_type: reviewer
 run_in_background: true
@@ -99,7 +101,16 @@ Construct prompt using: `blueprint hermes request:review:session-state`
 - Replace {PLAN_PATH} with resolved plan path
 ```
 
-Do NOT wait for Reviewer to complete. Proceed immediately to Phase 2.
+**Reviewer 2: Document Schema** (ADR-007)
+```
+Use Task tool with subagent_type: reviewer
+run_in_background: true
+
+Construct prompt using: `blueprint hermes request:review:document-schema:session`
+- Replace {PLAN_PATH} with resolved plan path
+```
+
+Spawn both Reviewers in a single message (parallel). Do NOT wait for either to complete. Proceed immediately to Phase 2.
 
 ### Phase 2: Document Review
 
@@ -147,33 +158,38 @@ IF current_branch IN HIGH_LEVEL_BRANCHES:
         Abort /load
 ```
 
-### Phase 3: Yield for Reviewer
+### Phase 3: Yield for Reviewers
 
 After completing Phase 2 and 2.5, **end your current turn immediately**.
 
 **CRITICAL**:
-- Do NOT use `TaskOutput` or `Read` to poll the Reviewer's output
-- Do NOT synthesize or guess the Reviewer's result
+- Do NOT use `TaskOutput` or `Read` to poll any Reviewer's output
+- Do NOT synthesize or guess the Reviewer results
 - Do NOT present any status summary or document review results yet
 
-The Reviewer's completion signal will arrive automatically after your turn ends.
+Both Reviewers' completion signals will arrive automatically after your turn ends.
 End your turn with a brief message that conveys:
-- The Reviewer result will arrive shortly and processing will resume automatically
+- The Reviewer results will arrive shortly and processing will resume automatically
 - The user just needs to wait a moment
 
 Do NOT include any document review results, status summaries, or internal notes.
 All briefing content will be presented together in Phase 4.
 
-### Phase 4: Receive Reviewer + Handoff Briefing
+### Phase 4: Receive Reviewers + Handoff Briefing
 
-When the Reviewer completion signal arrives as a new turn:
+When both Reviewer completion signals have arrived:
 
-1. **Process Reviewer response:** `blueprint hermes response:review:session-state`
-   - `pass` → Continue to briefing
+1. **Process Session Reviewer response:** `blueprint hermes response:review:session-state`
+   - `pass` → Continue
    - `warning` → Include warnings in briefing
    - `fail` → Present issues, go to Error Recovery
 
-2. **Present briefing** based on detected mode:
+2. **Process Document Schema Reviewer response:** `blueprint hermes response:review:document-schema`
+   - `pass` → Continue
+   - `warning` → Include FrontMatter warnings in briefing
+   - `fail` → Present FrontMatter violations, ask user to fix before proceeding
+
+3. **Present briefing** based on detected mode:
 
 | Mode | Command |
 |------|---------|
@@ -351,8 +367,9 @@ Before presenting briefing, verify:
 - [ ] Git status checked
 - [ ] Key files verified (2-3 minimum)
 - [ ] Briefing message is concise
-- [ ] Reviewer completion signal received before briefing (do NOT poll)
+- [ ] Both Reviewer completion signals received before briefing (do NOT poll)
 - [ ] analysis-completeness result noted
+- [ ] Document schema validation result noted
 
 ---
 
