@@ -129,13 +129,25 @@ Use blueprint skill: forma copy todo {PLANS_DIR}/{nnn}-{topic}/session-context/
 Use blueprint skill: forma copy history {PLANS_DIR}/{nnn}-{topic}/session-context/
 ```
 
-**Step 3: Initialize CURRENT.md**
+**Step 3: Initialize Documents**
 
 Edit the copied CURRENT.md:
 - Set `plan-id` in frontmatter
+- Set `current-phase`: 1, `current-task`: "T-1.1"
 - Set Plan Name and Path
 - Set Current Phase to Phase 1
 - Set Phase Objective from Plan
+
+Edit the copied TODO.md:
+- Set `plan-id`, `current-phase`, `current-task` in frontmatter
+- Populate "In Progress" with first Task (T-1.1)
+- Populate current Phase Tasks with subtasks from PLAN.md
+- Populate "Backlog" with remaining Phases (high-level)
+
+Set `plan-id` in frontmatter of:
+- ROADMAP.md
+- HISTORY.md
+- implementation-notes.md
 
 **Step 4: Guide Next Step**
 
@@ -244,7 +256,7 @@ For document validation (Token-saving purpose):
 ### Phase 1: Analysis & Brief
 - [ ] User requirements understood
 - [ ] Codebase explored for existing patterns
-- [ ] File Context collected for affected files (Purpose + Constraint)
+- [ ] File Context collected for affected files
 - [ ] Brief file created at `{PLANS_DIR}/{nnn}-{topic}/BRIEF.md`
 - [ ] Decisions recorded in Decisions Made table
 - [ ] [DECIDE] items identified
@@ -253,7 +265,7 @@ For document validation (Token-saving purpose):
 ### Phase 2: Plan
 - [ ] Plan created with Phases
 - [ ] Tasks defined for each Phase (T-{phase}.{task})
-- [ ] File Context section populated (all modified files)
+- [ ] File Context section populated (all modified files with Purpose + Constraint)
 - [ ] Files field added to each Task
 - [ ] Deliverables defined for each Task
 - [ ] [DECIDE] markers added for uncertainties
