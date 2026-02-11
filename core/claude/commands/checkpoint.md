@@ -274,6 +274,8 @@ Use `AskUserQuestion`:
 | Option C | "Skip" |
 
 - Option A → Use `blueprint forma copy adr` and fill from session context
+  > **IMPORTANT**: ADRs are project-scoped content. Place in the project's ADR directory
+  > (e.g., `{PROJECT_ROOT}/docs/adr/`), NOT in the Plan directory.
 - Option B → Add to CURRENT.md "Next Agent Should" section: "Consider ADR for: {topic}"
 - Option C → Continue to confirmation
 
