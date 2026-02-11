@@ -73,11 +73,3 @@ last-session: {{date}}
 |------|-------------|-------|
 | {path} | create/modify | {notes} |
 
----
-
-## Generated Artifacts
-
-| Type | Path | Status |
-|------|------|--------|
-| Brief | {PLANS_DIR}/{plan-id}/BRIEF.md | active |
-| Plan | {PLANS_DIR}/{plan-id}/PLAN.md | draft |
