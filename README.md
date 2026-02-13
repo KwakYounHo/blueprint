@@ -3,7 +3,7 @@
 > **Plan once, develop across sessions.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-alpha-orange.svg)]()
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-blueviolet.svg)]()
 
@@ -77,7 +77,7 @@ Unified CLI access to framework capabilities:
 | `lexis` | Constitution viewer |
 | `plan` | Plan directory and listing |
 | `polis` | Agent registry |
-| `project` | Project alias management |
+| `project` | Project management (alias, setup, sync) |
 
 ### 5. Quality Gates
 
@@ -134,19 +134,22 @@ After installation, in each project:
             Alias: 'my-project', Notes: 'Project description'"
 ```
 
+### Bare Repo Support
+
+For bare repo + worktree workflows:
+
+```
+1. Start a Claude Code session in any worktree
+2. Load the skill: /blueprint
+3. Request: "Register as Blueprint project. Alias: 'my-project', Type: bare"
+4. Run: blueprint project setup (provisions config to all worktrees)
+```
+
 ---
 
 ## Quick Start
 
-### 1. Register Project
-
-```
-1. Load the skill: /blueprint
-2. Request: "Register this directory as a Blueprint project.
-            Alias: 'my-project', Notes: 'My awesome project'"
-```
-
-### 2. Create Plan
+### 1. Create Plan
 
 ```
 /bplan
@@ -154,7 +157,7 @@ After installation, in each project:
 
 Create a structured plan (Phase/Task) through conversation with the user.
 
-### 3. Session Continuity
+### 2. Session Continuity
 
 | When | Command |
 |------|---------|
@@ -162,7 +165,7 @@ Create a structured plan (Phase/Task) through conversation with the user.
 | Starting new session | `/load` |
 | Phase completion | `/checkpoint` |
 
-### 4. Typical Workflow
+### 3. Typical Workflow
 
 ```
 Session 1: /bplan → Development → /save
@@ -176,25 +179,26 @@ Session N: /load → Final Phase complete → /checkpoint → Done
 
 ---
 
-## Project Structure
+## Installed Structure
+
+After running `install-global.sh`:
 
 ```
-blueprint/
-├── core/                    # Framework core
-│   ├── claude/              # Claude Code configuration
-│   │   ├── agents/          # SubAgent definitions
-│   │   ├── commands/        # Slash commands (/bplan, /save, etc.)
-│   │   ├── hooks/           # Session hooks
-│   │   └── skills/          # Blueprint skill with submodules
-│   ├── constitutions/       # Principle definitions
-│   ├── forms/               # Handoff form definitions
-│   ├── front-matters/       # FrontMatter schemas
-│   ├── gates/               # Validation gates
-│   └── templates/           # Document templates
-├── docs/adr/                # Architecture Decision Records
-├── install-global.sh        # Installation script
-├── MISSION.md               # Project mission
-└── VISION.md                # Project vision
+~/.claude/
+├── agents/                  # SubAgent definitions
+├── commands/                # Slash commands (/bplan, /save, /load, /checkpoint)
+├── hooks/                   # Session hooks
+├── skills/                  # Blueprint skill (unified CLI)
+│   └── blueprint/
+├── settings.json            # SessionStart hook configured
+└── blueprint/
+    ├── base/                # Framework core (schemas, templates, gates)
+    │   ├── constitutions/
+    │   ├── forms/
+    │   ├── front-matters/
+    │   ├── gates/
+    │   └── templates/
+    └── projects/            # Per-project data (created on project init)
 ```
 
 ---
@@ -203,17 +207,6 @@ blueprint/
 
 - [VISION.md](VISION.md) - The problem we solve and our approach
 - [MISSION.md](MISSION.md) - What we build and how
-
-### Architecture Decision Records
-
-| ADR | Title |
-|-----|-------|
-| [001](docs/adr/001-schema-first-development.md) | Schema-First Development |
-| [002](docs/adr/002-constitution-instruction-separation.md) | Constitution/Instruction Separation |
-| [003](docs/adr/003-template-annotation-system.md) | Template Annotation System |
-| [004](docs/adr/004-marker-convention-system.md) | Marker Convention System |
-| [005](docs/adr/005-sync-versioning-strategy.md) | Sync Versioning Strategy |
-| [006](docs/adr/006-orchestrator-pattern.md) | Orchestrator Pattern |
 
 ---
 

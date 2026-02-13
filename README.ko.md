@@ -3,7 +3,7 @@
 > **Plan once, develop across sessions.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-alpha-orange.svg)]()
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-blueviolet.svg)]()
 
@@ -77,7 +77,7 @@ Session 1 → /save → [외부 저장소] → /load → Session 2
 | `lexis` | Constitution 뷰어 |
 | `plan` | Plan 디렉토리 및 목록 |
 | `polis` | Agent 레지스트리 |
-| `project` | 프로젝트 별칭 관리 |
+| `project` | 프로젝트 관리 (alias, setup, sync) |
 
 ### 5. Quality Gates
 
@@ -134,19 +134,22 @@ cd blueprint
         alias는 'my-project', notes는 '프로젝트 설명'으로."
 ```
 
+### Bare Repo 지원
+
+Bare repo + worktree 워크플로우:
+
+```
+1. 아무 worktree에서 Claude Code 세션 시작
+2. 스킬 로드: /blueprint
+3. 요청: "Blueprint 프로젝트로 등록해줘. alias는 'my-project', type은 bare로."
+4. 실행: blueprint project setup (모든 worktree에 설정 배포)
+```
+
 ---
 
 ## 빠른 시작
 
-### 1. 프로젝트 등록
-
-```
-1. 스킬 로드: /blueprint
-2. 요청: "이 디렉토리를 Blueprint 프로젝트로 등록해줘.
-        alias는 'my-project', notes는 '나의 프로젝트'로."
-```
-
-### 2. Plan 생성
+### 1. Plan 생성
 
 ```
 /bplan
@@ -154,7 +157,7 @@ cd blueprint
 
 사용자와 대화하며 구조화된 계획(Phase/Task)을 생성합니다.
 
-### 3. 세션 연속성
+### 2. 세션 연속성
 
 | 시점 | 커맨드 |
 |------|--------|
@@ -162,7 +165,7 @@ cd blueprint
 | 새 세션 시작 | `/load` |
 | Phase 완료 시 | `/checkpoint` |
 
-### 4. 일반적인 워크플로우
+### 3. 일반적인 워크플로우
 
 ```
 Session 1: /bplan → 개발 → /save
@@ -176,25 +179,26 @@ Session N: /load → 최종 Phase 완료 → /checkpoint → 완료
 
 ---
 
-## 프로젝트 구조
+## 설치 후 구조
+
+`install-global.sh` 실행 후:
 
 ```
-blueprint/
-├── core/                    # 프레임워크 핵심
-│   ├── claude/              # Claude Code 설정
-│   │   ├── agents/          # SubAgent 정의
-│   │   ├── commands/        # Slash 커맨드 (/bplan, /save 등)
-│   │   ├── hooks/           # 세션 훅
-│   │   └── skills/          # Blueprint 스킬 (서브모듈 포함)
-│   ├── constitutions/       # 원칙 정의
-│   ├── forms/               # Handoff 폼 정의
-│   ├── front-matters/       # FrontMatter 스키마
-│   ├── gates/               # 검증 게이트
-│   └── templates/           # 문서 템플릿
-├── docs/adr/                # Architecture Decision Records
-├── install-global.sh        # 설치 스크립트
-├── MISSION.md               # 프로젝트 미션
-└── VISION.md                # 프로젝트 비전
+~/.claude/
+├── agents/                  # SubAgent 정의
+├── commands/                # Slash 커맨드 (/bplan, /save, /load, /checkpoint)
+├── hooks/                   # 세션 훅
+├── skills/                  # Blueprint 스킬 (통합 CLI)
+│   └── blueprint/
+├── settings.json            # SessionStart 훅 설정
+└── blueprint/
+    ├── base/                # 프레임워크 핵심 (스키마, 템플릿, 게이트)
+    │   ├── constitutions/
+    │   ├── forms/
+    │   ├── front-matters/
+    │   ├── gates/
+    │   └── templates/
+    └── projects/            # 프로젝트별 데이터 (프로젝트 초기화 시 생성)
 ```
 
 ---
@@ -203,17 +207,6 @@ blueprint/
 
 - [VISION.md](VISION.md) - 해결하려는 문제와 접근 방식
 - [MISSION.md](MISSION.md) - 무엇을 어떻게 만드는가
-
-### Architecture Decision Records
-
-| ADR | 제목 |
-|-----|------|
-| [001](docs/adr/001-schema-first-development.md) | Schema-First Development |
-| [002](docs/adr/002-constitution-instruction-separation.md) | Constitution/Instruction Separation |
-| [003](docs/adr/003-template-annotation-system.md) | Template Annotation System |
-| [004](docs/adr/004-marker-convention-system.md) | Marker Convention System |
-| [005](docs/adr/005-sync-versioning-strategy.md) | Sync Versioning Strategy |
-| [006](docs/adr/006-orchestrator-pattern.md) | Orchestrator Pattern |
 
 ---
 
