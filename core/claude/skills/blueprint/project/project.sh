@@ -19,7 +19,8 @@ show_help() {
 Project - Manage project aliases for cross-machine portability
 
 Usage:
-  blueprint project init <alias> [--notes "text"]   Initialize new project
+  blueprint project init <alias> [--type bare|repo] [--notes "text"]
+                                                    Initialize new project
   blueprint project sync [--dry-run] [--force]      Sync templates/schemas from base
   blueprint project list                            List all projects
   blueprint project show <alias>                    Show project details
@@ -35,7 +36,7 @@ Options:
 
 Examples:
   blueprint project init myproject
-  blueprint project init myproject --notes "My awesome project"
+  blueprint project init myproject --type bare --notes "Bare repo project"
   blueprint project sync --dry-run
   blueprint project sync --force
   blueprint project list
@@ -69,12 +70,21 @@ do_init() {
   local alias_name="$1"
   shift || true
   local notes=""
+  local project_type="repo"
 
-  # Parse --notes flag
+  # Parse flags
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --notes)
         notes="$2"
+        shift 2
+        ;;
+      --type)
+        project_type="$2"
+        if [[ "$project_type" != "bare" && "$project_type" != "repo" ]]; then
+          error "Invalid type '$project_type'. Must be 'bare' or 'repo'."
+          exit 1
+        fi
         shift 2
         ;;
       *)
@@ -85,7 +95,7 @@ do_init() {
   done
 
   if [ -z "$alias_name" ]; then
-    echo "Usage: blueprint project init <alias> [--notes \"text\"]"
+    echo "Usage: blueprint project init <alias> [--type bare|repo] [--notes \"text\"]"
     exit 1
   fi
 
@@ -93,6 +103,15 @@ do_init() {
 
   local current_path
   current_path="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+
+  # For bare type: resolve to wrapper directory
+  if [ "$project_type" = "bare" ]; then
+    local wrapper_dir
+    wrapper_dir=$(resolve_bare_wrapper_dir)
+    if [ -n "$wrapper_dir" ]; then
+      current_path="$wrapper_dir"
+    fi
+  fi
 
   # Validate alias format
   if ! [[ "$alias_name" =~ ^[a-zA-Z0-9_-]+$ ]]; then
@@ -169,11 +188,13 @@ do_init() {
   jq --arg alias "$alias_name" \
      --arg path "$current_path" \
      --arg notes "$notes" \
-     '.projects += [{"alias": $alias, "paths": [$path], "notes": $notes}]' \
+     --arg type "$project_type" \
+     '.projects += [{"alias": $alias, "type": $type, "paths": [$path], "notes": $notes}]' \
      "$BLUEPRINT_REGISTRY" > "$tmp_file" && mv "$tmp_file" "$BLUEPRINT_REGISTRY"
 
   echo ""
   info "Project initialized: $alias_name"
+  echo "  Type: $project_type"
   echo "  Path: $current_path"
   echo "  Data: $data_dir"
   [ -n "$notes" ] && echo "  Notes: $notes"
@@ -196,9 +217,9 @@ do_list() {
   echo "Projects ($count):"
   echo ""
 
-  jq -r '.projects[] | "\(.alias)\t\(.paths | length)\t\(.notes // "-")"' "$BLUEPRINT_REGISTRY" | \
-    while IFS=$'\t' read -r alias_name paths notes; do
-      printf "  %-16s (%d paths)  %s\n" "$alias_name" "$paths" "$notes"
+  jq -r '.projects[] | "\(.alias)\t\(.type // "repo")\t\(.paths | length)\t\(.notes // "-")"' "$BLUEPRINT_REGISTRY" | \
+    while IFS=$'\t' read -r alias_name type_val paths notes; do
+      printf "  %-16s [%-4s] (%d paths)  %s\n" "$alias_name" "$type_val" "$paths" "$notes"
     done
 }
 
@@ -225,6 +246,7 @@ do_show() {
   fi
 
   echo "Project: $alias_name"
+  echo "Type: $(echo "$project" | jq -r '.type // "repo"')"
   echo "Notes: $(echo "$project" | jq -r '.notes // "-"')"
   echo "Paths:"
   echo "$project" | jq -r '.paths[]' | while read -r path; do
@@ -318,6 +340,17 @@ do_link() {
     exit 1
   fi
 
+  # If project is bare type, resolve to wrapper directory
+  local project_type
+  project_type=$(get_project_type "$alias_name")
+  if [ "$project_type" = "bare" ]; then
+    local wrapper_dir
+    wrapper_dir=$(resolve_bare_wrapper_dir)
+    if [ -n "$wrapper_dir" ]; then
+      current_path="$wrapper_dir"
+    fi
+  fi
+
   # Check path not already linked
   local existing
   existing=$(jq -r --arg a "$alias_name" --arg p "$current_path" \
@@ -350,6 +383,19 @@ do_unlink() {
 
   require_jq
   init_registry
+
+  # If no explicit path given and project is bare type, resolve to wrapper directory
+  if [ -z "$2" ]; then
+    local project_type
+    project_type=$(get_project_type "$alias_name")
+    if [ "$project_type" = "bare" ]; then
+      local wrapper_dir
+      wrapper_dir=$(resolve_bare_wrapper_dir)
+      if [ -n "$wrapper_dir" ]; then
+        path="$wrapper_dir"
+      fi
+    fi
+  fi
 
   # Check alias exists
   local project
@@ -411,6 +457,17 @@ do_rename() {
     exit 1
   fi
 
+  # Try bare wrapper dir resolution for path matching
+  local wrapper_dir
+  wrapper_dir=$(resolve_bare_wrapper_dir)
+  if [ -n "$wrapper_dir" ]; then
+    local alias_try
+    alias_try=$(resolve_project_alias "$wrapper_dir")
+    if [ -n "$alias_try" ]; then
+      current_path="$wrapper_dir"
+    fi
+  fi
+
   # Find current project by path
   local current_alias
   current_alias=$(resolve_project_alias "$current_path")
@@ -461,8 +518,12 @@ do_rename() {
       "$BLUEPRINT_REGISTRY" > "$tmp_file" && mv "$tmp_file" "$BLUEPRINT_REGISTRY"
   else
     # Create new entry for unregistered project
-    jq --arg alias "$new_alias" --arg path "$current_path" \
-      '.projects += [{"alias": $alias, "paths": [$path], "notes": ""}]' \
+    local detected_type="repo"
+    if [ -n "$wrapper_dir" ]; then
+      detected_type="bare"
+    fi
+    jq --arg alias "$new_alias" --arg path "$current_path" --arg type "$detected_type" \
+      '.projects += [{"alias": $alias, "type": $type, "paths": [$path], "notes": ""}]' \
       "$BLUEPRINT_REGISTRY" > "$tmp_file" && mv "$tmp_file" "$BLUEPRINT_REGISTRY"
   fi
 

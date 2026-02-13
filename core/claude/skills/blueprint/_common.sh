@@ -34,17 +34,39 @@ path_to_dirname() {
 }
 
 # =============================================================================
-# Project Path Resolution (Monorepo Support)
+# Bare Repo Worktree Detection
+# =============================================================================
+
+# Detect bare repo wrapper directory from current path.
+# If inside a git worktree of a bare repo, returns the parent of the bare repo dir.
+# Otherwise, returns empty string.
+resolve_bare_wrapper_dir() {
+  local git_common_dir
+  git_common_dir=$(git rev-parse --git-common-dir 2>/dev/null) || return 0
+
+  if [ "$(git -C "$git_common_dir" rev-parse --is-bare-repository 2>/dev/null)" = "true" ]; then
+    dirname "$git_common_dir"
+  fi
+}
+
+# =============================================================================
+# Project Path Resolution (Monorepo + Bare Repo Support)
 # =============================================================================
 
 # Get project path with git root detection
-# Priority: CLAUDE_PROJECT_DIR > git root > cwd
-# This enables blueprint commands to work from subdirectories in monorepos
+# Priority: CLAUDE_PROJECT_DIR > bare repo wrapper dir > git root > cwd
+# This enables blueprint commands to work from subdirectories and worktrees
 get_project_path() {
   if [ -n "$CLAUDE_PROJECT_DIR" ]; then
     echo "$CLAUDE_PROJECT_DIR"
   elif git rev-parse --show-toplevel &>/dev/null 2>&1; then
-    git rev-parse --show-toplevel
+    local wrapper_dir
+    wrapper_dir=$(resolve_bare_wrapper_dir)
+    if [ -n "$wrapper_dir" ]; then
+      echo "$wrapper_dir"
+    else
+      git rev-parse --show-toplevel
+    fi
   else
     pwd
   fi
@@ -76,6 +98,7 @@ _check_jq() {
 }
 
 # Resolve project alias from registry
+# Uses 2-step matching: exact path → bare-type prefix match
 # Returns: alias string if found, empty string otherwise
 resolve_project_alias() {
   local current_path="${1:-$(get_project_path)}"
@@ -86,13 +109,39 @@ resolve_project_alias() {
   # jq must be available
   _check_jq || return 0
 
-  # Search for matching path in registry
+  # Step 1: Exact path match (works for all types)
   local alias_name
   alias_name=$(jq -r --arg path "$current_path" \
     '.projects[] | select(.paths[] == $path) | .alias' \
     "$BLUEPRINT_REGISTRY" 2>/dev/null | head -n1)
 
+  if [ -n "$alias_name" ]; then
+    echo "$alias_name"
+    return 0
+  fi
+
+  # Step 2: For bare-type projects, check if current_path is under a registered wrapper dir
+  alias_name=$(jq -r --arg path "$current_path" \
+    '.projects[] | select(.type == "bare") | select(.paths[] as $p | $path | startswith($p + "/")) | .alias' \
+    "$BLUEPRINT_REGISTRY" 2>/dev/null | head -n1)
+
   echo "$alias_name"
+}
+
+# Get project type from registry
+# Returns: "bare" or "repo" (default when type is missing/null)
+get_project_type() {
+  local alias_name="$1"
+
+  [ -f "$BLUEPRINT_REGISTRY" ] || { echo "repo"; return 0; }
+  _check_jq || { echo "repo"; return 0; }
+
+  local type_val
+  type_val=$(jq -r --arg a "$alias_name" \
+    '.projects[] | select(.alias == $a) | .type // "repo"' \
+    "$BLUEPRINT_REGISTRY" 2>/dev/null | head -n1)
+
+  echo "${type_val:-repo}"
 }
 
 # Initialize registry file if not exists
