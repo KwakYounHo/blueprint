@@ -142,20 +142,29 @@ When reading `implementation-notes.md`:
 - Always read: Deviations table, Learnings, Environment Notes (these are small)
 - Report: "{N} active issues, {M} resolved (archived)"
 
-### Phase 2.5: Branch Safety Check
+### Phase 2.5: Environment Verification
+
+Verify working environment readiness.
+Environment **creation** is handled by `/banalyze` Step 10. This phase only **verifies**.
 
 ```
-HIGH_LEVEL_BRANCHES = [main, master, develop, release]
+project_type = check Blueprint registry type via `blueprint project show`
 
-current_branch = git branch --show-current
+IF project_type == "bare":
+    IF in wrapper directory (not inside a worktree):
+        Show Bare Repo Worktree Warning
+        Wait for user selection
+        IF user selects "Cancel":
+            Abort /load
+ELSE:
+    HIGH_LEVEL_BRANCHES = [main, master, develop, release]
+    current_branch = git branch --show-current
 
-IF current_branch IN HIGH_LEVEL_BRANCHES:
-    Show High-Level Branch Warning
-    Wait for user selection
-    IF user selects "Create feature branch":
-        Create and switch to feature branch
-    ELSE IF user selects "Cancel":
-        Abort /load
+    IF current_branch IN HIGH_LEVEL_BRANCHES:
+        Show High-Level Branch Warning
+        Wait for user selection
+        IF user selects "Cancel":
+            Abort /load
 ```
 
 ### Phase 3: Yield for Reviewers
@@ -285,9 +294,8 @@ Current: {actual-branch}
 Options:
 1. Switch to expected branch
 2. Continue on current branch
-3. Create new branch matching plan
 
-Which option? (1/2/3)
+Which option? (1/2)
 ```
 
 ### High-Level Branch Warning
@@ -299,13 +307,29 @@ Current branch: {branch-name}
 High-level branches (main, master, develop, release) are protected.
 
 Plan-based work should typically be on a feature branch.
+Branch creation is handled by /banalyze Step 10.
 
 Options:
-1. Create feature branch: {convention}/{nnn}-{topic}
-2. Continue on current branch (acknowledge risk)
-3. Cancel and review
+1. Continue on current branch (acknowledge risk)
+2. Cancel — run /banalyze first to create feature branch
 
-Which option? (1/2/3)
+Which option? (1/2)
+```
+
+### Bare Repo Worktree Warning
+
+```
+⚠️ Bare repo: not in a worktree.
+
+You are in the wrapper directory, not a dedicated worktree.
+Plan-based work should be in a worktree with its own branch.
+Worktree creation is handled by /banalyze Step 10.
+
+Options:
+1. Continue anyway (acknowledge risk)
+2. Cancel — run /banalyze first to create worktree
+
+Which option? (1/2)
 ```
 
 ### Git Status Mismatch

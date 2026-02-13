@@ -144,7 +144,56 @@ Output completion summary:
 - Number of Phases analyzed
 - Selected strategies per Phase
 - Number of cross-Phase independent Tasks identified
-- Remind user: `/load` will reference these results
+
+### Step 10: Environment Preparation
+
+After writing results, prepare working environment for implementation.
+
+**Detect project type:**
+```
+plan_id = Plan number from PLAN.md (e.g., 001)
+plan_topic = Plan topic from PLAN.md (e.g., auth-feature)
+project_type = check Blueprint registry type via `blueprint project show`
+```
+
+**For bare repo (`type: bare`):**
+
+```
+wrapper_dir = bare repo wrapper directory (parent of *.git dir)
+suggested_worktree = {wrapper_dir}/{plan_id}-{plan_topic}
+suggested_branch = feat/{plan_id}-{plan_topic}
+
+Use AskUserQuestion:
+  "Bare repo detected. Create worktree for this plan?"
+  1. Create worktree (Recommended)
+  2. Skip — I'll set up manually
+
+IF user accepts:
+    Execute: git worktree add {suggested_worktree} -b {suggested_branch} origin/main
+    Execute: blueprint project setup  (provision config to new worktree)
+    Output: "cd {suggested_worktree} → /load {plan_id}"
+```
+
+**For regular repo (`type: repo`):**
+
+```
+current_branch = git branch --show-current
+HIGH_LEVEL_BRANCHES = [main, master, develop, release]
+
+IF current_branch IN HIGH_LEVEL_BRANCHES:
+    suggested_branch = feat/{plan_id}-{plan_topic}
+
+    Use AskUserQuestion:
+      "Protected branch ({current_branch}) detected. Create feature branch?"
+      1. Create branch (Recommended)
+      2. Skip — I'll handle manually
+
+    IF user accepts:
+        Execute: git checkout -b {suggested_branch}
+        Output: "Branch created. Run /load {plan_id} to start."
+```
+
+Remind: `/load` will verify environment readiness before starting.
 
 ---
 
