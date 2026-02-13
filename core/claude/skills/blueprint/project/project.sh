@@ -21,6 +21,7 @@ Project - Manage project aliases for cross-machine portability
 Usage:
   blueprint project init <alias> [--type bare|repo] [--notes "text"]
                                                     Initialize new project
+  blueprint project setup [alias] [--all]           Provision config to project paths
   blueprint project sync [--dry-run] [--force]      Sync templates/schemas from base
   blueprint project list                            List all projects
   blueprint project show <alias>                    Show project details
@@ -37,6 +38,9 @@ Options:
 Examples:
   blueprint project init myproject
   blueprint project init myproject --type bare --notes "Bare repo project"
+  blueprint project setup
+  blueprint project setup myproject
+  blueprint project setup --all
   blueprint project sync --dry-run
   blueprint project sync --force
   blueprint project list
@@ -581,6 +585,239 @@ do_current() {
 }
 
 # =============================================================================
+# Setup Functions
+# =============================================================================
+
+# Create a symlink with conflict handling.
+# Args: $1=source $2=target $3=display_name
+# Returns: 0=created, 1=skipped, 2=warned
+_try_symlink() {
+  local source_path="$1"
+  local target_path="$2"
+  local display_name="$3"
+
+  if [ ! -e "$source_path" ]; then
+    printf "      %-14s ! missing source\n" "$display_name"
+    return 2
+  fi
+
+  # Correct symlink already exists
+  if [ -L "$target_path" ]; then
+    local current_target
+    current_target="$(readlink "$target_path")"
+    if [ "$current_target" = "$source_path" ]; then
+      printf "      %-14s - skip (already linked)\n" "$display_name"
+      return 1
+    fi
+    ln -sfn "$source_path" "$target_path"
+    printf "      %-14s + relinked\n" "$display_name"
+    return 0
+  fi
+
+  # Real file or directory exists (not a symlink)
+  if [ -e "$target_path" ]; then
+    printf "      %-14s ! conflict (real file exists)\n" "$display_name"
+    return 2
+  fi
+
+  # Nothing exists — create symlink
+  ln -s "$source_path" "$target_path"
+  printf "      %-14s + linked\n" "$display_name"
+  return 0
+}
+
+# Provision config and plansDirectory for a single target path.
+# Args: $1=config_dir $2=target_path $3=plans_dir
+# Modifies counters: sl_created, sl_skipped, sl_warned, pd_created, pd_updated, pd_skipped
+_setup_target_path() {
+  local config_dir="$1"
+  local target_path="$2"
+  local plans_dir="$3"
+
+  if [ ! -d "$target_path" ]; then
+    printf "      - skip (path not found)\n"
+    sl_skipped=$((sl_skipped + 1))
+    return 0
+  fi
+
+  # ----- Symlinks -----
+  if [ -f "$config_dir/CLAUDE.md" ]; then
+    local result=0
+    _try_symlink "$config_dir/CLAUDE.md" "$target_path/CLAUDE.md" "CLAUDE.md" || result=$?
+    case $result in
+      0) sl_created=$((sl_created + 1)) ;;
+      1) sl_skipped=$((sl_skipped + 1)) ;;
+      2) sl_warned=$((sl_warned + 1)) ;;
+    esac
+  fi
+
+  if [ -d "$config_dir/.claude" ]; then
+    local result=0
+    _try_symlink "$config_dir/.claude" "$target_path/.claude" ".claude/" || result=$?
+    case $result in
+      0) sl_created=$((sl_created + 1)) ;;
+      1) sl_skipped=$((sl_skipped + 1)) ;;
+      2) sl_warned=$((sl_warned + 1)) ;;
+    esac
+  fi
+
+  # ----- plansDirectory injection -----
+  mkdir -p "$plans_dir"
+
+  local local_claude_dir="$target_path/.claude"
+  if [ ! -d "$local_claude_dir" ] && [ ! -L "$local_claude_dir" ]; then
+    mkdir -p "$local_claude_dir"
+  fi
+
+  local settings_file="$local_claude_dir/settings.local.json"
+
+  if [ -f "$settings_file" ]; then
+    local existing_pd
+    existing_pd=$(jq -r '.plansDirectory // ""' "$settings_file" 2>/dev/null || echo "")
+    if [ "$existing_pd" = "$plans_dir" ]; then
+      printf "      %-14s - skip (already set)\n" "plansDirectory"
+      pd_skipped=$((pd_skipped + 1))
+    else
+      local tmp_file
+      tmp_file=$(mktemp)
+      jq --arg pd "$plans_dir" '.plansDirectory = $pd' "$settings_file" > "$tmp_file"
+      mv "$tmp_file" "$settings_file"
+      if [ -z "$existing_pd" ]; then
+        printf "      %-14s + added\n" "plansDirectory"
+        pd_created=$((pd_created + 1))
+      else
+        printf "      %-14s + updated\n" "plansDirectory"
+        pd_updated=$((pd_updated + 1))
+      fi
+    fi
+  else
+    printf '{\n  "plansDirectory": "%s"\n}\n' "$plans_dir" > "$settings_file"
+    printf "      %-14s + created (new settings.local.json)\n" "plansDirectory"
+    pd_created=$((pd_created + 1))
+  fi
+}
+
+# Provision a single project across all its paths/worktrees.
+# Args: $1=alias_name
+# Modifies counters: sl_created, sl_skipped, sl_warned, pd_created, pd_updated, pd_skipped
+_setup_project() {
+  local alias_name="$1"
+  local project_type
+  project_type=$(get_project_type "$alias_name")
+  local config_dir="$HOME/.claude/blueprint/projects/$alias_name/config"
+  local plans_dir="$HOME/.claude/blueprint/projects/$alias_name/claude-plans"
+
+  echo "  [$alias_name] (type: $project_type)"
+
+  if [ ! -d "$config_dir" ]; then
+    echo "    config: not found ($config_dir)"
+    echo "    - skip (no config data to provision)"
+    echo ""
+    return 0
+  fi
+
+  local path_count
+  path_count=$(jq -r --arg a "$alias_name" \
+    '.projects[] | select(.alias == $a) | .paths | length' "$BLUEPRINT_REGISTRY")
+
+  for j in $(seq 0 $((path_count - 1))); do
+    local project_path
+    project_path=$(jq -r --arg a "$alias_name" \
+      ".projects[] | select(.alias == \$a) | .paths[$j]" "$BLUEPRINT_REGISTRY")
+
+    if [ ! -d "$project_path" ]; then
+      echo "    path: $project_path"
+      printf "      - skip (path not found on this machine)\n"
+      sl_skipped=$((sl_skipped + 1))
+      continue
+    fi
+
+    if [ "$project_type" = "bare" ]; then
+      echo "    wrapper: $project_path"
+      local worktree_count=0
+      while IFS= read -r wt_path; do
+        [ -z "$wt_path" ] && continue
+        echo "    worktree: $wt_path"
+        _setup_target_path "$config_dir" "$wt_path" "$plans_dir"
+        worktree_count=$((worktree_count + 1))
+      done < <(list_worktrees "$project_path")
+      if [ "$worktree_count" -eq 0 ]; then
+        printf "      - skip (no worktrees found)\n"
+      fi
+    else
+      echo "    path: $project_path"
+      _setup_target_path "$config_dir" "$project_path" "$plans_dir"
+    fi
+  done
+  echo ""
+}
+
+do_setup() {
+  local target_alias=""
+  local setup_all=false
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --all)
+        setup_all=true
+        shift
+        ;;
+      -*)
+        error "Unknown option: $1"
+        exit 1
+        ;;
+      *)
+        target_alias="$1"
+        shift
+        ;;
+    esac
+  done
+
+  require_jq
+  init_registry
+
+  # Counters
+  local sl_created=0 sl_skipped=0 sl_warned=0
+  local pd_created=0 pd_updated=0 pd_skipped=0
+
+  echo ""
+  echo "Project Setup"
+  echo ""
+
+  if [ "$setup_all" = true ]; then
+    local project_count
+    project_count=$(jq '.projects | length' "$BLUEPRINT_REGISTRY")
+    if [ "$project_count" -eq 0 ]; then
+      info "No projects registered."
+      return 0
+    fi
+    for i in $(seq 0 $((project_count - 1))); do
+      local alias_name
+      alias_name=$(jq -r ".projects[$i].alias" "$BLUEPRINT_REGISTRY")
+      _setup_project "$alias_name"
+    done
+  elif [ -n "$target_alias" ]; then
+    if ! jq -e --arg a "$target_alias" '.projects[] | select(.alias == $a)' "$BLUEPRINT_REGISTRY" >/dev/null 2>&1; then
+      error "Project '$target_alias' not found."
+      exit 1
+    fi
+    _setup_project "$target_alias"
+  else
+    local current_alias
+    current_alias=$(resolve_project_alias)
+    if [ -z "$current_alias" ]; then
+      error "No project found for current path."
+      echo "Run 'blueprint project init <alias>' to register."
+      exit 1
+    fi
+    _setup_project "$current_alias"
+  fi
+
+  echo "  Symlinks: $sl_created created, $sl_skipped unchanged, $sl_warned warnings."
+  echo "  plansDirectory: $pd_created created, $pd_updated updated, $pd_skipped unchanged."
+}
+
+# =============================================================================
 # Sync Functions
 # =============================================================================
 
@@ -935,6 +1172,10 @@ case "$COMMAND" in
   init)
     shift
     do_init "$@"
+    ;;
+  setup)
+    shift
+    do_setup "$@"
     ;;
   sync)
     shift

@@ -100,7 +100,8 @@ blueprint polis --list                # List all agents with descriptions
 blueprint polis <agent>               # Show agent instruction
 
 # Project - Project Aliases
-blueprint project init <alias> [--notes "text"]  # Initialize new project
+blueprint project init <alias> [--type bare|repo] [--notes "text"]  # Initialize new project
+blueprint project setup [alias] [--all]           # Provision config to project paths
 blueprint project sync [--dry-run] [--force]     # Sync templates/schemas from base
 blueprint project list                            # List all projects
 blueprint project show <alias>                    # Show project details
@@ -140,6 +141,12 @@ blueprint polis --list
 # Manage project aliases
 blueprint project list
 blueprint project init myproject --notes "My project"
+blueprint project init myproject --type bare --notes "Bare repo with worktrees"
+
+# Provision config to project paths
+blueprint project setup
+blueprint project setup myproject
+blueprint project setup --all
 
 # Get plans directory
 blueprint plan dir
@@ -160,6 +167,7 @@ blueprint plan resolve 001
 
 Then use appropriate commands:
 - **Checking status**: `project current` - determines if project is registered
+- **Provisioning config**: `project setup` - symlinks config files to project paths/worktrees
 - **Viewing plans**: `plan list` - shows available plans
 - **Reading FrontMatter**: `frontis show` - do NOT use `head` or direct file reading
 - **Creating documents**: `forma` for templates, `frontis` for schemas
@@ -183,18 +191,47 @@ Then use appropriate commands:
 
 Use **AskUserQuestion** tool to ask the user:
 1. **Project alias** - Suggest current directory name as default
-2. **Notes** (optional) - Brief description for identification
+2. **Project type** - `repo` (default, standard git repo) or `bare` (bare repo with worktrees)
+3. **Notes** (optional) - Brief description for identification
 
 ### Workflows
 
-**New Project:**
-1. Ask user for alias and notes via AskUserQuestion
+**New Project (standard repo):**
+1. Ask user for alias, type, and notes via AskUserQuestion
 2. Execute in Bash: `~/.claude/skills/blueprint/blueprint.sh project init <alias> --notes "<notes>"`
+
+**New Project (bare repo with worktrees):**
+1. Ask user for alias and notes via AskUserQuestion
+2. Execute from any worktree: `~/.claude/skills/blueprint/blueprint.sh project init <alias> --type bare --notes "<notes>"`
+3. The path is automatically resolved to the wrapper directory (parent of `.git` bare dir)
 
 **Existing Project on New Machine:**
 1. Check if project exists: `~/.claude/skills/blueprint/blueprint.sh project list`
 2. If project exists, link current path: `~/.claude/skills/blueprint/blueprint.sh project link <alias>`
 3. If not, create new project: `~/.claude/skills/blueprint/blueprint.sh project init <alias>`
+
+### Bare Repo Worktree Support
+
+Blueprint supports bare repo + worktree workflows (`git clone --bare` + `git worktree add`).
+
+**How it works:**
+- A bare repo project registers the **wrapper directory** (parent of the `.git` bare dir) as the project path
+- All worktrees under the wrapper are recognized as the same project via prefix matching
+- Commands like `link`, `unlink`, `rename` automatically resolve to the wrapper directory
+
+**Directory structure example:**
+```
+my-project/              ← wrapper dir (registered as project path)
+├── my-project.git/      ← bare repo
+├── main/                ← worktree
+└── feature-branch/      ← worktree
+```
+
+**Key behavior:**
+- `project current` from any worktree returns the same project alias
+- `project link` from a worktree links the wrapper dir, not the worktree itself
+- Alias resolution uses 2-step matching: exact path first, then bare-type prefix match
+- `project setup` provisions config (CLAUDE.md, .claude/) to all worktrees at once
 
 ### Data Locations
 
@@ -202,6 +239,7 @@ Use **AskUserQuestion** tool to ask the user:
 |------|------|--------|
 | Registry | `~/.claude/blueprint/projects/.projects` | Use `project` submodule |
 | Project data | `~/.claude/blueprint/projects/<alias>/` | Use `project` submodule |
+| Project config | `~/.claude/blueprint/projects/<alias>/config/` | Use `project setup` |
 | Plans | `~/.claude/blueprint/projects/<alias>/plans/` | Use `plan` submodule |
 
 **NOTE**: For **querying** (status checks, listing), use submodule commands.

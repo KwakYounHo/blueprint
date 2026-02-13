@@ -49,6 +49,36 @@ resolve_bare_wrapper_dir() {
   fi
 }
 
+# Enumerate worktree paths from a bare repo wrapper directory.
+# Args: $1=wrapper_dir
+# Outputs: one worktree path per line (excludes the bare repo itself)
+list_worktrees() {
+  local wrapper_dir="$1"
+  local bare_repo=""
+
+  # Find bare repo directory (*.git)
+  for d in "$wrapper_dir"/*.git; do
+    if [ -d "$d" ] && [ "$(git -C "$d" rev-parse --is-bare-repository 2>/dev/null)" = "true" ]; then
+      bare_repo="$d"
+      break
+    fi
+  done
+
+  [ -z "$bare_repo" ] && return 0
+
+  # Parse porcelain output for worktree paths (skip bare entry)
+  git -C "$bare_repo" worktree list --porcelain 2>/dev/null | while read -r line; do
+    case "$line" in
+      "worktree "*)
+        local wt_path="${line#worktree }"
+        if [ "$wt_path" != "$bare_repo" ]; then
+          echo "$wt_path"
+        fi
+        ;;
+    esac
+  done
+}
+
 # =============================================================================
 # Project Path Resolution (Monorepo + Bare Repo Support)
 # =============================================================================
