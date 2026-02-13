@@ -1,6 +1,6 @@
 ## **CRITICAL RULES**
 - When you're uncertain or unable to make an independent judgment, ask the user.
-- Familiarize yourself with the [past ADRs](docs/adr/) to understand architectural decisions.
+- Familiarize yourself with the [past ADRs](#architecture-decision-records) to understand architectural decisions.
 
 ## Conversation Rules
 - **IMPORTANT** You must converse with the user in Korean, as it's their native language.
@@ -88,4 +88,16 @@ core/
 - FrontMatter validation: `frontis show <file>` (submodule: frontis, subcommand: show)
 
 When modifying files, **clearly distinguish** whether it's a framework core change or a dogfooding change. If uncertain → **ASK the user**.
+
+### Architecture Decision Records
+
+| ADR | Title |
+|-----|-------|
+| [001](docs/adr/001-schema-first-development.md) | Schema-First Development |
+| [002](docs/adr/002-constitution-instruction-separation.md) | Constitution/Instruction Separation |
+| [003](docs/adr/003-template-annotation-system.md) | Template Annotation System |
+| [004](docs/adr/004-marker-convention-system.md) | Marker Convention System |
+| [005](docs/adr/005-sync-versioning-strategy.md) | Sync Versioning Strategy |
+| [006](docs/adr/006-orchestrator-pattern.md) | Orchestrator Pattern |
+| [007](docs/adr/007-reviewer-gate-spawn-and-validation-separation.md) | Reviewer Gate Spawn & Validation Separation |
 

@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-02-13
+
+### Added
+
+- Bare repo + worktree workflow support
+- `project setup` subcommand for multi-worktree configuration provisioning
+- Environment preparation in `/banalyze`, environment verification in `/load`
+- `mode: bypassPermissions` for `/load` background Reviewers
+
+### Fixed
+
+- `/load` background Reviewer permission failures (required interactive approval)
+
+## [0.4.0] - 2026-02-11
+
+### Added
+
+- FrontMatter schema validation in `/load` and `/checkpoint` (documentation gate)
+- ADR-007: Reviewer Gate Spawn & Validation Separation
+
+### Changed
+
+- Reviewer response optimization: pass scenarios omit verbose details
+- Brief template: removed Generated Artifacts section
+
+### Fixed
+
+- `/save`, `/checkpoint` ADR creation path guidance
+- `/bplan` checklist and session initialization instructions
+
 ## [0.3.0] - 2026-01-22
 
 ### Changed
