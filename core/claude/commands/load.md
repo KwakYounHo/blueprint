@@ -96,6 +96,7 @@ Immediately after Plan Resolution, spawn **two** Reviewers as background tasks i
 ```
 Use Task tool with subagent_type: reviewer
 run_in_background: true
+mode: bypassPermissions
 
 Construct prompt using: `blueprint hermes request:review:session-state`
 - Replace {PLAN_PATH} with resolved plan path
@@ -105,6 +106,7 @@ Construct prompt using: `blueprint hermes request:review:session-state`
 ```
 Use Task tool with subagent_type: reviewer
 run_in_background: true
+mode: bypassPermissions
 
 Construct prompt using: `blueprint hermes request:review:document-schema:session`
 - Replace {PLAN_PATH} with resolved plan path
