@@ -10,7 +10,7 @@ Comprehensive checkpoint for completing a Plan phase.
 - Team handoff or knowledge transfer
 - Weekly/monthly review for long projects
 
-**Don't use for:** Regular session saves (use `/save` instead)
+**Don't use for:** Regular session saves (use `save` instead)
 
 ---
 
@@ -39,10 +39,10 @@ Use these paths for all references below.
 
 ## Plan Recognition
 
-Same as `/save`:
+Same as `save`:
 1. From existing CURRENT.md (Primary)
 2. From Git Branch (Secondary)
-3. From argument: `/checkpoint 001` (Override)
+3. From argument: `checkpoint 001` (Override)
 
 ---
 
@@ -50,10 +50,10 @@ Same as `/save`:
 
 ### Step 1: Session Sync
 
-> `/checkpoint` is self-contained — it does NOT require `/save` to be run first.
+> `checkpoint` is self-contained — it does NOT require `save` to be run first.
 > This step ensures documents reflect the current session's work before validation.
 
-Perform the following updates (same as `/save` Steps 2-4):
+Perform the following updates (same as `save` Steps 2-4):
 
 **Step 1.1: Gather Information**
 
@@ -81,7 +81,7 @@ Perform the following updates (same as `/save` Steps 2-4):
 **Step 1.5**: Update TODO.md (if exists and not template)
 - Mark completed tasks, update current-task
 
-> **Idempotent**: If `/save` was already run this session, these updates
+> **Idempotent**: If `save` was already run this session, these updates
 > produce the same result. Safe to run regardless.
 
 ### Step 2: Verify Phase Completion and Document Schema (Reviewer Delegation)
@@ -197,7 +197,7 @@ Shift to next phase:
 
 **Step 9.1**: Session Content Analysis
 
-Review conversation for potential implementation-notes content (same as /save):
+Review conversation for potential implementation-notes content (same as save):
 - **Deviations**: Approach changes from PLAN.md
 - **Issues**: Blockers, bugs, unexpected problems
 - **Learnings**: Insights, discoveries
@@ -301,7 +301,7 @@ Use confirmation format: `blueprint hermes after-checkpoint`
 Cannot checkpoint without active session context.
 
 Options:
-1. Run /save first to create session context
+1. Run save first to create session context
 2. Select different plan
 
 Which option? (1/2)
@@ -334,7 +334,7 @@ Which option? (1/2)
 - ✅ Reset CURRENT.md for fresh start
 
 ### DON'T:
-- ❌ Use for daily saves (use `/save`)
+- ❌ Use for daily saves (use `save`)
 - ❌ Archive incomplete work
 - ❌ Delete HISTORY.md (compress, don't remove)
 

@@ -35,7 +35,7 @@ Use these paths for all references below.
 ### With Argument
 
 ```
-/load {identifier}
+load {identifier}
 ```
 
 | Format | Example | Matches |
@@ -47,7 +47,7 @@ Use these paths for all references below.
 ### Without Argument
 
 ```
-/load
+load
 ```
 
 1. Find active plans: `blueprint plan list --status in-progress`
@@ -119,7 +119,7 @@ When reading `implementation-notes.md`:
 ### Phase 2.5: Environment Verification
 
 Verify working environment readiness.
-Environment **creation** is handled by `/banalyze` Step 10. This phase only **verifies**.
+Environment **creation** is handled by `banalyze` Step 10. This phase only **verifies**.
 
 ```
 project_type = check Blueprint registry type via `blueprint project show <alias>`
@@ -129,7 +129,7 @@ IF project_type == "bare":
         Show Bare Repo Worktree Warning
         Wait for user selection
         IF user selects "Cancel":
-            Abort /load
+            Abort load
 ELSE:
     HIGH_LEVEL_BRANCHES = [main, master, develop, release]
     current_branch = git branch --show-current
@@ -138,7 +138,7 @@ ELSE:
         Show High-Level Branch Warning
         Wait for user selection
         IF user selects "Cancel":
-            Abort /load
+            Abort load
 ```
 
 ### Phase 3: Yield for Reviewers
@@ -195,7 +195,7 @@ Wait for user response to the [INFER] suggestion.
 On confirmation:
 1. Read PLAN.md "Analysis Results > Selected Strategies" for current Phase
 2. If populated → Follow the Selected Plan Mode via "Task Execution Flow" in PLAN.md
-3. If empty → Inform user: "Analysis Results is empty. Run `/banalyze` to analyze
+3. If empty → Inform user: "Analysis Results is empty. Run `banalyze` to analyze
    all Phases and select Plan Mode strategies before starting implementation."
 
 On decline or request for more info:
@@ -228,7 +228,7 @@ Available plans:
 - 001-auth (in-progress)
 - 003-session (in-progress)
 
-Try: /load 001 or /load auth
+Try: load 001 or load auth
 ```
 
 ### No Active Plans
@@ -237,8 +237,8 @@ Try: /load 001 or /load auth
 📋 No active Plans found.
 
 Options:
-1. Create new plan: /bplan
-2. Load completed plan: /load {plan-id}
+1. Create new plan: bplan
+2. Load completed plan: load {plan-id}
 
 Which option?
 ```
@@ -251,7 +251,7 @@ Which option?
 This appears to be a fresh plan (no previous sessions).
 
 Options:
-1. Start first session (will create session-context on /save)
+1. Start first session (will create session-context on save)
 2. Check if wrong plan selected
 
 Which option? (1/2)
@@ -281,11 +281,11 @@ Current branch: {branch-name}
 High-level branches (main, master, develop, release) are protected.
 
 Plan-based work should typically be on a feature branch.
-Branch creation is handled by /banalyze Step 10.
+Branch creation is handled by banalyze Step 10.
 
 Options:
 1. Continue on current branch (acknowledge risk)
-2. Cancel — run /banalyze first to create feature branch
+2. Cancel — run banalyze first to create feature branch
 
 Which option? (1/2)
 ```
@@ -297,11 +297,11 @@ Which option? (1/2)
 
 You are in the wrapper directory, not a dedicated worktree.
 Plan-based work should be in a worktree with its own branch.
-Worktree creation is handled by /banalyze Step 10.
+Worktree creation is handled by banalyze Step 10.
 
 Options:
 1. Continue anyway (acknowledge risk)
-2. Cancel — run /banalyze first to create worktree
+2. Cancel — run banalyze first to create worktree
 
 Which option? (1/2)
 ```
@@ -314,7 +314,7 @@ Which option? (1/2)
 Options:
 1. Review changes first (git diff)
 2. Commit changes now
-3. Continue anyway (will update docs on /save)
+3. Continue anyway (will update docs on save)
 
 Which option? (1/2/3)
 ```
@@ -371,7 +371,7 @@ Before presenting briefing, verify:
 
 ---
 
-## Integration with /save
+## Integration with save
 
 | File | Required | Purpose |
 |------|----------|---------|

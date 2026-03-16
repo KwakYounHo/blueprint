@@ -24,10 +24,10 @@ After resolution, set:
 ## Argument Parsing
 
 ```
-/verify              # No argument — auto-detect
-/verify 043          # Plan identifier
-/verify --no-linear  # Skip Linear verification
-/verify 043 --no-linear  # Both
+verify              # No argument — auto-detect
+verify 043          # Plan identifier
+verify --no-linear  # Skip Linear verification
+verify 043 --no-linear  # Both
 ```
 
 Parse `--no-linear` flag from arguments. Remaining non-flag argument is the plan identifier.
@@ -153,7 +153,7 @@ Verdict: {PASS/WARNING/FAIL}
 
 **On FAIL:**
 - List each FAIL item with specific detail (which Decision/Constraint/SC failed and why)
-- Output: "Phase 1 FAIL — 위 항목을 해결한 후 다시 /verify를 실행해주세요"
+- Output: "Phase 1 FAIL — 위 항목을 해결한 후 다시 verify를 실행해주세요"
 - **Stop execution. Do NOT proceed to Phase 2.**
 
 **On WARNING:**
@@ -238,7 +238,7 @@ No plan matching '{identifier}' found.
 Available plans:
 {list from blueprint plan list}
 
-Usage: /verify {plan-id}
+Usage: verify {plan-id}
 ```
 
 ### No Changes Detected

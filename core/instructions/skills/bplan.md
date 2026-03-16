@@ -151,31 +151,31 @@ After Session Context is initialized, assess context window usage and guide the 
 
 ```
 IF context window remaining >= 20%:
-    Recommend running `/banalyze` now
+    Recommend running `banalyze` now
 ELSE:
-    Recommend starting a new session for `/banalyze`
+    Recommend starting a new session for `banalyze`
 ```
 
 Present to user:
 ```
 Plan creation complete.
 
-Next step: Run `/banalyze` to analyze Phase complexity and select Plan Mode strategies.
+Next step: Run `banalyze` to analyze Phase complexity and select Plan Mode strategies.
 This is required before starting implementation.
 
-- Context window sufficient → Run `/banalyze` now
-- Context window low → Start a new session and run `/banalyze {plan-id}`
+- Context window sufficient → Run `banalyze` now
+- Context window low → Start a new session and run `banalyze {plan-id}`
 ```
 
-> **IMPORTANT**: Implementation MUST NOT begin without `/banalyze` completing first.
-> `/banalyze` results are referenced by `/load` when starting implementation sessions.
+> **IMPORTANT**: Implementation MUST NOT begin without `banalyze` completing first.
+> `banalyze` results are referenced by `load` when starting implementation sessions.
 
 ---
 
 ## Implementation Note
 
-Plan defines **what** to build. Phase analysis (`/banalyze`) determines **how** to execute.
-Implementation begins via `/load`, which references the analysis results.
+Plan defines **what** to build. Phase analysis (`banalyze`) determines **how** to execute.
+Implementation begins via `load`, which references the analysis results.
 
 ## Session Management Commands
 
@@ -183,9 +183,9 @@ After Plan creation, use these commands for session continuity:
 
 | Command | Purpose |
 |---------|---------|
-| `/save` | Save session state for handoff |
-| `/load` | Load previous session state |
-| `/checkpoint` | Archive completed phase |
+| `save` | Save session state for handoff |
+| `load` | Load previous session state |
+| `checkpoint` | Archive completed phase |
 
 ## Decision Documentation
 
@@ -255,7 +255,7 @@ For document validation:
 - [ ] CURRENT.md initialized with Plan context and current-task
 - [ ] TODO.md ready with Task structure
 - [ ] HISTORY.md ready for session logs
-- [ ] User guided to run `/banalyze` (now or in new session)
+- [ ] User guided to run `banalyze` (now or in new session)
 
 ### Task Implementation (per Task)
 - [ ] Task deliverables reviewed in PLAN.md
@@ -264,12 +264,12 @@ For document validation:
 - [ ] Plan Mode exited with user approval
 - [ ] Implementation executed
 - [ ] Task marked complete in TODO.md
-- [ ] Session saved with `/save`
+- [ ] Session saved with `save`
 - [ ] Deviations recorded in implementation-notes.md
 
 ### Phase Completion
 - [ ] All Tasks in Phase complete
-- [ ] `/checkpoint` executed to archive phase
+- [ ] `checkpoint` executed to archive phase
 - [ ] ROADMAP.md updated (Phase and Tasks marked complete)
 - [ ] Ready for next Phase
 

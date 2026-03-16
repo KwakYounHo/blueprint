@@ -40,4 +40,4 @@ Apply Plan workflow for creating structured implementation plans
 - 3-phase progressive planning: Analysis & Brief → Plan → Session Context Init
 - Phase transitions REQUIRE user confirmation
 - [DECIDE] markers require user input — never auto-resolve
-- After Plan approval, guide user to run `/banalyze`
+- After Plan approval, guide user to run `banalyze`

@@ -36,5 +36,5 @@ Save major milestone checkpoint for Plan phase completion
 ## Special Requirements
 
 - Reviewer delegation must be **synchronous** — all subsequent steps depend on results
-- Self-contained: does NOT require `/save` to be run first (Step 1 handles session sync)
+- Self-contained: does NOT require `save` to be run first (Step 1 handles session sync)
 - Phase completion + Document schema must both pass before archiving

@@ -34,13 +34,13 @@ blueprint plan resolve auth  # → /path/to/plans/NNN-auth-feature/
    - Extract `{nnn}` → Use `blueprint plan resolve {nnn}`
 
 3. **From Argument** (Override)
-   - `/save 001` → Use `blueprint plan resolve 001`
-   - `/save auth` → Use `blueprint plan resolve auth`
+   - `save 001` → Use `blueprint plan resolve 001`
+   - `save auth` → Use `blueprint plan resolve auth`
 
 ### Resolution Logic
 
 ```
-IF /save has argument:
+IF save has argument:
     Resolve plan: blueprint plan resolve <argument>
 ELSE IF session-context/CURRENT.md exists in plan directory:
     Use plan-id from frontmatter
@@ -50,7 +50,7 @@ ELSE:
         Resolve plan: blueprint plan resolve {nnn}
         Confirm with user: "Saving to PLAN-{nnn}. Correct?"
     ELSE:
-        Ask user to select plan or specify: /save <plan-id>
+        Ask user to select plan or specify: save <plan-id>
 ```
 
 ---
@@ -230,7 +230,7 @@ Use confirmation format: `blueprint hermes after-save`
 - Add separator `---` before each entry
 - Increment session-count in frontmatter
 - Keep entries in reverse chronological order (newest first)
-- If HISTORY.md > 500 lines, suggest `/checkpoint`
+- If HISTORY.md > 500 lines, suggest `checkpoint`
 
 ---
 
@@ -240,8 +240,8 @@ Use confirmation format: `blueprint hermes after-save`
 |-----------|--------|
 | "Save as quick handoff" | Force Quick mode |
 | "Save quick" | Force Quick mode |
-| `/save --quick` | Force Quick mode |
-| "Save checkpoint" | Suggest `/checkpoint` instead |
+| `save --quick` | Force Quick mode |
+| "Save checkpoint" | Suggest `checkpoint` instead |
 | "Save as standard" | Force Standard mode |
 
 ---
@@ -257,8 +257,8 @@ Current branch: {branch} (no plan pattern detected)
 No existing session context found.
 
 Options:
-1. Specify plan: /save 001 or /save auth
-2. Create new plan first: /bplan
+1. Specify plan: save 001 or save auth
+2. Create new plan first: bplan
 
 Which option?
 ```
@@ -285,19 +285,19 @@ Project has grown significantly.
 HISTORY.md: {X} lines (limit: 500)
 Sessions since last checkpoint: {N}
 
-Consider using `/checkpoint` to:
+Consider using `checkpoint` to:
 - Archive current phase
 - Compress HISTORY.md
 - Reset for fresh start
 
-Run /checkpoint now? (yes/no)
+Run checkpoint now? (yes/no)
 ```
 
 ---
 
-## Automatic /checkpoint Suggestion
+## Automatic checkpoint Suggestion
 
-Suggest `/checkpoint` when ANY condition is true:
+Suggest `checkpoint` when ANY condition is true:
 
 | Condition | Threshold |
 |-----------|-----------|

@@ -155,7 +155,7 @@ Ask user: "Bare repo detected. Create worktree for this plan?"
 IF user accepts:
     Execute: git worktree add {suggested_worktree} -b {suggested_branch} origin/main
     Execute: blueprint project setup  (provision config to new worktree)
-    Output: "cd {suggested_worktree} → /load {plan_id}"
+    Output: "cd {suggested_worktree} → load {plan_id}"
 ```
 
 **For regular repo (`type: repo`):**
@@ -176,10 +176,10 @@ Ask user: "Protected branch ({current_branch}) detected. Create feature branch?"
 ```
 IF user accepts:
     Execute: git checkout -b {suggested_branch}
-    Output: "Branch created. Run /load {plan_id} to start."
+    Output: "Branch created. Run load {plan_id} to start."
 ```
 
-Remind: `/load` will verify environment readiness before starting.
+Remind: `load` will verify environment readiness before starting.
 
 ---
 
