@@ -20,6 +20,9 @@ Use **Hermes** skill to view specific forms:
 - `hermes response:phase-analysis` - Phase analysis response format
 - `hermes request:review:document-schema:session` - Document schema review for /load
 - `hermes request:review:document-schema:checkpoint` - Document schema review for /checkpoint
+- `hermes request:review:verification` - Verification gate review request format
+- `hermes request:verify:production` - Production readiness agent request format
+- `hermes after-verify` - Verification final report format
 - `hermes --list` - List all forms
 
 ---
@@ -415,5 +418,154 @@ handoff:
   context: phase-analysis
   reason: "{specific issue - e.g., Plan not found, Phase not found}"
   suggestion: "{how to resolve - e.g., check file path, verify Phase number}"
+```
+---e
+
+---
+
+## Verification Objectives
+
+OBJECTIVE[request:review:verification]
+---s
+```yaml
+task:
+  action: review
+  context: verification
+  response-form: "response:review:verification"
+  files:
+    - "{PLAN_PATH}/BRIEF.md"
+    - "{PLAN_PATH}/PLAN.md"
+    - "{PLAN_PATH}/implementation-notes.md"
+  gate: verification
+  aspects:
+    - decisions
+    - constraints
+    - success-criteria
+    - scope
+    - deviations
+    - linear-alignment
+  diff: "{diff source - e.g., 'feature branch vs main', 'staged changes'}"
+  flags:
+    no-linear: {true|false}
+```
+---e
+
+OBJECTIVE[response:review:verification]
+---s
+```yaml
+# When overall status is pass:
+handoff:
+  status: pass
+  gate: verification
+  summary: "{N}/{N} aspects pass. {one-line description}."
+
+# When overall status is warning or fail:
+handoff:
+  status: warning | fail
+  gate: verification
+  summary: "{human-readable summary}"
+  checks:                           # Only include fail/warning aspects
+    decisions:
+      status: fail | warning
+      decisions_checked: {N}
+      issues:
+        - location: "{D-xxx or file:line}"
+          expected: "{what Decision requires}"
+          actual: "{what was found}"
+          suggestion: "{how to fix}"
+    constraints:
+      status: fail | warning
+      constraints_checked: {N}
+      issues:
+        - location: "{C-xxx or file:line}"
+          expected: "{what Constraint requires}"
+          actual: "{what was found}"
+          suggestion: "{how to fix}"
+    success-criteria:
+      status: fail | warning
+      criteria_checked: {N}
+      issues:
+        - location: "{criterion # or file:line}"
+          expected: "{verification method}"
+          actual: "{what was found}"
+          suggestion: "{how to fix}"
+    scope:
+      status: fail | warning
+      issues:
+        - location: "{file path}"
+          expected: "Within Affected Files"
+          actual: "{out of scope or undeclared}"
+          suggestion: "{how to fix}"
+    deviations:
+      status: warning
+      issues:
+        - location: "{task or file}"
+          expected: "Deviation documented"
+          actual: "No entry in implementation-notes.md"
+          suggestion: "Add Deviation entry"
+    linear-alignment:
+      status: fail | warning | skip
+      skip_reason: "{reason if skipped}"
+      issues:
+        - location: "{Linear issue ID}"
+          expected: "{Plan scope}"
+          actual: "{Linear scope}"
+          suggestion: "{how to align}"
+  suggestions:
+    - "{how to resolve issue}"
+```
+---e
+
+OBJECTIVE[request:verify:production]
+---s
+```yaml
+task:
+  action: verify
+  context: production-readiness
+  response-form: "response:verify:production"
+  agent: "{code-reuse-reviewer | code-quality-reviewer | code-efficiency-reviewer}"
+  diff: "{code diff content or reference}"
+```
+---e
+
+OBJECTIVE[response:verify:production]
+---s
+```yaml
+handoff:
+  status: completed
+  context: production-readiness
+  agent: "{agent name}"
+  findings:
+    - id: {N}
+      finding: "{description}"
+      severity: High | Medium | Low
+      recommended_action: "{specific action}"
+      file: "{path}"
+      line_range: "{start-end}"
+  summary: "{N} findings ({H} high, {M} medium, {L} low)"
+```
+---e
+
+OBJECTIVE[after-verify]
+---s
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  VERIFICATION COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Plan: PLAN-{NNN} - {Name}
+Linear: {issue-id or "N/A"}
+
+Phase 1 — Intent: {PASS/WARNING}
+  Decisions: {n}/{n}  |  Constraints: {n}/{n}
+  Success Criteria: {n}/{n}  |  Scope: {OK/FAIL}
+  Deviations: {n} undocumented  |  Linear: {status or "skipped"}
+
+Phase 2 — Production: {PASS}
+  Code Reuse: {n} findings  |  Quality: {n} findings  |  Efficiency: {n} findings
+  Fixes: {n}  |  Skipped: {n}
+
+Verdict: Production 승격 {적절/부적절}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 ---e
