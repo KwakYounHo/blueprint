@@ -162,7 +162,15 @@ fn install_instructions(
         let output = format!("{frontmatter}\n{}\n{body}", platform.bootstrap_template);
 
         // Write to target
-        let target_file = target_dir.join(&name);
+        let target_file = match inst_type {
+            InstructionType::Agent => target_dir.join(&name),
+            InstructionType::Skill => {
+                // Skills use subdirectory structure: {name}/SKILL.md
+                let skill_dir = target_dir.join(stem);
+                fs::create_dir_all(&skill_dir).ok();
+                skill_dir.join("SKILL.md")
+            }
+        };
         match fs::write(&target_file, output) {
             Ok(_) => println!("  {stem}: installed"),
             Err(e) => eprintln!("  {stem}: failed to write — {e}"),
@@ -206,7 +214,10 @@ fn generate_frontmatter(
             )
         }
         InstructionType::Skill => {
-            format!("---\ndescription: {}\n---\n", spec.description)
+            format!(
+                "---\nname: {name}\ndescription: {}\n---\n",
+                spec.description
+            )
         }
     }
 }
@@ -342,10 +353,22 @@ fn remove_blueprint_files(dir: &Path, label: &str) {
         for entry in entries.flatten() {
             let name = entry.file_name().to_string_lossy().to_string();
             if name.ends_with(".md") && !name.ends_with(".spec.md") {
-                let target = dir.join(&name);
-                if target.exists() {
-                    fs::remove_file(&target).ok();
-                    removed += 1;
+                let stem = name.strip_suffix(".md").unwrap_or(&name);
+
+                if label == "skills" {
+                    // Skills use subdirectory structure: {name}/SKILL.md
+                    let skill_dir = dir.join(stem);
+                    if skill_dir.is_dir() {
+                        fs::remove_dir_all(&skill_dir).ok();
+                        removed += 1;
+                    }
+                } else {
+                    // Agents are flat files
+                    let target = dir.join(&name);
+                    if target.exists() {
+                        fs::remove_file(&target).ok();
+                        removed += 1;
+                    }
                 }
             }
         }

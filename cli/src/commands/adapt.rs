@@ -57,7 +57,7 @@ fn claude_platform() -> PlatformDef {
     PlatformDef {
         name: "Claude Code",
         agent_target_dir: claude_dir.join("agents"),
-        skill_target_dir: claude_dir.join("commands"),
+        skill_target_dir: claude_dir.join("skills"),
         hooks_target_dir: claude_dir.join("hooks"),
         bootstrap_template: CLAUDE_BOOTSTRAP,
         capability_map: &CLAUDE_CAPABILITY_MAP,
