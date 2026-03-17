@@ -6,7 +6,6 @@ pub mod lexis;
 pub mod plan;
 pub mod polis;
 pub mod project;
-pub mod adapt;
 
 /// All available subcommands
 #[derive(clap::Subcommand)]
@@ -27,8 +26,6 @@ pub enum Subcommand {
     Polis(polis::Args),
     /// Project alias management
     Project(project::Args),
-    /// Adapter installation for Code Assistants
-    Adapt(adapt::Args),
 }
 
 /// Route subcommand to its handler
@@ -42,6 +39,5 @@ pub fn run(cmd: Subcommand) {
         Subcommand::Plan(args) => plan::run(args),
         Subcommand::Polis(args) => polis::run(args),
         Subcommand::Project(args) => project::run(args),
-        Subcommand::Adapt(args) => adapt::run(args),
     }
 }
