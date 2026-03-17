@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 #
 # Blueprint Claude Code Provider
-# Installs Blueprint instructions + base content for Claude Code.
+# Transforms and installs Blueprint instructions for Claude Code.
+#
+# Prerequisites:
+#   ./install.sh must be run first (installs content to ~/.blueprint/)
 #
 # Usage:
 #   ./providers/claude/install.sh [--dry-run]
@@ -9,11 +12,6 @@
 # Reads from:
 #   - instructions/agents/    → ~/.claude/agents/
 #   - instructions/skills/    → ~/.claude/skills/{name}/SKILL.md
-#   - core/constitutions/     → ~/.blueprint/base/constitutions/
-#   - core/gates/             → ~/.blueprint/base/gates/
-#   - core/templates/         → ~/.blueprint/base/templates/
-#   - core/forms/             → ~/.blueprint/base/forms/
-#   - core/front-matters/     → ~/.blueprint/base/front-matters/
 #
 
 set -euo pipefail
@@ -24,13 +22,23 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 INSTRUCTIONS_DIR="$REPO_ROOT/instructions"
-CORE_DIR="$REPO_ROOT/core"
 HOOKS_DIR="$SCRIPT_DIR/hooks"
 
 CLAUDE_DIR="${HOME}/.claude"
-BLUEPRINT_BASE="${BLUEPRINT_HOME:-${HOME}/.blueprint}/base"
+BLUEPRINT_HOME="${BLUEPRINT_HOME:-${HOME}/.blueprint}"
 
 DRY_RUN=false
+
+# --- Prerequisite Check ---
+
+check_blueprint_installed() {
+  if [ ! -d "$BLUEPRINT_HOME/base" ]; then
+    echo "Blueprint content not found at $BLUEPRINT_HOME/base"
+    echo ""
+    echo "Run ./install.sh first to install Blueprint core content."
+    exit 1
+  fi
+}
 
 # --- Claude Code Bootstrap Template ---
 
@@ -60,7 +68,6 @@ map_capabilities_to_tools() {
     return
   fi
 
-  # Extract capabilities from spec
   local caps
   caps=$(awk '/## Required Capabilities/,/^## /' "$spec_file" | grep '|' | grep -v 'Capability\|---' | cut -d'|' -f2 | sed 's/^ *//;s/ *$//')
 
@@ -118,7 +125,6 @@ install_agents() {
     local tools
     tools=$(map_capabilities_to_tools "$spec")
 
-    # Generate: FrontMatter + Bootstrap + Body
     local output
     output=$(printf '%s\n\n%s\n\n%s' \
       "---
@@ -156,10 +162,8 @@ install_skills() {
     local desc
     desc=$(get_description "$spec")
 
-    # Skills use subdirectory structure: {name}/SKILL.md
     local skill_dir="$target_dir/$name"
 
-    # Generate: FrontMatter + Bootstrap + Body
     local output
     output=$(printf '%s\n\n%s\n\n%s' \
       "---
@@ -177,45 +181,6 @@ description: ${desc}
       log_ok "  $name"
     fi
   done
-}
-
-install_base_content() {
-  log_info "Installing base content → $BLUEPRINT_BASE"
-
-  local dirs=("constitutions" "forms" "front-matters" "gates" "templates")
-
-  for dir in "${dirs[@]}"; do
-    local src="$CORE_DIR/$dir"
-    [ ! -d "$src" ] && continue
-
-    if [ "$DRY_RUN" = true ]; then
-      log_dry "  $dir/"
-    else
-      mkdir -p "$BLUEPRINT_BASE/$dir"
-      rsync -a "$src/" "$BLUEPRINT_BASE/$dir/"
-      log_ok "  $dir/"
-    fi
-  done
-
-  # Also copy instructions to base (for CLI access: polis, etc.)
-  if [ -d "$INSTRUCTIONS_DIR" ]; then
-    if [ "$DRY_RUN" = true ]; then
-      log_dry "  instructions/"
-    else
-      mkdir -p "$BLUEPRINT_BASE/instructions"
-      rsync -a "$INSTRUCTIONS_DIR/" "$BLUEPRINT_BASE/instructions/"
-      log_ok "  instructions/"
-    fi
-  fi
-
-  # Create projects directory
-  local projects_dir="${BLUEPRINT_HOME:-${HOME}/.blueprint}/projects"
-  if [ "$DRY_RUN" = true ]; then
-    log_dry "  projects/"
-  else
-    mkdir -p "$projects_dir"
-    log_ok "  projects/"
-  fi
 }
 
 install_hooks() {
@@ -257,16 +222,13 @@ configure_session_hook() {
     return 0
   fi
 
-  # Create settings.json if it doesn't exist
   [ ! -f "$settings_file" ] && echo '{}' > "$settings_file"
 
-  # Check if hook already exists
   if jq -e '.hooks.SessionStart[]?.hooks[]? | select(.command | contains("session-init.sh"))' "$settings_file" >/dev/null 2>&1; then
     log_ok "  SessionStart hook already configured (skipped)"
     return 0
   fi
 
-  # Add hook
   local tmp_file
   tmp_file=$(mktemp)
   jq --arg cmd "$hook_path" '
@@ -286,7 +248,9 @@ main() {
       --dry-run) DRY_RUN=true; shift ;;
       -h|--help)
         echo "Usage: $(basename "$0") [--dry-run]"
-        echo "Installs Blueprint for Claude Code."
+        echo "Installs Blueprint instructions for Claude Code."
+        echo ""
+        echo "Prerequisite: ./install.sh (installs Blueprint content first)"
         exit 0 ;;
       *) echo "Unknown option: $1"; exit 1 ;;
     esac
@@ -298,8 +262,8 @@ main() {
   [ "$DRY_RUN" = true ] && log_warn "DRY-RUN MODE"
   echo ""
 
-  install_base_content
-  echo ""
+  check_blueprint_installed
+
   install_agents
   echo ""
   install_skills
@@ -312,7 +276,7 @@ main() {
   if [ "$DRY_RUN" = true ]; then
     log_warn "Dry run complete. No files were changed."
   else
-    log_ok "Installation complete!"
+    log_ok "Claude Code provider installed!"
     echo ""
     log_info "Next steps:"
     log_info "  1. cd /path/to/your/project"
