@@ -2,7 +2,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use crate::common::frontmatter;
-use crate::common::paths;
+use crate::common::registry::{self, Registry};
 
 /// Plan directory and listing
 #[derive(clap::Args)]
@@ -40,28 +40,31 @@ pub fn run(args: Args) {
 
 /// Resolve the plans directory for the current project.
 ///
-/// For now, uses project data directory from registry or environment.
-/// Full project resolution will be implemented in M4.
+/// Priority: $BLUEPRINT_PLANS_DIR > registry-based detection
 fn resolve_plans_dir() -> PathBuf {
-    // TODO: Full project context resolution (M4)
-    // For now: check env override, then fall back to current project in registry
+    // Environment override
     if let Ok(dir) = std::env::var("BLUEPRINT_PLANS_DIR") {
         return PathBuf::from(dir);
     }
 
-    // Placeholder: use first project in projects dir that has a plans/ subdirectory
-    let projects = paths::projects_dir();
-    if let Ok(entries) = fs::read_dir(&projects) {
-        for entry in entries.flatten() {
-            let plans = entry.path().join("plans");
-            if plans.is_dir() {
-                return plans;
-            }
+    // Detect current project from registry
+    let Ok(reg) = Registry::load() else {
+        eprintln!("Failed to load project registry.");
+        eprintln!("Initialize a project first: blueprint project init <alias>");
+        std::process::exit(1);
+    };
+
+    match registry::detect_current_project(&reg) {
+        Some(project) => registry::project_plans_dir(&project.alias),
+        None => {
+            eprintln!("No project found for current directory.");
+            eprintln!();
+            eprintln!("Options:");
+            eprintln!("  1. Initialize: blueprint project init <alias>");
+            eprintln!("  2. Override: BLUEPRINT_PLANS_DIR=/path/to/plans blueprint plan dir");
+            std::process::exit(1);
         }
     }
-
-    // Last resort: current directory
-    PathBuf::from(".")
 }
 
 fn list_plans(plans_dir: &Path, status_filter: Option<&str>) {
