@@ -1,3 +1,9 @@
+use std::fs;
+use std::path::{Path, PathBuf};
+
+use crate::common::frontmatter;
+use crate::common::paths;
+
 /// Plan directory and listing
 #[derive(clap::Args)]
 pub struct Args {
@@ -19,15 +25,148 @@ pub enum Action {
 }
 
 pub fn run(args: Args) {
+    let plans_dir = resolve_plans_dir();
+
     match args.action {
-        Some(Action::Dir) => eprintln!("plan dir: not yet implemented"),
-        Some(Action::List { status }) => {
-            let filter = status.as_deref().unwrap_or("all");
-            eprintln!("plan list --status {filter}: not yet implemented");
+        Some(Action::Dir) => println!("{}", plans_dir.display()),
+        Some(Action::List { status }) => list_plans(&plans_dir, status.as_deref()),
+        Some(Action::Resolve { identifier }) => resolve_plan(&plans_dir, &identifier),
+        None => {
+            eprintln!("Usage: blueprint plan <dir|list|resolve>");
+            std::process::exit(1);
         }
-        Some(Action::Resolve { identifier }) => {
-            eprintln!("plan resolve {identifier}: not yet implemented")
+    }
+}
+
+/// Resolve the plans directory for the current project.
+///
+/// For now, uses project data directory from registry or environment.
+/// Full project resolution will be implemented in M4.
+fn resolve_plans_dir() -> PathBuf {
+    // TODO: Full project context resolution (M4)
+    // For now: check env override, then fall back to current project in registry
+    if let Ok(dir) = std::env::var("BLUEPRINT_PLANS_DIR") {
+        return PathBuf::from(dir);
+    }
+
+    // Placeholder: use first project in projects dir that has a plans/ subdirectory
+    let projects = paths::projects_dir();
+    if let Ok(entries) = fs::read_dir(&projects) {
+        for entry in entries.flatten() {
+            let plans = entry.path().join("plans");
+            if plans.is_dir() {
+                return plans;
+            }
         }
-        None => eprintln!("plan: run 'blueprint plan --help' for usage"),
+    }
+
+    // Last resort: current directory
+    PathBuf::from(".")
+}
+
+fn list_plans(plans_dir: &Path, status_filter: Option<&str>) {
+    let Ok(entries) = fs::read_dir(plans_dir) else {
+        eprintln!("Plans directory not found: {}", plans_dir.display());
+        std::process::exit(1);
+    };
+
+    let mut plans: Vec<String> = entries
+        .filter_map(|entry| {
+            let path = entry.ok()?.path();
+            if !path.is_dir() {
+                return None;
+            }
+
+            let name = path.file_name()?.to_str()?.to_string();
+
+            // Apply status filter if provided
+            if let Some(filter) = status_filter {
+                let plan_file = path.join("PLAN.md");
+                if let Ok(Some(status)) = frontmatter::get_field(&plan_file, "status") {
+                    if status != filter {
+                        return None;
+                    }
+                } else {
+                    return None; // No PLAN.md or no status field → skip when filtering
+                }
+            }
+
+            Some(name)
+        })
+        .collect();
+
+    plans.sort();
+
+    if plans.is_empty() {
+        if let Some(filter) = status_filter {
+            eprintln!("No plans found with status: {filter}");
+        } else {
+            eprintln!("No plans found in {}", plans_dir.display());
+        }
+    } else {
+        for name in &plans {
+            println!("{name}");
+        }
+    }
+}
+
+fn resolve_plan(plans_dir: &Path, identifier: &str) {
+    let Ok(entries) = fs::read_dir(plans_dir) else {
+        eprintln!("Plans directory not found: {}", plans_dir.display());
+        std::process::exit(1);
+    };
+
+    let is_number = identifier.chars().all(|c| c.is_ascii_digit());
+    let has_number_prefix = identifier
+        .split_once('-')
+        .map(|(prefix, _)| prefix.chars().all(|c| c.is_ascii_digit()))
+        .unwrap_or(false);
+
+    let mut matches: Vec<PathBuf> = entries
+        .filter_map(|entry| {
+            let path = entry.ok()?.path();
+            if !path.is_dir() {
+                return None;
+            }
+
+            let name = path.file_name()?.to_str()?;
+
+            let matched = if is_number {
+                // "001" → matches "001-*"
+                name.starts_with(&format!("{identifier}-"))
+            } else if has_number_prefix {
+                // "001-auth" → matches "001-auth*"
+                name.starts_with(identifier)
+            } else {
+                // "auth" → matches "*-*auth*"
+                name.contains('-') && name.contains(identifier)
+            };
+
+            matched.then(|| path.to_path_buf())
+        })
+        .collect();
+
+    matches.sort();
+
+    match matches.len() {
+        0 => {
+            eprintln!("No plan found matching: {identifier}");
+            eprintln!();
+            eprintln!("Available plans:");
+            list_plans(plans_dir, None);
+            std::process::exit(1);
+        }
+        1 => println!("{}", matches[0].display()),
+        _ => {
+            eprintln!("Multiple plans match '{identifier}':");
+            for m in &matches {
+                if let Some(name) = m.file_name().and_then(|n| n.to_str()) {
+                    eprintln!("  - {name}");
+                }
+            }
+            eprintln!();
+            eprintln!("Please be more specific.");
+            std::process::exit(1);
+        }
     }
 }
