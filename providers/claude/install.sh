@@ -234,6 +234,50 @@ install_hooks() {
   fi
 }
 
+configure_session_hook() {
+  local settings_file="$CLAUDE_DIR/settings.json"
+  local hook_path="~/.claude/hooks/session-init.sh"
+
+  log_info "Configuring SessionStart hook"
+
+  if ! command -v jq &>/dev/null; then
+    log_warn "jq not found. Please manually add SessionStart hook to $settings_file:"
+    echo ""
+    echo '  "hooks": {'
+    echo '    "SessionStart": ['
+    echo "      {\"hooks\": [{\"type\": \"command\", \"command\": \"$hook_path\"}]}"
+    echo '    ]'
+    echo '  }'
+    echo ""
+    return 0
+  fi
+
+  if [ "$DRY_RUN" = true ]; then
+    log_dry "  SessionStart hook in settings.json"
+    return 0
+  fi
+
+  # Create settings.json if it doesn't exist
+  [ ! -f "$settings_file" ] && echo '{}' > "$settings_file"
+
+  # Check if hook already exists
+  if jq -e '.hooks.SessionStart[]?.hooks[]? | select(.command | contains("session-init.sh"))' "$settings_file" >/dev/null 2>&1; then
+    log_ok "  SessionStart hook already configured (skipped)"
+    return 0
+  fi
+
+  # Add hook
+  local tmp_file
+  tmp_file=$(mktemp)
+  jq --arg cmd "$hook_path" '
+    .hooks //= {} |
+    .hooks.SessionStart //= [] |
+    .hooks.SessionStart += [{"hooks": [{"type": "command", "command": $cmd}]}]
+  ' "$settings_file" > "$tmp_file" && mv "$tmp_file" "$settings_file"
+
+  log_ok "  SessionStart hook configured"
+}
+
 # --- Main ---
 
 main() {
@@ -261,6 +305,8 @@ main() {
   install_skills
   echo ""
   install_hooks
+  echo ""
+  configure_session_hook
 
   echo ""
   if [ "$DRY_RUN" = true ]; then
