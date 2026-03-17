@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::Path;
 
+use crate::common::paths;
 use crate::common::registry::{self, Project, Registry};
 
 /// Project alias management
@@ -41,6 +42,8 @@ pub enum Action {
     Sync {
         #[arg(long)]
         dry_run: bool,
+        #[arg(long)]
+        force: bool,
     },
     /// Manage unregistered projects
     Manage,
@@ -57,15 +60,9 @@ pub fn run(args: Args) {
         Some(Action::Remove { alias }) => do_remove(&alias),
         Some(Action::Link { alias, path }) => do_link(&alias, &path),
         Some(Action::Unlink { alias, path }) => do_unlink(&alias, &path),
-        Some(Action::Setup) => {
-            eprintln!("project setup: not yet implemented (JUN-35)");
-        }
-        Some(Action::Sync { .. }) => {
-            eprintln!("project sync: not yet implemented (JUN-35)");
-        }
-        Some(Action::Manage) => {
-            eprintln!("project manage: not yet implemented (JUN-35)");
-        }
+        Some(Action::Setup) => do_setup(),
+        Some(Action::Sync { dry_run, force }) => do_sync(dry_run, force),
+        Some(Action::Manage) => do_manage(),
         None => {
             eprintln!("Usage: blueprint project <init|list|show|current|remove|link|unlink|setup|sync|manage>");
             std::process::exit(1);
@@ -270,6 +267,330 @@ fn do_unlink(alias: &str, path: &str) {
 
     save_registry(&reg);
     println!("Unlinked '{absolute_path}' from project '{alias}'.");
+}
+
+// --- Setup, Sync, Manage ---
+
+fn do_setup() {
+    let reg = load_registry();
+
+    let Some(project) = registry::detect_current_project(&reg) else {
+        eprintln!("No project found for current directory.");
+        eprintln!("Run 'blueprint project init <alias>' to register.");
+        std::process::exit(1);
+    };
+
+    let alias = &project.alias;
+    let data_dir = registry::project_data_dir(alias);
+
+    // Ensure project data directory structure
+    let subdirs = ["constitutions", "forms", "front-matters", "gates", "templates", "plans"];
+
+    println!("Setting up project: {alias}");
+    println!("  Data: {}", data_dir.display());
+    println!();
+
+    for subdir in &subdirs {
+        let path = data_dir.join(subdir);
+        if path.exists() {
+            println!("  {subdir}/ — exists");
+        } else {
+            fs::create_dir_all(&path).unwrap_or_else(|e| {
+                eprintln!("Failed to create {}: {e}", path.display());
+                std::process::exit(1);
+            });
+            println!("  {subdir}/ — created");
+        }
+    }
+
+    println!();
+    println!("Project structure ready.");
+    println!("Run 'blueprint project sync' to populate from base content.");
+    println!("Run 'blueprint adapt <platform> install' to provision for your Code Assistant.");
+}
+
+fn do_sync(dry_run: bool, force: bool) {
+    let reg = load_registry();
+
+    let Some(project) = registry::detect_current_project(&reg) else {
+        eprintln!("No project found for current directory.");
+        eprintln!("Run 'blueprint project init <alias>' to register.");
+        std::process::exit(1);
+    };
+
+    let base = paths::base_dir();
+    let target = registry::project_data_dir(&project.alias);
+
+    if !base.exists() {
+        eprintln!("Base directory not found: {}", base.display());
+        eprintln!("Run the installer to set up Blueprint base files.");
+        std::process::exit(1);
+    }
+
+    println!("Syncing from: {}", base.display());
+    println!("          to: {}", target.display());
+    if dry_run {
+        println!("(dry-run mode — no changes will be made)");
+    }
+    println!();
+
+    let sync_dirs = ["constitutions", "forms", "front-matters", "gates", "templates"];
+
+    for dir in &sync_dirs {
+        let base_path = base.join(dir);
+        let target_path = target.join(dir);
+
+        if !base_path.is_dir() {
+            continue;
+        }
+
+        println!("{dir}/");
+        sync_directory(&base_path, &target_path, dry_run, force, dir);
+    }
+
+    println!();
+    if dry_run {
+        println!("Dry run complete. Use without --dry-run to apply changes.");
+    } else {
+        println!("Sync complete.");
+    }
+    println!();
+    println!("Tip: To protect customized files from future syncs, update their 'version'");
+    println!("     or 'updated' field to a value higher than the base file.");
+}
+
+fn sync_directory(base: &Path, target: &Path, dry_run: bool, force: bool, rel_path: &str) {
+    let Ok(entries) = fs::read_dir(base) else {
+        return;
+    };
+
+    if !dry_run {
+        fs::create_dir_all(target).ok();
+    }
+
+    let mut entries: Vec<_> = entries.flatten().collect();
+    entries.sort_by_key(|e| e.file_name());
+
+    for entry in entries {
+        let path = entry.path();
+        let name = entry.file_name();
+        let name_str = name.to_string_lossy();
+        let display = format!("{rel_path}/{name_str}");
+
+        if path.is_dir() {
+            sync_directory(&path, &target.join(&name), dry_run, force, &display);
+            continue;
+        }
+
+        let target_file = target.join(&name);
+        let status = compare_files(&path, &target_file);
+
+        match status {
+            SyncStatus::New => {
+                if dry_run {
+                    println!("  [NEW]        {display}");
+                } else {
+                    fs::create_dir_all(target).ok();
+                    fs::copy(&path, &target_file).ok();
+                    println!("  [NEW]        {display} (copied)");
+                }
+            }
+            SyncStatus::Update { base_ver, project_ver } => {
+                if force {
+                    if dry_run {
+                        println!("  [UPDATE]     {display} ({project_ver} → {base_ver})");
+                    } else {
+                        fs::copy(&path, &target_file).ok();
+                        println!("  [UPDATE]     {display} ({project_ver} → {base_ver}) (updated)");
+                    }
+                } else {
+                    println!("  [UPDATE]     {display} ({project_ver} → {base_ver} available, use --force)");
+                }
+            }
+            SyncStatus::Patch { base_date, project_date } => {
+                if force {
+                    if dry_run {
+                        println!("  [PATCH]      {display} ({project_date} → {base_date})");
+                    } else {
+                        fs::copy(&path, &target_file).ok();
+                        println!("  [PATCH]      {display} ({project_date} → {base_date}) (patched)");
+                    }
+                } else {
+                    println!("  [PATCH]      {display} ({project_date} → {base_date} available, use --force)");
+                }
+            }
+            SyncStatus::Customized => {
+                println!("  [CUSTOMIZED] {display} (skipped — project version is newer)");
+            }
+            SyncStatus::Differs => {
+                println!("  [DIFFERS]    {display} (same version/date but content differs)");
+                if force && !dry_run {
+                    fs::copy(&path, &target_file).ok();
+                    println!("               → overwritten with base version");
+                } else if !force {
+                    println!("               → review manually or use --force to overwrite");
+                }
+            }
+            SyncStatus::Ok => {} // silent
+        }
+    }
+}
+
+use crate::common::frontmatter;
+
+enum SyncStatus {
+    New,
+    Update { base_ver: String, project_ver: String },
+    Patch { base_date: String, project_date: String },
+    Customized,
+    Differs,
+    Ok,
+}
+
+fn compare_files(base: &Path, project: &Path) -> SyncStatus {
+    if !project.exists() {
+        return SyncStatus::New;
+    }
+
+    let base_ver = get_file_field(base, "version").unwrap_or_else(|| "0.0.0".to_string());
+    let project_ver = get_file_field(project, "version").unwrap_or_else(|| "0.0.0".to_string());
+
+    if version_gt(&base_ver, &project_ver) {
+        return SyncStatus::Update { base_ver, project_ver };
+    }
+    if version_gt(&project_ver, &base_ver) {
+        return SyncStatus::Customized;
+    }
+
+    let base_date = get_file_field(base, "updated").unwrap_or_else(|| "1970-01-01".to_string());
+    let project_date = get_file_field(project, "updated").unwrap_or_else(|| "1970-01-01".to_string());
+
+    if base_date > project_date {
+        return SyncStatus::Patch { base_date, project_date };
+    }
+    if project_date > base_date {
+        return SyncStatus::Customized;
+    }
+
+    // Same version and date — check content hash
+    let base_content = fs::read(base).unwrap_or_default();
+    let project_content = fs::read(project).unwrap_or_default();
+
+    if base_content != project_content {
+        SyncStatus::Differs
+    } else {
+        SyncStatus::Ok
+    }
+}
+
+fn get_file_field(path: &Path, field: &str) -> Option<String> {
+    frontmatter::get_field(path, field).ok()?
+}
+
+/// Simple semver comparison: returns true if a > b.
+fn version_gt(a: &str, b: &str) -> bool {
+    if a == b {
+        return false;
+    }
+
+    let parse = |v: &str| -> Vec<u32> {
+        v.split('.').filter_map(|s| s.parse().ok()).collect()
+    };
+
+    let va = parse(a);
+    let vb = parse(b);
+
+    for i in 0..va.len().max(vb.len()) {
+        let a_part = va.get(i).copied().unwrap_or(0);
+        let b_part = vb.get(i).copied().unwrap_or(0);
+        if a_part != b_part {
+            return a_part > b_part;
+        }
+    }
+
+    false
+}
+
+fn do_manage() {
+    let reg = load_registry();
+    let projects_dir = paths::projects_dir();
+
+    if !projects_dir.exists() {
+        println!("No projects directory found.");
+        return;
+    }
+
+    println!("Scanning projects...");
+    println!();
+
+    let required_dirs = ["constitutions", "forms", "front-matters", "gates", "templates"];
+    let mut unregistered_valid = Vec::new();
+    let mut unregistered_invalid = Vec::new();
+
+    let Ok(entries) = fs::read_dir(&projects_dir) else {
+        return;
+    };
+
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if !path.is_dir() {
+            continue;
+        }
+
+        let name = entry.file_name().to_string_lossy().to_string();
+
+        // Skip hidden directories and registry file
+        if name.starts_with('.') {
+            continue;
+        }
+
+        // Skip if already registered
+        if reg.find_by_alias(&name).is_some() {
+            continue;
+        }
+
+        // Check structure validity
+        let missing: Vec<&str> = required_dirs
+            .iter()
+            .filter(|d| !path.join(d).is_dir())
+            .copied()
+            .collect();
+
+        if missing.is_empty() {
+            unregistered_valid.push(name);
+        } else {
+            unregistered_invalid.push((name, missing));
+        }
+    }
+
+    if !unregistered_valid.is_empty() || !unregistered_invalid.is_empty() {
+        let total = unregistered_valid.len() + unregistered_invalid.len();
+        println!("Unregistered Projects ({total}):");
+        println!();
+
+        for name in &unregistered_valid {
+            println!("  {name}/");
+            println!("    Status: Valid structure");
+            println!("    Action: Run 'blueprint project init {name}'");
+            println!();
+        }
+
+        for (name, missing) in &unregistered_invalid {
+            let missing_str = missing.join(", ");
+            println!("  {name}/");
+            println!("    Status: Invalid (missing: {missing_str})");
+            println!("    Action: Consider cleanup or manual repair");
+            println!();
+        }
+    }
+
+    let total = unregistered_valid.len() + unregistered_invalid.len();
+    println!("Summary: {total} unregistered");
+
+    if total == 0 {
+        println!();
+        println!("All projects are properly registered.");
+    }
 }
 
 // --- Helpers ---
