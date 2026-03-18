@@ -28,7 +28,7 @@ pub enum Action {
     },
     /// View FrontMatter schema
     Schema {
-        /// Schema type (or --list to list all)
+        /// Schema type (or "list" to list all)
         doc_type: String,
     },
 }
@@ -127,7 +127,7 @@ fn do_show(files: &[String]) {
 fn do_schema(doc_type: &str) {
     let schema_dir = registry::resolve_content_dir().join("front-matters");
 
-    if doc_type == "--list" || doc_type == "-l" {
+    if doc_type == "list" {
         list_schemas(&schema_dir);
         return;
     }

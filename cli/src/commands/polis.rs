@@ -1,7 +1,7 @@
 use std::fs;
 
 use crate::common::frontmatter;
-use crate::common::registry;
+use crate::common::paths;
 
 /// Agent registry
 #[derive(clap::Args)]
@@ -14,7 +14,7 @@ pub struct Args {
 }
 
 pub fn run(args: Args) {
-    let agents_dir = registry::resolve_content_dir().join("instructions").join("agents");
+    let agents_dir = paths::base_dir().join("instructions").join("agents");
 
     if args.list {
         list_agents(&agents_dir);
