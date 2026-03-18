@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use crate::common::paths;
 use crate::common::registry::{self, Project, Registry};
@@ -36,8 +36,14 @@ pub enum Action {
     Link { alias: String, path: String },
     /// Unlink a path from a project
     Unlink { alias: String, path: String },
-    /// Set up project configuration
-    Setup,
+    /// Provision config to project paths (symlinks from config/)
+    Setup {
+        /// Target project alias (defaults to current project)
+        alias: Option<String>,
+        /// Set up all registered projects
+        #[arg(long)]
+        all: bool,
+    },
     /// Sync base content to project
     Sync {
         #[arg(long)]
@@ -60,7 +66,7 @@ pub fn run(args: Args) {
         Some(Action::Remove { alias }) => do_remove(&alias),
         Some(Action::Link { alias, path }) => do_link(&alias, &path),
         Some(Action::Unlink { alias, path }) => do_unlink(&alias, &path),
-        Some(Action::Setup) => do_setup(),
+        Some(Action::Setup { alias, all }) => do_setup(alias.as_deref(), all),
         Some(Action::Sync { dry_run, force }) => do_sync(dry_run, force),
         Some(Action::Manage) => do_manage(),
         None => {
@@ -96,12 +102,29 @@ fn do_init(alias: &str, path: Option<&str>, notes: Option<&str>, project_type: &
         std::process::exit(1);
     }
 
-    // Create project data directory
+    // Create project data directory with subdirectories
     let data_dir = registry::project_data_dir(alias);
-    fs::create_dir_all(&data_dir).unwrap_or_else(|e| {
-        eprintln!("Failed to create project directory: {e}");
-        std::process::exit(1);
-    });
+    let subdirs = ["constitutions", "forms", "front-matters", "gates", "templates", "plans", "config"];
+
+    for subdir in &subdirs {
+        fs::create_dir_all(data_dir.join(subdir)).unwrap_or_else(|e| {
+            eprintln!("Failed to create {}: {e}", data_dir.join(subdir).display());
+            std::process::exit(1);
+        });
+    }
+
+    // Copy base files to project (if base exists)
+    let base_dir = paths::base_dir();
+    if base_dir.exists() {
+        let sync_dirs = ["constitutions", "forms", "front-matters", "gates", "templates"];
+        for dir in &sync_dirs {
+            let src = base_dir.join(dir);
+            let dest = data_dir.join(dir);
+            if src.is_dir() {
+                copy_dir_recursive(&src, &dest);
+            }
+        }
+    }
 
     // Add to registry
     reg.add(Project {
@@ -271,42 +294,201 @@ fn do_unlink(alias: &str, path: &str) {
 
 // --- Setup, Sync, Manage ---
 
-fn do_setup() {
+fn do_setup(target_alias: Option<&str>, all: bool) {
     let reg = load_registry();
 
-    let Some(project) = registry::detect_current_project(&reg) else {
-        eprintln!("No project found for current directory.");
-        eprintln!("Run 'blueprint project init <alias>' to register.");
-        std::process::exit(1);
-    };
+    let mut sl_created = 0u32;
+    let mut sl_skipped = 0u32;
+    let mut sl_warned = 0u32;
 
-    let alias = &project.alias;
-    let data_dir = registry::project_data_dir(alias);
-
-    // Ensure project data directory structure
-    let subdirs = ["constitutions", "forms", "front-matters", "gates", "templates", "plans"];
-
-    println!("Setting up project: {alias}");
-    println!("  Data: {}", data_dir.display());
+    println!();
+    println!("Project Setup");
     println!();
 
-    for subdir in &subdirs {
-        let path = data_dir.join(subdir);
-        if path.exists() {
-            println!("  {subdir}/ — exists");
+    if all {
+        if reg.projects.is_empty() {
+            println!("No projects registered.");
+            return;
+        }
+        for project in &reg.projects {
+            setup_project(&project.alias, &reg, &mut sl_created, &mut sl_skipped, &mut sl_warned);
+        }
+    } else if let Some(alias) = target_alias {
+        if reg.find_by_alias(alias).is_none() {
+            eprintln!("Project '{alias}' not found.");
+            std::process::exit(1);
+        }
+        setup_project(alias, &reg, &mut sl_created, &mut sl_skipped, &mut sl_warned);
+    } else {
+        let Some(project) = registry::detect_current_project(&reg) else {
+            eprintln!("No project found for current directory.");
+            eprintln!("Run 'blueprint project init <alias>' to register.");
+            std::process::exit(1);
+        };
+        setup_project(&project.alias, &reg, &mut sl_created, &mut sl_skipped, &mut sl_warned);
+    }
+
+    println!("  Symlinks: {sl_created} created, {sl_skipped} unchanged, {sl_warned} warnings.");
+}
+
+/// Provision config/ contents to all paths (or worktrees for bare repos).
+fn setup_project(
+    alias: &str,
+    reg: &Registry,
+    created: &mut u32,
+    skipped: &mut u32,
+    warned: &mut u32,
+) {
+    let Some(project) = reg.find_by_alias(alias) else {
+        return;
+    };
+
+    let config_dir = registry::project_data_dir(alias).join("config");
+
+    println!("  [{alias}] (type: {})", project.r#type);
+
+    if !config_dir.exists() {
+        println!("    config: not found ({})", config_dir.display());
+        println!("    — skip (no config data to provision)");
+        println!();
+        return;
+    }
+
+    for project_path in &project.paths {
+        let target = Path::new(project_path);
+
+        if !target.exists() {
+            println!("    path: {project_path}");
+            println!("      — skip (path not found on this machine)");
+            *skipped += 1;
+            continue;
+        }
+
+        if project.r#type == "bare" {
+            // For bare repos, provision to each worktree
+            println!("    wrapper: {project_path}");
+            let worktrees = list_worktrees(target);
+            if worktrees.is_empty() {
+                println!("      — skip (no worktrees found)");
+            }
+            for wt in &worktrees {
+                println!("    worktree: {}", wt.display());
+                setup_target_path(&config_dir, wt, created, skipped, warned);
+            }
         } else {
-            fs::create_dir_all(&path).unwrap_or_else(|e| {
-                eprintln!("Failed to create {}: {e}", path.display());
-                std::process::exit(1);
-            });
-            println!("  {subdir}/ — created");
+            println!("    path: {project_path}");
+            setup_target_path(&config_dir, target, created, skipped, warned);
+        }
+    }
+    println!();
+}
+
+/// Symlink all files/directories from config/ to target path.
+fn setup_target_path(
+    config_dir: &Path,
+    target_path: &Path,
+    created: &mut u32,
+    skipped: &mut u32,
+    warned: &mut u32,
+) {
+    let Ok(entries) = fs::read_dir(config_dir) else {
+        return;
+    };
+
+    for entry in entries.flatten() {
+        let source = entry.path();
+        let name = entry.file_name();
+        let name_str = name.to_string_lossy();
+        let target = target_path.join(&name);
+
+        // Skip .DS_Store and other hidden system files
+        if name_str.starts_with('.') && name_str != ".claude" {
+            continue;
+        }
+
+        try_symlink(&source, &target, &name_str, created, skipped, warned);
+    }
+}
+
+/// Create a symlink with conflict handling.
+fn try_symlink(
+    source: &Path,
+    target: &Path,
+    display_name: &str,
+    created: &mut u32,
+    skipped: &mut u32,
+    warned: &mut u32,
+) {
+    if !source.exists() {
+        println!("      {display_name:<14} ! missing source");
+        *warned += 1;
+        return;
+    }
+
+    // Correct symlink already exists
+    if target.is_symlink() {
+        if let Ok(current) = fs::read_link(target) {
+            if current == source {
+                println!("      {display_name:<14} — skip (already linked)");
+                *skipped += 1;
+                return;
+            }
+        }
+        // Symlink exists but points elsewhere — relink
+        #[cfg(unix)]
+        {
+            std::os::unix::fs::symlink(source, target).ok();
+            // Remove old and create new
+            fs::remove_file(target).ok();
+            std::os::unix::fs::symlink(source, target).ok();
+        }
+        println!("      {display_name:<14} + relinked");
+        *created += 1;
+        return;
+    }
+
+    // Real file or directory exists (not a symlink)
+    if target.exists() {
+        println!("      {display_name:<14} ! conflict (real file exists)");
+        *warned += 1;
+        return;
+    }
+
+    // Nothing exists — create symlink
+    #[cfg(unix)]
+    {
+        std::os::unix::fs::symlink(source, target).unwrap_or_else(|e| {
+            eprintln!("      {display_name:<14} ! failed to create symlink: {e}");
+        });
+    }
+    println!("      {display_name:<14} + linked");
+    *created += 1;
+}
+
+/// List git worktrees under a bare repo wrapper directory.
+fn list_worktrees(wrapper_dir: &Path) -> Vec<PathBuf> {
+    let output = std::process::Command::new("git")
+        .args(["-C", &wrapper_dir.to_string_lossy(), "worktree", "list", "--porcelain"])
+        .output();
+
+    let Ok(output) = output else {
+        return Vec::new();
+    };
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let mut worktrees = Vec::new();
+
+    for line in stdout.lines() {
+        if let Some(path) = line.strip_prefix("worktree ") {
+            let p = PathBuf::from(path);
+            // Skip the bare repo itself
+            if p != wrapper_dir {
+                worktrees.push(p);
+            }
         }
     }
 
-    println!();
-    println!("Project structure ready.");
-    println!("Run 'blueprint project sync' to populate from base content.");
-    println!("Run your platform provider to install for your Code Assistant.");
+    worktrees
 }
 
 fn do_sync(dry_run: bool, force: bool) {
@@ -616,6 +798,25 @@ fn suggest_projects(reg: &Registry) {
     eprintln!("Available projects:");
     for p in &reg.projects {
         eprintln!("  - {}", p.alias);
+    }
+}
+
+fn copy_dir_recursive(src: &Path, dest: &Path) {
+    fs::create_dir_all(dest).ok();
+
+    let Ok(entries) = fs::read_dir(src) else {
+        return;
+    };
+
+    for entry in entries.flatten() {
+        let path = entry.path();
+        let target = dest.join(entry.file_name());
+
+        if path.is_dir() {
+            copy_dir_recursive(&path, &target);
+        } else {
+            fs::copy(&path, &target).ok();
+        }
     }
 }
 
