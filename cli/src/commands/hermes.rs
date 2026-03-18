@@ -1,6 +1,6 @@
 use std::fs;
 
-use crate::common::paths;
+use crate::common::registry;
 
 /// Agent handoff forms
 #[derive(clap::Args)]
@@ -13,7 +13,7 @@ pub struct Args {
 }
 
 pub fn run(args: Args) {
-    let forms_file = paths::base_dir().join("forms").join("handoff.schema.md");
+    let forms_file = registry::resolve_content_dir().join("forms").join("handoff.schema.md");
 
     if !forms_file.exists() {
         eprintln!("Handoff forms not found: {}", forms_file.display());

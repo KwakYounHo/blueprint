@@ -1,7 +1,7 @@
 use std::fs;
 
 use crate::common::frontmatter;
-use crate::common::paths;
+use crate::common::registry;
 
 /// Gate validation and aspects
 #[derive(clap::Args)]
@@ -19,7 +19,7 @@ pub struct Args {
 }
 
 pub fn run(args: Args) {
-    let gates_dir = paths::base_dir().join("gates");
+    let gates_dir = registry::resolve_content_dir().join("gates");
 
     if args.list {
         list_gates(&gates_dir);

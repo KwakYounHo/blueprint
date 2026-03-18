@@ -2,7 +2,11 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 
-/// Parsed FrontMatter: key-value pairs extracted from YAML between `---` markers.
+use serde_yml::Value;
+
+/// Parsed FrontMatter: key-value pairs from YAML.
+/// Values are stored as their YAML string representation.
+/// Arrays are stored as comma-separated strings (e.g., "schema, common").
 pub type FrontMatter = HashMap<String, String>;
 
 /// Result of parsing a file with optional FrontMatter.
@@ -48,7 +52,7 @@ pub fn parse_string(content: &str) -> Result<ParsedDocument, String> {
     let body_start = &after_first[end_pos + 4..]; // skip "\n---"
     let body = body_start.trim_start_matches(['\r', '\n']).to_string();
 
-    let frontmatter = parse_yaml_simple(yaml_block);
+    let frontmatter = parse_yaml(yaml_block);
 
     Ok(ParsedDocument {
         frontmatter,
@@ -56,29 +60,56 @@ pub fn parse_string(content: &str) -> Result<ParsedDocument, String> {
     })
 }
 
-/// Simple YAML parser for flat key-value FrontMatter.
+/// Parse YAML block into a flat key-value map using serde_yml.
 ///
-/// Handles basic `key: value` pairs. Arrays like `tags: [a, b, c]`
-/// are stored as the raw string "[a, b, c]".
-fn parse_yaml_simple(yaml: &str) -> FrontMatter {
+/// Scalar values are stored as-is.
+/// Arrays are stored as comma-separated strings.
+/// Nested objects are skipped (FrontMatter is typically flat).
+fn parse_yaml(yaml: &str) -> FrontMatter {
     let mut map = HashMap::new();
 
-    for line in yaml.lines() {
-        let line = line.trim();
-        if line.is_empty() || line.starts_with('#') {
-            continue;
-        }
+    let Ok(value) = serde_yml::from_str::<Value>(yaml) else {
+        return map;
+    };
 
-        if let Some((key, value)) = line.split_once(':') {
-            let key = key.trim().to_string();
-            let value = value.trim().to_string();
-            if !key.is_empty() {
-                map.insert(key, value);
-            }
-        }
+    let Some(mapping) = value.as_mapping() else {
+        return map;
+    };
+
+    for (key, val) in mapping {
+        let Some(key_str) = key.as_str() else {
+            continue;
+        };
+
+        let value_str = yaml_value_to_string(val);
+        map.insert(key_str.to_string(), value_str);
     }
 
     map
+}
+
+/// Convert a YAML Value to a string representation.
+fn yaml_value_to_string(value: &Value) -> String {
+    match value {
+        Value::String(s) => s.clone(),
+        Value::Number(n) => n.to_string(),
+        Value::Bool(b) => b.to_string(),
+        Value::Null => String::new(),
+        Value::Sequence(seq) => {
+            // Convert array to comma-separated string
+            seq.iter()
+                .filter_map(|v| match v {
+                    Value::String(s) => Some(s.clone()),
+                    Value::Number(n) => Some(n.to_string()),
+                    Value::Bool(b) => Some(b.to_string()),
+                    _ => None,
+                })
+                .collect::<Vec<_>>()
+                .join(", ")
+        }
+        Value::Mapping(_) => "(object)".to_string(),
+        Value::Tagged(tagged) => yaml_value_to_string(&tagged.value),
+    }
 }
 
 /// Get a specific field from a file's FrontMatter.
@@ -113,6 +144,24 @@ mod tests {
     fn parse_with_array_field() {
         let content = "---\ntags: [schema, common]\n---\n\nBody";
         let doc = parse_string(content).unwrap();
-        assert_eq!(doc.frontmatter.get("tags").unwrap(), "[schema, common]");
+        assert_eq!(doc.frontmatter.get("tags").unwrap(), "schema, common");
+    }
+
+    #[test]
+    fn parse_with_quoted_string() {
+        let content = "---\ndescription: \"Validates document format\"\n---\n\nBody";
+        let doc = parse_string(content).unwrap();
+        assert_eq!(
+            doc.frontmatter.get("description").unwrap(),
+            "Validates document format"
+        );
+    }
+
+    #[test]
+    fn parse_with_boolean_and_number() {
+        let content = "---\nenabled: true\ncount: 42\n---\n\nBody";
+        let doc = parse_string(content).unwrap();
+        assert_eq!(doc.frontmatter.get("enabled").unwrap(), "true");
+        assert_eq!(doc.frontmatter.get("count").unwrap(), "42");
     }
 }

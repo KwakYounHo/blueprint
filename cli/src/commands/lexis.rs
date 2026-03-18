@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use crate::common::paths;
+use crate::common::registry;
 
 /// Constitution viewer
 #[derive(clap::Args)]
@@ -20,7 +20,7 @@ pub struct Args {
 }
 
 pub fn run(args: Args) {
-    let constitutions_dir = paths::base_dir().join("constitutions");
+    let constitutions_dir = registry::resolve_content_dir().join("constitutions");
 
     if args.list {
         list_agents(&constitutions_dir);

@@ -2,7 +2,7 @@ use std::fs;
 use std::path::Path;
 
 use crate::common::frontmatter;
-use crate::common::paths;
+use crate::common::registry;
 
 /// FrontMatter search and schemas
 #[derive(clap::Args)]
@@ -125,7 +125,7 @@ fn do_show(files: &[String]) {
 }
 
 fn do_schema(doc_type: &str) {
-    let schema_dir = paths::base_dir().join("front-matters");
+    let schema_dir = registry::resolve_content_dir().join("front-matters");
 
     if doc_type == "--list" || doc_type == "-l" {
         list_schemas(&schema_dir);

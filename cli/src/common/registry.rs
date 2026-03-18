@@ -116,6 +116,22 @@ fn canonicalize_path(path: &str) -> String {
         .unwrap_or_else(|_| path.to_string())
 }
 
+/// Resolve the content directory for CLI commands.
+///
+/// If in a registered project → project data dir (project-specific content).
+/// Otherwise → base dir (global content).
+///
+/// This is how the shell script's BLUEPRINT_DATA_DIR works:
+/// registered project uses project-specific copies, unregistered falls back to base.
+pub fn resolve_content_dir() -> std::path::PathBuf {
+    if let Ok(reg) = Registry::load() {
+        if let Some(project) = detect_current_project(&reg) {
+            return project_data_dir(&project.alias);
+        }
+    }
+    paths::base_dir()
+}
+
 /// Detect the current project based on the working directory.
 ///
 /// Walks up from the current directory checking if any path is registered.

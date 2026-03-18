@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::Path;
 
-use crate::common::paths;
+use crate::common::registry;
 
 /// Document templates
 #[derive(clap::Args)]
@@ -21,7 +21,7 @@ pub enum Action {
 }
 
 pub fn run(args: Args) {
-    let template_dir = paths::base_dir().join("templates");
+    let template_dir = registry::resolve_content_dir().join("templates");
 
     match args.action {
         Some(Action::List) => list_templates(&template_dir),
