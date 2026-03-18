@@ -306,7 +306,7 @@ fn do_setup() {
     println!();
     println!("Project structure ready.");
     println!("Run 'blueprint project sync' to populate from base content.");
-    println!("Run 'blueprint adapt <platform> install' to provision for your Code Assistant.");
+    println!("Run your platform provider to install for your Code Assistant.");
 }
 
 fn do_sync(dry_run: bool, force: bool) {
