@@ -1,1 +1,5 @@
 .conversation
+.mcp.json
+
+# Rust build artifacts
+cli/target/
