@@ -466,14 +466,53 @@ fn try_symlink(
 }
 
 /// List git worktrees under a bare repo wrapper directory.
+///
+/// The wrapper directory itself may not be a git repo. Convention:
+///   wrapper/           ← registered path (not a git repo)
+///   ├── project.git/   ← actual bare repo
+///   ├── main/          ← worktree
+///   └── feature-x/     ← worktree
+///
+/// Tries `git worktree list` from wrapper first; if that fails,
+/// looks for a `*.git` subdirectory and retries from there.
 fn list_worktrees(wrapper_dir: &Path) -> Vec<PathBuf> {
+    // Try wrapper directory first (handles cases where path IS the bare repo)
+    let worktrees = git_worktree_list(wrapper_dir, wrapper_dir);
+    if !worktrees.is_empty() {
+        return worktrees;
+    }
+
+    // Wrapper is not a git repo — look for a *.git subdirectory
+    if let Ok(entries) = fs::read_dir(wrapper_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            let name = entry.file_name().to_string_lossy().to_string();
+            if path.is_dir() && name.ends_with(".git") {
+                let worktrees = git_worktree_list(&path, wrapper_dir);
+                if !worktrees.is_empty() {
+                    return worktrees;
+                }
+            }
+        }
+    }
+
+    Vec::new()
+}
+
+/// Run `git worktree list --porcelain` from `git_dir` and return worktree paths,
+/// excluding the bare repo itself and the wrapper directory.
+fn git_worktree_list(git_dir: &Path, wrapper_dir: &Path) -> Vec<PathBuf> {
     let output = std::process::Command::new("git")
-        .args(["-C", &wrapper_dir.to_string_lossy(), "worktree", "list", "--porcelain"])
+        .args(["-C", &git_dir.to_string_lossy(), "worktree", "list", "--porcelain"])
         .output();
 
     let Ok(output) = output else {
         return Vec::new();
     };
+
+    if !output.status.success() {
+        return Vec::new();
+    }
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     let mut worktrees = Vec::new();
@@ -481,8 +520,8 @@ fn list_worktrees(wrapper_dir: &Path) -> Vec<PathBuf> {
     for line in stdout.lines() {
         if let Some(path) = line.strip_prefix("worktree ") {
             let p = PathBuf::from(path);
-            // Skip the bare repo itself
-            if p != wrapper_dir {
+            // Skip the bare repo itself and the wrapper directory
+            if p != wrapper_dir && p != git_dir {
                 worktrees.push(p);
             }
         }
